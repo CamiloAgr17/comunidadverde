@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapa de Centros</title>
+    <!-- MapLibre CSS/JS -->
+    <script src='https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js'></script>
+    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css' />
+    <style>
+        body { margin: 0; padding: 0; }
+        html, body, #map { height: 100%; }
+    </style>
+</head>
+<body>
+    <h1>Centros de Reciclaje</h1>
+    <div id="map"></div>
+
+    <script>
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL',  // Estilo básico
+            center: [-79.5, 9.0],  // Centro en Panamá [lng, lat]
+            zoom: 12
+        });
+
+        map.addControl(new maplibregl.NavigationControl());
+        map.addControl(new maplibregl.GeolocateControl());
+
+        // Inyección de los datos desde Django (¡aquí va la magia!)
+        const centros = JSON.parse('{{ centros|safe|escapejs }}'.replaceAll("'", '"'));
+
+        centros.forEach(centro => {
+            new maplibregl.Marker()
+                .setLngLat([centro.lng, centro.lat])
+                .setPopup(
+                    new maplibregl.Popup().setHTML(
+                        `<strong>${centro.nombre}</strong><br>Materiales: ${centro.materiales}`
+                    )
+                )
+                .addTo(map);
+        });
+    </script>
+</body>
+</html>
