@@ -3,5 +3,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('mapa.urls')),  # ¡Las rutas del mapa!
+    path('', include('inicio.urls')),
 ]

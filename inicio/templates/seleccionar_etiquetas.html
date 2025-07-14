@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Seleccionar Etiquetas</title>
+  <style>
+    form {
+      margin-top: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Selecciona tus etiquetas favoritas</h2>
+
+  {% if perfil %}
+    <form method="post">
+      {% csrf_token %}
+      
+      {% if etiquetas %}
+        {% for etiqueta in etiquetas %}
+          <label>
+            <input type="checkbox" name="etiquetas" value="{{ etiqueta.id }}"
+              {% if etiqueta in perfil.etiquetas_favoritas.all %}checked="checked"{% endif %}>
+            {{ etiqueta.nombre }}
+          </label>
+        {% endfor %}
+      {% else %}
+        <p>No hay etiquetas disponibles.</p>
+      {% endif %}
+  
+      <button type="submit">Guardar selección</button>
+    </form>
+  {% else %}
+    <p>No tienes un perfil asignado. Por favor, contacta con el administrador.</p>
+  {% endif %}
+  
+</body>
+</html>
+
+

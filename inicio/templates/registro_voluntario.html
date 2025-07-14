@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro Voluntario</title>
+  <script>
+    function obtenerUbicacion() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+          document.getElementById("id_latitud").value = pos.coords.latitude;
+          document.getElementById("id_longitud").value = pos.coords.longitude;
+        }, function(error) {
+          alert("No se pudo obtener la ubicación.");
+        });
+      } else {
+        alert("Tu navegador no soporta geolocalización.");
+      }
+    }
+    window.onload = obtenerUbicacion;
+  </script>
+</head>
+<body>
+  <h2>Registro Voluntario</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Registrarme</button>
+  </form>
+</body>
+</html>

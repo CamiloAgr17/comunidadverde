@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: sans-serif;
+      padding-top: 100px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bienvenido</h1>
+  <p>¿Cómo deseas iniciar sesión?</p>
+
+<form action="{% url 'registro' %}" method="get" style="display:inline; margin-right: 10px;">
+  <button type="submit">Registrar</button>
+</form>
+
+<form action="{% url 'login' %}" method="get" style="display:inline;">
+  <button type="submit">Iniciar Sesión</button>
+</form>
+
+</body>
+</html>

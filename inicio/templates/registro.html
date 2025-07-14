@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Registro</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin-top: 100px;
+        }
+
+        button {
+            padding: 15px 30px;
+            margin: 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Registro</h1>
+    <p>¿Cómo deseas registrarte?</p>
+   <form action="{% url 'registro_voluntario' %}" method="get" style="display:inline;">
+  <button type="submit">Iniciar como Voluntario</button>
+</form>
+
+<form action="{% url 'registro_organizacion' %}" method="get" style="display:inline;">
+  <button type="submit">Iniciar como Organización</button>
+</form>
+
+</body>
+
+</html>

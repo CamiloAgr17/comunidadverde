@@ -40,9 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "mapa",
-    'django_simple_bulma',
-    'sesion',
-    'widget_tweaks',
+    "inicio",
+    
 ]
 
 MIDDLEWARE = [

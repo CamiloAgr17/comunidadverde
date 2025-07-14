@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro de Organización</title>
+  <script>
+    function obtenerUbicacion(latId, lngId) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+          document.getElementById(latId).value = pos.coords.latitude;
+          document.getElementById(lngId).value = pos.coords.longitude;
+        }, function(error) {
+          alert("No se pudo obtener la ubicación.");
+        });
+      } else {
+        alert("Tu navegador no soporta geolocalización.");
+      }
+    }
+
+    window.onload = function () {
+      obtenerUbicacion('id_latitud', 'id_longitud');
+    };
+  </script>
+</head>
+<body>
+  <h2>Registro de Organización</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Registrar</button>
+  </form>
+</body>
+</html>
