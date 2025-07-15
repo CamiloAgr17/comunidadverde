@@ -90,16 +90,16 @@ if DATABASE_URL:
     }
 else:
     # Configuración local para desarrollo si no está la variable de entorno
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": "comunidad",
-            "USER": "postgres",
-            "PASSWORD": "0411",
-            "HOST": "localhost",
-            "PORT": "5432",
-        }
+   DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'comunidadverdedb',
+        'USER': 'comunidadverdedb_user',
+        'PASSWORD': '1zZEYXJ3GAL61hVnXixhgqqeRto7Pe7m',
+        'HOST': 'dpg-d1r0legdl3ps73etjg70-a.oregon-postgres.render.com',
+        'PORT': '5432',
     }
+}
 
 # DATABASES = {
 #     "default": dj_database_url.parse(
