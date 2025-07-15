@@ -78,3 +78,11 @@ def seleccionar_etiquetas(request):
         'etiquetas': etiquetas,
         'perfil': perfil,
     })
+
+# Feed princiapl
+
+@login_required
+def feed(request):
+    #aqui hay que poner que agarre los posts, pero no han hecho lo de los posts
+    #asiq ta vacio
+    return render(request, 'feed.html',)

@@ -1,0 +1,137 @@
+.layout-container {
+    display: flex;
+    gap: 10px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+    flex-wrap: wrap;
+}
+
+.sidebar-left,
+.sidebar-right,
+.feed-main {
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.sidebar-left {
+    flex: 0 0 16%;
+    background-color: #f2f2f2;
+    border-radius: 8px;
+}
+
+.feed-main {
+    flex: 1 1 50%;
+}
+
+.sidebar-right {
+    flex: 0 0 30%;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.user-profile {
+    text-align: center;
+}
+
+.user-avatar {
+    width: 100%;
+    max-width: 100px;
+    border-radius: 50%;
+}
+
+.user-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 10px 0;
+}
+
+.side-nav-buttons button {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    padding: 10px;
+}
+
+.feed-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.tab {
+    flex: 1;
+    padding: 10px;
+    background-color: #ddd;
+    border: none;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.post-card {
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar-small {
+    width: 40px;
+    border-radius: 50%;
+}
+
+.post-image {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+}
+
+.info-box {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 14px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+
+    .sidebar-left,
+    .sidebar-right {
+        flex: 0 0 100%;
+        order: 1;
+    }
+
+    .feed-main {
+        flex: 0 0 100%;
+        order: 2;
+    }
+}

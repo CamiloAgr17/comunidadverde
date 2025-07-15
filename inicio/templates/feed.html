@@ -1,0 +1,76 @@
+{% load static %} {% block content %}
+<link rel="stylesheet" href="{% static 'feed/css/style.css' %}">
+<div class="layout-container">
+
+
+    <!-- SIDEBAR CON EL PERFIL Y BOTONES DE NAVEGACIÓN -->
+    <aside class="sidebar-left">
+        <div class="user-profile">
+            <img src="{% static 'img/user-placeholder.png' %}" alt="User" class="user-avatar" />
+            <h3>Current User</h3>
+            <p>Biografía o Descripción del usuario</p>
+            <div class="user-stats">
+                <div><strong>10</strong><br />Posts</div>
+                <div><strong>150</strong><br />Seguidores</div>
+                <div><strong>58</strong><br />Seguidos</div>
+            </div>
+            <nav class="side-nav-buttons">
+                <button>Mi Perfil</button>
+                <button>Notificaciones</button>
+                <button>Mapa</button>
+                <button>Ajustes</button>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- AQUI VAN LA LISTA DE POSTS ETC... -->
+    <main class="feed-main">
+        <!-- ESTOS BOTONES NO SE SI LOS QUITAN O Q -->
+        <!-- pero ahi tan porsiacaso o si les quieren dar otra función -->
+        <header class="feed-header">
+            <button class="tab">Mi Feed</button>
+            <button class="tab">Cerca de Mí</button> 
+        </header>
+
+        <!-- placeholder, pero esta es la logica de mostrar los posts -->
+        <!-- cambien o ajusten a su necesidad -->
+        {% for post in posts %}
+        <div class="post-card">
+            <div class="post-header">
+                <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
+                <strong>{{ post.autor.username }}</strong>
+            </div>
+            <p>{{ post.contenido }}</p>
+            {% if post.imagen %}
+            <img src="{{ post.imagen.url }}" class="post-image" />
+            {% endif %}
+            <small>{{ post.fecha_publicacion }}</small>
+        </div>
+        {% endfor %}
+    </main>
+
+
+    <!-- SIDEBAR EN LA DERECHA -->
+    <!-- aqui va el buscador y noticias -->
+    <!-- tmb pueden poner tipo "posts más relevantes" -->
+    <!-- y te muestra como 2 posts con varios likes y así -->
+    <aside class="sidebar-right">
+        <input type="text" placeholder="Buscar..." class="search-bar" />
+        <div class="info-box">
+            <h4>Noticia</h4>
+            <p>Contenido de la noticia</p>
+        </div>
+        <div class="info-box">
+            <h4>Otra Noticia</h4>
+            <p>Contenido</p>
+        </div>
+        <div class="info-box">
+            <h4>Información de Contacto</h4>
+            <p>info@ejemplo.com</p>
+        </div>
+    </aside>
+
+    <!-- Botón flotante -->
+    <button class="floating-button">Crear una Publicación</button>
+</div>
+{% endblock %}
