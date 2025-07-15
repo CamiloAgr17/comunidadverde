@@ -20,7 +20,7 @@
             </div>
             <nav class="side-nav-buttons">
                 <button>Mi Perfil</button>
-                <button>Notificaciones</button>
+                <button id="btn_modal">Notificaciones</button>
                 <button>Mapa</button>
                 <button>Ajustes</button>
             </nav>
@@ -77,4 +77,42 @@
     <!-- Botón flotante -->
     <button class="floating-button">Crear una Publicación</button>
 </div>
+
+<!-- Modal de Notificaciones -->
+<div id="modal_notificaciones" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+
+        <!-- aqui se deben pintar las notificaciones una vez esa logica este hecha-->
+        <!-- si no hay tiempo para hacer notificaciones pues se quita el boton de arriba-->
+        <h2>Notificaciones</h2>
+        <ul>
+            <li>Notificación 1</li>
+            <li>Notificación 2</li>
+            <li>Notificación 3</li>
+        </ul>
+    </div>
+</div>
+
+
+<script>
+    var modal = document.getElementById("modal_notificaciones");
+    var btn = document.getElementById("btn_modal");
+    var span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+</script>
 {% endblock %}
