@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from django.core.exceptions import ImproperlyConfigured
 import os
 from pathlib import Path
+import dj_database_url
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -79,15 +80,19 @@ WSGI_APPLICATION = "comunidadverde.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "comunidad",
-        "USER": "postgres",
-        "PASSWORD": "0411",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
+    # "default": {
+    #     "ENGINE": "django.db.backends.postgresql_psycopg2",
+    #     "NAME": "comunidad",
+    #     "USER": "postgres",
+    #     "PASSWORD": "0411",
+    #     "HOST": "localhost",
+    #     "PORT": "5432",
+    # }
+    "default": dj_database_url.config(
+        default="postgres://postgres:0411@localhost:5432/comunidad"
+    )
 }
+
 
 
 # Password validation
