@@ -54,32 +54,40 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 
+
 @login_required
 def seleccionar_etiquetas(request):
     usuario = request.user
+    perfil = None
+    tipo = None
 
     try:
         perfil = Voluntario.objects.get(user=usuario)
+        tipo = 'voluntario'
     except Voluntario.DoesNotExist:
         try:
             perfil = Organizacion.objects.get(user=usuario)
+            tipo = 'organizacion'
         except Organizacion.DoesNotExist:
             perfil = None
 
     etiquetas = Etiqueta.objects.all()
 
+    if perfil is None:
+        return render(request, 'error.html', {'mensaje': 'No se encontró el perfil del usuario.'})
+
     if request.method == 'POST':
         seleccionadas = request.POST.getlist('etiquetas')
-        perfil.etiquetas_favoritas.set(seleccionadas)
+        perfil.etiquetas_favoritas.set(seleccionadas) 
         perfil.save()
         return redirect('pagina_inicio')
 
     return render(request, 'seleccionar_etiquetas.html', {
         'etiquetas': etiquetas,
         'perfil': perfil,
+        'tipo': tipo
     })
 
-# Feed princiapl
 
 @login_required
 def feed(request):
