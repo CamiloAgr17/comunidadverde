@@ -50,3 +50,44 @@
         .style-option:hover {
             background: #ddd;
         }
+
+/* CSS PARA CONTROL CUSTOM */
+.custom-toggle-control {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 6px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.custom-toggle-control button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.custom-toggle-control button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.custom-toggle-control img {
+  width: 20px;
+  height: 20px;
+}
+
+.view-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.hidden {
+  display: none;
+}

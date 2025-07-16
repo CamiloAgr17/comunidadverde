@@ -1,6 +1,8 @@
 {% load static %} {% block content %}
 <title>Publicaciones</title>
 <link rel="stylesheet" href="{% static 'feed/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'feed/css/compo.css' %}">
+<link rel="stylesheet" href="{% static 'feed/css/cards.css' %}">
 <link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
 <!DOCTYPE html>
 
@@ -11,33 +13,117 @@
         <h1 class="site-title">Comunidad Verde</h1>
     </div>
 </header>
-<main>
+<body>
     <div class="layout-container">
 
 
     <!-- SIDEBAR CON EL PERFIL Y BOTONES DE NAVEGACIÓN -->
     <aside class="sidebar-left">
         <div class="user-profile">
-            <img src="{% static 'img/user-placeholder.png' %}" alt="User" class="user-avatar" />
-            <h3 id="current_username">Cargando...</h3>
-            <p id="user_type_description">Cargando tipo...</p>
+            <img src="{% static 'images/perfil.png' %}" alt="User" class="user-avatar" />
+            <h3 id="current_username" style="color: white;">Cargando...</h3>
+            <p id="user_type_description" style="color: white;">Cargando tipo...</p>
             <div class="user-stats">
-                <div><strong><span id="user_posts_count">0</span></strong><br />Posts</div>
-                <div><strong><span id="user_followers_count">0</span></strong><br />Seguidores</div>
-                <div><strong><span id="user_following_count">0</span></strong><br />Seguidos</div>
+                <div style="color: white;"><strong><span id="user_posts_count" style="color: white;">0</span></strong><br />Posts</div>
+                <div style="color: white;"><strong><span id="user_followers_count" style="color: white;">0</span></strong><br />Seguidores</div>
+                <div style="color: white;"><strong><span id="user_following_count" style="color: white;">0</span></strong><br />Seguidos</div>
             </div>
-            <h4>Etiquetas Favoritas</h4> {# Añadido para etiquetas #}
-            <ul class="user-tags" id="user_favorite_tags_list"> {# ID añadido #}
+            <h4 style="color: white;">Etiquetas Favoritas</h4> {# Añadido para etiquetas #}
+            <ul class="user-tags" id="user_favorite_tags_list" style="color: white;"> {# ID añadido #}
                 <li>Cargando...</li> {# Placeholder #}
             </ul>
-            <nav class="side-nav-buttons">
-                <button id="view_current_profile_btn">Mi Perfil</button> {# ID y función #}
-                <button id="btn_modal">Notificaciones</button>
-                <button>Mapa</button>
-                <button>Ajustes</button>
-                <form action="{% url 'logout' %}" method="post" style="display: block; text-align: center; margin-top: 10px;">
+            <nav>
+                <!-- Boton Perfil -->
+                <button class="animated-button" id="view_current_profile_btn">
+                    <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                            >
+                        </path>
+                    </svg>
+                     <span class="text"> Mi Perfil </span> 
+                     <span class="circle"></span>
+                     <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                            >
+                        </path>
+                     </svg>
+                </button> {# ID y función #}
+                
+                <!-- Boton Notificaciones -->
+                <button class="animated-button" id="btn_modal">
+                    <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                            >
+                        </path>
+                    </svg>
+                     <span class="text"> Notificaciones </span> 
+                     <span class="circle"></span>
+                     <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                            >
+                        </path>
+                     </svg>
+                </button>
+
+                     <!-- Boton Mapa -->
+                <button class="animated-button" onclick="window.location.href='{% url 'mapa' %}'">
+                    <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                            >
+                        </path>
+                    </svg>
+                     <span class="text"> Mapas </span> 
+                     <span class="circle"></span>
+                     <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                            >
+                        </path>
+                     </svg>
+                </button>
+
+                <!-- Boton Ajustes -->
+                <button class="animated-button" id="btn_modal">
+                    <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                            >
+                        </path>
+                    </svg>
+                     <span class="text"> Ajustes </span> 
+                     <span class="circle"></span>
+                     <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                            >
+                        </path>
+                     </svg>
+                </button>
+
+                <!-- Boton Cerrar Sesion -->
+                <form action="{% url 'logout' %}" method="post" style="display: block; text-align: center;">
                     {% csrf_token %}
-                    <button type="submit">Cerrar Sesión</button>
+                    <button class="animated-button" type="submit>
+                    <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                            >
+                        </path>
+                    </svg>
+                     <span class="text"> Cerrar Sesión </span> 
+                     <span class="circle"></span>
+                     <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                            >
+                        </path>
+                     </svg>
+                </button>
                 </form>
             </nav>
         </div>
@@ -67,24 +153,69 @@
         <!-- tmb pueden poner tipo "posts más relevantes" -->
         <!-- y te muestra como 2 posts con varios likes y así -->
         <aside class="sidebar-right">
-            <input type="text" placeholder="Buscar..." class="search-bar" />
-            <div class="info-box">
-                <h4>Noticia</h4>
-                <p>Contenido de la noticia</p>
+          <label class="search-label">
+            <input type="text" name="text" class="input" required="" placeholder="Buscar..." />
+                <kbd class="slash-icon">/</kbd>
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 512 512" xml:space="preserve">
+            <g>
+                <path d="M55.146 51.887 41.588 37.786A22.926 22.926 0 0 0 46.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 0 0 .083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z" fill="currentColor" data-original="#000000" class=""></path>
+            </g>
+            </svg>
+          </label>
+         <nav>
+          <!-- Card Noticias -->
+          <div class="card">
+                <span class="card__title">Noticia
+                </span>
+                <p class="card__content">Contenido de la noticia. <br>Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
+                <div class="card__date">
+                    April 15, 2022
+                </div>
+                <div class="card__arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="15" width="15">
+                        <path fill="#fff" d="M13.4697 17.9697C13.1768 18.2626 13.1768 18.7374 13.4697 19.0303C13.7626 19.3232 14.2374 19.3232 14.5303 19.0303L20.3232 13.2374C21.0066 12.554 21.0066 11.446 20.3232 10.7626L14.5303 4.96967C14.2374 4.67678 13.7626 4.67678 13.4697 4.96967C13.1768 5.26256 13.1768 5.73744 13.4697 6.03033L18.6893 11.25H4C3.58579 11.25 3.25 11.5858 3.25 12C3.25 12.4142 3.58579 12.75 4 12.75H18.6893L13.4697 17.9697Z"></path>
+                    </svg>
+                </div>
             </div>
-            <div class="info-box">
-                <h4>Otra Noticia</h4>
-                <p>Contenido</p>
+
+            <!-- Card Otras Noticias -->
+            <div class="card">
+                <span class="card__title">Otra Noticia
+                </span>
+                <p class="card__content">Contenido. <br>Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
+                <div class="card__date">
+                    April 15, 2022
+                </div>
+                <div class="card__arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="15" width="15">
+                        <path fill="#fff" d="M13.4697 17.9697C13.1768 18.2626 13.1768 18.7374 13.4697 19.0303C13.7626 19.3232 14.2374 19.3232 14.5303 19.0303L20.3232 13.2374C21.0066 12.554 21.0066 11.446 20.3232 10.7626L14.5303 4.96967C14.2374 4.67678 13.7626 4.67678 13.4697 4.96967C13.1768 5.26256 13.1768 5.73744 13.4697 6.03033L18.6893 11.25H4C3.58579 11.25 3.25 11.5858 3.25 12C3.25 12.4142 3.58579 12.75 4 12.75H18.6893L13.4697 17.9697Z"></path>
+                    </svg>
+                </div>
             </div>
-            <div class="info-box">
-                <h4>Información de Contacto</h4>
-                <p>info@ejemplo.com</p>
+
+
+            <!-- Card Información -->
+            <div class="card">
+                <span class="card__title">Información de Contacto
+                </span>
+                <p class="card__content">info@ejemplo.com. <br>Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
+                <div class="card__date">
+                    April 15, 2022
+                </div>
+                <div class="card__arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="15" width="15">
+                        <path fill="#fff" d="M13.4697 17.9697C13.1768 18.2626 13.1768 18.7374 13.4697 19.0303C13.7626 19.3232 14.2374 19.3232 14.5303 19.0303L20.3232 13.2374C21.0066 12.554 21.0066 11.446 20.3232 10.7626L14.5303 4.96967C14.2374 4.67678 13.7626 4.67678 13.4697 4.96967C13.1768 5.26256 13.1768 5.73744 13.4697 6.03033L18.6893 11.25H4C3.58579 11.25 3.25 11.5858 3.25 12C3.25 12.4142 3.58579 12.75 4 12.75H18.6893L13.4697 17.9697Z"></path>
+                    </svg>
+                </div>
             </div>
+         </nav>
         </aside>
 
     <!-- Botón flotante -->
-    <button id="create_post_btn" class="floating-button">Crear una Publicación</button>
-</div>
+    <button id="create_post_btn" class="floating-button">
+       <span>Crear una Publicación</span>
+    </button>
+ </div>
 
     <!-- Modal de Notificaciones -->
     <div id="modal_notificaciones" class="modal">
@@ -99,60 +230,61 @@
             <li>Notificación 2</li>
             <li>Notificación 3</li>
         </ul>
-    </div>
-</div>
-
-<div id="create_post_modal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close create-post-close">&times;</span>
-        <h2>Crear Nueva Publicación</h2>
-        <textarea id="post_content_input" placeholder="¿Qué quieres compartir hoy?" rows="5" style="width: calc(100% - 22px); padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 1em;"></textarea>
-        <button id="submit_post_btn" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Publicar</button>
-    </div>
-</div>
-
-<div id="post_detail_modal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close post-detail-close">&times;</span>
-        <h2>Detalles de la Publicación</h2>
-        <div id="detailed_post_content">
-            </div>
-        <div class="post-actions" style="margin-top: 10px;">
-            <button id="detail_like_btn" style="display: none; background: none; border: none; color: #007bff; cursor: pointer; padding: 5px 10px; font-size: 0.9em;">Me Gusta</button>
         </div>
-        <div class="comments-section" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
-            <h3>Comentarios</h3>
-            <div id="comments_list">
+    </div>
+
+    <div id="create_post_modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close create-post-close">&times;</span>
+            <h2>Crear Nueva Publicación</h2>
+            <textarea id="post_content_input" placeholder="¿Qué quieres compartir hoy?" rows="5" style="width: calc(100% - 22px); padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 1em;"></textarea>
+            <button id="submit_post_btn" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Publicar</button>
+        </div>
+    </div>
+
+    <div id="post_detail_modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close post-detail-close">&times;</span>
+            <h2>Detalles de la Publicación</h2>
+            <div id="detailed_post_content">
                 </div>
-            <div class="add-comment" style="margin-top: 15px;">
-                <textarea id="comment_content_input" placeholder="Escribe un comentario..." rows="2" style="width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1em;"></textarea>
-                <button id="submit_comment_btn" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Comentar</button>
+            <div class="post-actions" style="margin-top: 10px;">
+                <button id="detail_like_btn" style="display: none; background: none; border: none; color: #007bff; cursor: pointer; padding: 5px 10px; font-size: 0.9em;">Me Gusta</button>
+            </div>
+            <div class="comments-section" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+                <h3>Comentarios</h3>
+                <div id="comments_list">
+                    </div>
+                <div class="add-comment" style="margin-top: 15px;">
+                    <textarea id="comment_content_input" placeholder="Escribe un comentario..." rows="2" style="width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1em;"></textarea>
+                    <button id="submit_comment_btn" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Comentar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div id="profile_modal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close profile-close">&times;</span>
-        <h2>Perfil de Usuario</h2>
-        <div class="user-profile">
-            <img src="{% static 'img/user-placeholder.png' %}" alt="User" class="user-avatar" />
-            <h3 id="profile_username_modal">Cargando...</h3>
-            <p id="profile_type_modal">Cargando tipo...</p>
-            <div class="user-stats">
-                <div class="stat-item"><strong><span id="profile_posts_count">0</span></strong><br />Posts</div>
-                <div class="stat-item"><strong><span id="profile_followers_count">0</span></strong><br />Seguidores</div>
-                <div class="stat-item"><strong><span id="profile_following_count">0</span></strong><br />Seguidos</div>
+    <div id="profile_modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close profile-close">&times;</span>
+            <h2>Perfil de Usuario</h2>
+            <div class="user-profile">
+                <img src="{% static 'img/user-placeholder.png' %}" alt="User" class="user-avatar" />
+                <h3 id="profile_username_modal">Cargando...</h3>
+                <p id="profile_type_modal">Cargando tipo...</p>
+                <div class="user-stats">
+                    <div class="stat-item"><strong><span id="profile_posts_count">0</span></strong><br />Posts</div>
+                    <div class="stat-item"><strong><span id="profile_followers_count">0</span></strong><br />Seguidores</div>
+                    <div class="stat-item"><strong><span id="profile_following_count">0</span></strong><br />Seguidos</div>
+                </div>
+                <h4>Etiquetas Favoritas</h4>
+                <ul class="user-tags" id="profile_favorite_tags_list">
+                    <li>Cargando...</li>
+                </ul>
+                <button id="toggle_follow_user_btn" style="margin-top: 15px; width: 100%; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;"></button>
             </div>
-            <h4>Etiquetas Favoritas</h4>
-            <ul class="user-tags" id="profile_favorite_tags_list">
-                <li>Cargando...</li>
-            </ul>
-            <button id="toggle_follow_user_btn" style="margin-top: 15px; width: 100%; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;"></button>
         </div>
     </div>
-</div>
+</body>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

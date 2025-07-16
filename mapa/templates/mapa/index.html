@@ -11,13 +11,12 @@
 
 </head>
 <body>
-    <h1>Centros de Reciclaje</h1>
+    <!-- <h1>Centros de Reciclaje</h1>
     <select id="styleSelector">
         <option value="streets">Mapa Normal</option>
         <option value="satelite">Satélite</option>
-    </select>
+    </select> -->
     <div id="map"></div>
-
 
     <script>
         const estilos = {
@@ -62,10 +61,10 @@
         });
 
         // Cambio de estilo
-        document.getElementById('styleSelector').addEventListener('change', function (e) {
-            const estiloSeleccionado = e.target.value;
-            map.setStyle(estilos[estiloSeleccionado]);
-        });
+        // document.getElementById('styleSelector').addEventListener('change', function (e) {
+        //     const estiloSeleccionado = e.target.value;
+        //     map.setStyle(estilos[estiloSeleccionado]);
+        // });
 
         // Marcadores desde Django
         const centros = JSON.parse('{{ centros|safe|escapejs }}'.replaceAll("'", '"'));
@@ -79,6 +78,74 @@
                 )
                 .addTo(map);
         });
+
+        class ViewToggleControl {
+            onAdd(map) {
+                this.map = map;
+
+                // Crear contenedor principal del control
+                this.container = document.createElement("div");
+                this.container.className = "maplibregl-ctrl maplibregl-ctrl-group custom-toggle-control";
+
+                // Botón principal
+                const toggleBtn = document.createElement("button");
+                toggleBtn.id = "toggleViewBtn";
+                toggleBtn.title = "Cambiar vista";
+
+                const icon = document.createElement("img");
+                icon.src = "{% static 'icons/map-icon.svg' %}";
+                icon.alt = "Toggle View";
+                toggleBtn.appendChild(icon);
+
+                this.container.appendChild(toggleBtn);
+
+                // Opciones (inicialmente ocultas)
+                const viewOptions = document.createElement("div");
+                viewOptions.className = "view-options hidden";
+                viewOptions.id = "viewOptions";
+
+                const options = [
+                    { style: "streets-v2", title: "Vista Calle", icon: "street-view-icon.svg" },
+                    { style: "satellite-v2", title: "Vista Satélite", icon: "satellite-icon.svg" }
+                ];
+
+                options.forEach(opt => {
+                    const btn = document.createElement("button");
+                    btn.setAttribute("data-style", opt.style);
+                    btn.title = opt.title;
+
+                    const img = document.createElement("img");
+                    img.src = `{% static 'icons/${opt.icon}' %}`;
+                    img.alt = opt.title;
+
+                    btn.appendChild(img);
+                    viewOptions.appendChild(btn);
+                });
+
+                this.container.appendChild(viewOptions);
+
+                // Evento para mostrar/ocultar menú
+                toggleBtn.addEventListener("click", () => {
+                    viewOptions.classList.toggle("hidden");
+                });
+
+                // Evento para cambiar estilo
+                viewOptions.querySelectorAll("[data-style]").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const style = btn.getAttribute("data-style");
+                        map.setStyle(`https://api.maptiler.com/maps/${style}/style.json?key=sze1ZxSVTfvtlbFXog86`);
+                        viewOptions.classList.add("hidden");
+                    });
+                });
+
+                return this.container;
+            }
+
+            onRemove() {
+                this.container.remove();
+                this.map = undefined;
+            }
+        }
 
     </script>
 </body>
