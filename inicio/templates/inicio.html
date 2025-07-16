@@ -1,39 +1,37 @@
+    {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'inicio/css/style.css' %}">
 <head>
   <meta charset="UTF-8">
   <title>Inicio</title>
-  <style>
-    body {
-      text-align: center;
-      font-family: sans-serif;
-      padding-top: 100px;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 20px;
-      font-size: 16px;
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
+  <link rel="stylesheet" href="{% static 'inicio/css/inicio_style.css' %}">
 </head>
-<body>
+
+<header class="main-header">
+        <div class="header-content">
+            {# Aquí irá tu contenido específico del header para la temática de reciclaje #}
+            {# Por ejemplo, un título para tu sitio o un logo #}
+            <h1 class="site-title">Comunidad Verde</h1>
+            </div>
+</header>
+
+<main class="body_inicio">
   <h1>Bienvenido</h1>
   <p>¿Cómo deseas iniciar sesión?</p>
+  <div class="button_inicio">
+    <form action="{% url 'registro' %}" method="get" style="display:inline; margin-right: 10px;">
+      <button type="submit">Registrar</button>
+    </form>
 
-<form action="{% url 'registro' %}" method="get" style="display:inline; margin-right: 10px;">
-  <button type="submit">Registrar</button>
-</form>
+    <form action="{% url 'login' %}" method="get" style="display:inline;">
+      <button type="submit">Iniciar Sesión</button>
+    </form>
 
-<form action="{% url 'login' %}" method="get" style="display:inline;">
-  <button type="submit">Iniciar Sesión</button>
-</form>
-
-<!-- quitar este botón luego -->
-<form action="{% url 'feed' %}" method="get" style= "display:inline; margin-right: 10px;">
-  <button type="submit"> BOTON FEED [BORRAR DESPUES]</button>
-</form>
-
-</body>
+    <!-- quitar este botón luego -->
+    <form action="{% url 'feed' %}" method="get" style= "display:inline; margin-right: 10px;">
+      <button type="submit"> BOTON FEED [BORRAR DESPUES]</button>
+    </form>
+  </div>
+</main>
 </html>

@@ -1,0 +1,51 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4; /* Un fondo general suave */
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-header {
+    background-color: #4CAF50; /* Un verde visible */
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-content {
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between; /* O center si solo tienes el título */
+    align-items: center;
+}
+
+.site-title {
+    margin: 0;
+    font-size: 2em;
+    color: white; /* Asegúrate de que este color sea visible */
+}
+
+/* En inicio/css/login_style.css o style.css (si aplica a todas las páginas) */
+.main-container {
+    flex-grow: 1; /* Ocupa el espacio restante */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 80px; /* <--- ¡AJUSTA ESTO! Da espacio al header. */
+    /* Este valor debe ser mayor que la altura de tu header.
+       Si tu header es de 60px de alto, 80px está bien para dejar un pequeño espacio. */
+}
+

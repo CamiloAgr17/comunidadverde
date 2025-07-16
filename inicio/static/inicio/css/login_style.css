@@ -1,0 +1,319 @@
+h2 {
+    /* Posicionamos el h2 absolutamente respecto al body */
+    position: absolute; /* Saca el h2 del flujo normal del documento */
+    top: 20px;          /* 20px desde el borde superior */
+    left: 20px;         /* 20px desde el borde izquierdo */
+    margin: 0;          /* Elimina cualquier margen predeterminado que pueda afectarlo */
+    color: #333;        /* Color de texto para el h2 */
+    z-index: 10;        /* Asegura que esté por encima de otros elementos si hay solapamiento */
+}
+
+.main-container {
+    flex-grow: 1; /* Esto hace que el main-container ocupe todo el espacio restante disponible */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+body {
+    margin: 0; /* Elimina el margen predeterminado del body */
+    display: flex; /* Habilita Flexbox en el body */
+    justify-content: center; /* Centra horizontalmente el contenido */
+    align-items: center; /* Centra verticalmente el contenido */
+    min-height: 100vh; /* Asegura que el body ocupe al menos el 100% del alto de la ventana */
+    background-color: #f0f0f0; /* Un color de fondo suave para que se note el centrado */
+    font-family: sans-serif; /* Mantiene la fuente que tenías */
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  width: 30em; /* ¡Ajustado a 30em! */
+  height: 40em; /* ¡Ajustado a 40em! */
+  border: 2px solid #24135a;
+  border-bottom-left-radius: 1.5em;
+  border-top-right-radius: 1.5em;
+  box-shadow:
+    -10px 0px 0px #24135a,
+    -10px 5px 5px rgb(0, 0, 0, 0.2);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.25s ease;
+  padding: 0 1em;
+}
+
+#login-area,
+#email-area,
+#password-area,
+#footer-area {
+  width: 100%;
+}
+
+#login-area {
+  width: 100%;
+  height: 5em; /* Aumentado para el nuevo tamaño */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+#login-area p {
+  top: 0.5em; /* Ajustado ligeramente */
+  font-size: 2em; /* Aumentado ligeramente para el nuevo tamaño del formulario */
+  font-weight: bold;
+  position:static;
+  z-index: 2;
+}
+
+#login-area #behind {
+  top: 65%; /* Ajustado */
+  font-size: 1.2em; /* Aumentado */
+  font-weight: bold;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+}
+
+#behind {
+  position: absolute;
+  left: 1em; /* Ajustado ligeramente */
+  line-height: 15;
+  color: #6041bf;
+}
+
+#email-area {
+  max-width: 90%; /* Limita el ancho máximo para dejar un margen a los lados */
+  width: 100%; /* Permite que se expanda hasta max-width */
+  margin: 0em auto 0 auto; /* Centra horizontalmente el elemento dentro del .form */
+  height: 9em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transition: all 0.25s ease;
+}
+
+#email-area input {
+  width: 100%;
+  border: 2px solid #6041bf;
+  border-radius: 0.5em;
+  height: 3.5em; /* Aumentado la altura del input */
+  padding-left: 1em;
+  font-size: 1.2em; /* Aumentado el tamaño de fuente del input */
+  font-weight: 100;
+  transition: all 0.5s ease;
+  outline: none;
+  box-shadow: 0px 5px 5px -3px rgb(0, 0, 0, 0.2);
+}
+
+#password-area {
+   max-width: 90%; /* Limita el ancho máximo */
+  width: 100%; /* Permite que se expanda hasta max-width */
+  margin: 0 auto; /* Centra horizontalmente */
+  height: 9em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transition: all 0.25s ease;
+}
+
+#recover-password {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end; /* Alinea el enlace a la derecha */
+  padding-right: 1em; /* Espacio a la derecha */
+  align-items: end;
+}
+
+#password-area input {
+  width: 100%;
+  border: 2px solid #6041bf;
+  font-size: 1.2em; /* Aumentado el tamaño de fuente del input */
+  border-radius: 0.5em;
+  height: 3.5em; /* Aumentado la altura del input */
+  padding-left: 1em;
+  transition: all 0.25s ease;
+  outline: none;
+  box-shadow: 0px 5px 5px -3px rgb(0, 0, 0, 0.2);
+}
+
+#password-area a {
+  padding-top: 1em; /* Ajustado */
+  font-size: 1em; /* Ajustado */
+  font-weight: bold;
+  transition: all 0.25s ease;
+  color: #6041bf;
+}
+
+#footer-area {
+   max-width: 90%; 
+  width: 100%; 
+  margin: 0 auto; 
+  height: 10em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: #6041bf;
+  transition: all 0.25s ease;
+}
+
+#footer-area button {
+  width: 100%;
+  border: 2px solid #6041bf;
+  border-radius: 0.5em;
+  height: 3.5em; /* Aumentado la altura del botón */
+  padding-left: 1em;
+  font-size: 1.2em; /* Aumentado el tamaño de fuente del botón */
+  font-weight: 100;
+  transition: all 0.25s ease;
+  color: white;
+  font-weight: bold;
+  background-color: #6041bf;
+  box-shadow: 0px 5px 5px -3px rgb(0, 0, 0, 0.2);
+}
+
+#footer-area p,
+#footer-area a {
+  font-size: 1em; /* Ajustado */
+  transition: all 0.25s ease;
+}
+
+#text-inside {
+  padding-top: 1em; /* Ajustado */
+  display: flex;
+}
+
+#link {
+  padding-left: 0.1em;
+  font-weight: bold;
+}
+
+#background-color {
+  width: 100%;
+  height: 5em; /* Ajustado para el nuevo login-area height */
+  background-color: #6041bf;
+  position: absolute;
+  top: 0em;
+  z-index: 1;
+  transition: all 0.5s ease;
+  box-shadow: inset 5px 0px #24135a;
+}
+
+#link-circle {
+  width: 100%;
+  height: 6em; /* Ajustado */
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-left: 15%;
+  padding-right: 15%;
+}
+
+#link-circle svg {
+  transition: all 0.25s ease;
+}
+
+#whitefilter {
+  width: 4.5em; /* Ajustado */
+  height: 4.5em; /* Ajustado */
+  top: 2.5px;
+  right: 2.5px;
+  position: absolute;
+  z-index: 2;
+  border-top-right-radius: 1.25em;
+  box-shadow: 35px -35px 0px -1px white;
+}
+
+::placeholder {
+  color: #6041bf;
+  font-weight: bold;
+}
+
+.form:hover {
+  width: 30.5em; /* Ajustado para el hover */
+  height: 40.5em; /* Ajustado para el hover */
+}
+
+#email-area:hover ~ #background-color {
+  height: 8em; /* Ajustado para el nuevo email-area height */
+  transform: translateY(6.5em); /* Ajustado para reflejar el nuevo tamaño de #login-area y #email-area */
+}
+
+#email-area:hover,
+#password-area:hover,
+#footer-area:hover {
+    max-width: 95%;
+}
+
+#email-area:hover p {
+  color: white;
+}
+
+#email-area:hover input {
+  color: white;
+  border: 2px solid white;
+  background-color: #6041bf;
+  height: 4em; /* Ajustado */
+}
+
+#email-area:hover ::placeholder {
+  color: white;
+}
+
+#password-area:hover ~ #background-color {
+  height: 8em; /* Ajustado para el nuevo password-area height */
+  transform: translateY(14em); /* Ajustado para reflejar los nuevos tamaños de las áreas superiores */
+}
+
+#footer-area:hover ~ #background-color {
+  height: 10em; /* Ajustado para el nuevo footer-area height */
+  transform: translateY(27em); /* Ajustado para reflejar los nuevos tamaños de todas las áreas superiores */
+}
+
+#password-area:hover p {
+  color: white;
+}
+
+#password-area:hover a {
+  color: white;
+  padding-right: 5%;
+}
+
+#password-area:hover input {
+  color: white;
+  border: 2px solid white;
+  background-color: #6041bf;
+  height: 4em; /* Ajustado */
+}
+
+#password-area:hover ::placeholder {
+  color: white;
+}
+
+#footer-area:hover p,
+#footer-area:hover a {
+  color: white;
+}
+
+#footer-area:hover button {
+  border: 2px solid white;
+  background-color: #6041bf;
+  height: 4em; /* Ajustado */
+}
+
+#footer-area button:active {
+  color: #6041bf;
+  background-color: white;
+  width: 90%;
+}
+
+#link-circle svg:hover {
+  transform: scale(1.25);
+  margin: 0.5em;
+}

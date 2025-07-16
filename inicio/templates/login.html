@@ -1,46 +1,60 @@
+{% load static %} 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            text-align: center;
-            padding-top: 50px;
-        }
-        form {
-            display: inline-block;
-            text-align: left;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-        }
-        input {
-            margin-bottom: 10px;
-            width: 100%;
-            padding: 8px;
-        }
-        button {
-            padding: 10px 20px;
-            margin-top: 10px;
-        }
-    </style>
+    {# Enlaza tu archivo CSS externo #}
+    <link rel="stylesheet" href="{% static 'inicio/css/login_style.css' %}">
+    <link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
+
 </head>
+
+<header class="main-header">
+        <div class="header-content">
+            {# Aquí irá tu contenido específico del header para la temática de reciclaje #}
+            {# Por ejemplo, un título para tu sitio o un logo #}
+            <h1 class="site-title">Comunidad Verde</h1>
+            </div>
+</header>
+
 <body>
-    <h2>Iniciar Sesión</h2>
+    <div class="main-container">
+        <div class="form">
+            <div id="background-color"></div>
+            <div id="login-area">
+                <p>Login</p>
+                <p id="behind">Bienvenido de nuevo</p>
+            </div>
+            <div id="whitefilter"></div>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.non_field_errors }}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
 
-        <label for="{{ form.username.id_for_label }}">Usuario:</label><br>
-        {{ form.username }}<br>
+                <div id="email-area">
+                    <p><label for="{{ form.username.id_for_label }}">Usuario:</label></p>
+                    {{ form.username }}
+                </div>
 
-        <label for="{{ form.password.id_for_label }}">Contraseña:</label><br>
-        {{ form.password }}<br>
-
-        <button type="submit">Entrar</button>
-    </form>
+                <div id="password-area">
+                    <p><label for="{{ form.password.id_for_label }}">Contraseña:</label></p>
+                    {{ form.password }}
+                    
+                </div>
+                <div class="#recover-password">
+                    <a href="#">¿Olvidaste tu contraseña?</a>
+                </div>
+                <div id="footer-area">
+                    <button type="submit">Entrar</button>
+                    <div id="text-inside">
+                        <p>¿No tienes cuenta?</p>
+                        <a id="link" href="#">Regístrate</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
