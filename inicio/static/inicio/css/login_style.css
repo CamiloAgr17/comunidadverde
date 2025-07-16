@@ -9,11 +9,11 @@ h2 {
 }
 
 .main-container {
-    flex-grow: 1; /* Esto hace que el main-container ocupe todo el espacio restante disponible */
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
+    margin-top: 0;
 }
 
 body {
@@ -154,7 +154,7 @@ body {
    max-width: 90%; 
   width: 100%; 
   margin: 0 auto; 
-  height: 10em;
+  height: 7em;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -185,8 +185,30 @@ body {
 }
 
 #text-inside {
-  padding-top: 1em; /* Ajustado */
-  display: flex;
+    /* Quita padding-top si no lo necesitas, ya que display: flex lo centrará mejor */
+    /* padding-top: 0em; */
+    display: flex; /* Cambia a 'flex' para mejor control del flujo */
+    align-items: center; /* Centra verticalmente los elementos dentro de #text-inside */
+    justify-content: center; /* Opcional: Centra horizontalmente todo el bloque */
+    gap: 0.5em; /* Añade un pequeño espacio entre el <p> y el <a> */
+    margin-top: 0.5em; /* Ajusta este margen si necesitas separar #text-inside de otros elementos */
+    width: 100%; /* Asegura que ocupe todo el ancho disponible para su padre */
+    /* background-color: lightblue; /* Temporal para depurar: ver su área */
+}
+
+#text-inside p {
+    margin: 0; /* Elimina el margen predeterminado del párrafo */
+    /* Si quieres que el texto del párrafo sea diferente al de "Regístrate" */
+    /* font-size: 0.9em; */
+    /* color: #555; */
+}
+
+#text-inside a#link { /* Asegúrate de que el selector sea específico si hay otros <a> */
+    text-decoration: none; /* Quita el subrayado predeterminado */
+    color: #6041bf; /* Color del enlace, como el resto de tu UI */
+    font-weight: bold;
+    /* Puedes ajustar el tamaño de fuente si es necesario */
+    /* font-size: 0.9em; */
 }
 
 #link {

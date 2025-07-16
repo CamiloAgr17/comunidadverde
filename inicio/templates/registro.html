@@ -1,36 +1,58 @@
+{# templates/inicio/registro.html #}
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-            margin-top: 100px;
-        }
-
-        button {
-            padding: 15px 30px;
-            margin: 20px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-    </style>
+    {# --- ENLACE A TUS CSS --- #}
+    <link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
+    <link rel="stylesheet" href="{% static 'inicio/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'inicio/css/register_style.css' %}">
+    
 </head>
-
 <body>
-    <h1>Registro</h1>
-    <p>¿Cómo deseas registrarte?</p>
-   <form action="{% url 'registro_voluntario' %}" method="get" style="display:inline;">
-  <button type="submit">Iniciar como Voluntario</button>
-</form>
+    {# --- ESTRUCTURA DEL HEADER (viene de style.css) --- #}
+    <header class="main-header">
+        <div class="header-content">
+            <h1 class="site-title">Comunidad Verde</h1>
+        </div>
+    </header>
 
-<form action="{% url 'registro_organizacion' %}" method="get" style="display:inline;">
-  <button type="submit">Iniciar como Organización</button>
-</form>
+    {# --- CONTENEDOR PRINCIPAL DE LA PÁGINA DE REGISTRO --- #}
+    <div class="register-page-container">
+        <div class="register-form-box">
+            <div id="register-bg-color"></div> {# Fondo morado superior #}
+
+            <div id="register-title-section"> {# Área de títulos "Registro" y "Elige tu tipo de cuenta" #}
+                <h2>Registro</h2>
+                <p id="register-subtitle-text">Elige tu tipo de cuenta</p>
+            </div>
+
+            <div id="register-corner-filter"></div> {# Filtro blanco de la esquina #}
+
+            {# Formulario para Registrar como Voluntario #}
+            <form action="{% url 'registro_voluntario' %}" method="get" class="register-button-wrapper">
+                <button type="submit">Registrar como Voluntario</button>
+            </form>
+
+            {# Formulario para Registrar como Organización #}
+            <form action="{% url 'registro_organizacion' %}" method="get" class="register-button-wrapper">
+                <button type="submit">Registrar como Organización</button>
+            </form>
+
+            {# Sección inferior con enlace "Ya tienes cuenta?" #}
+            <div id="register-footer-area">
+                <div id="register-text-link-container">
+                    <p>¿Ya tienes cuenta?</p>
+                    <a href="{% url 'login' %}">Inicia Sesión</a>
+                </div>
+            </div>
+
+        </div> {# Fin de .register-form-box #}
+    </div> {# Fin de .register-page-container #}
 
 </body>
-
 </html>

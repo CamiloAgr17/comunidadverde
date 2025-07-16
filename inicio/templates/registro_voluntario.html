@@ -1,30 +1,71 @@
+{# templates/inicio/registro_voluntario.html #}
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Registro Voluntario</title>
-  <script>
-    function obtenerUbicacion() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(pos) {
-          document.getElementById("id_latitud").value = pos.coords.latitude;
-          document.getElementById("id_longitud").value = pos.coords.longitude;
-        }, function(error) {
-          alert("No se pudo obtener la ubicación.");
-        });
-      } else {
-        alert("Tu navegador no soporta geolocalización.");
-      }
-    }
-    window.onload = obtenerUbicacion;
-  </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Voluntario</title>
+    {# --- ENLACE A TUS CSS --- #}
+    <link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
+    <link rel="stylesheet" href="{% static 'inicio/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'inicio/css/register_v_style.css' %}">
+    
+    <script>
+        function obtenerUbicacion() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    document.getElementById("id_latitud").value = pos.coords.latitude;
+                    document.getElementById("id_longitud").value = pos.coords.longitude;
+                }, function(error) {
+                    alert("No se pudo obtener la ubicación.");
+                });
+            } else {
+                alert("Tu navegador no soporta geolocalización.");
+            }
+        }
+        window.onload = obtenerUbicacion;
+    </script>
 </head>
 <body>
-  <h2>Registro Voluntario</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrarme</button>
-  </form>
+    {# --- ESTRUCTURA DEL HEADER (viene de style.css) --- #}
+    <header class="main-header">
+        <div class="header-content">
+            <h1 class="site-title">Comunidad Verde</h1>
+        </div>
+    </header>
+
+    {# --- CONTENEDOR PRINCIPAL DE LA PÁGINA DE REGISTRO DE VOLUNTARIO --- #}
+    <div class="volunteer-page-container">
+        <div class="volunteer-form-box">
+            <div id="volunteer-bg-color"></div> {# Fondo morado superior #}
+
+            <div id="volunteer-title-section"> {# Área de título "Registro Voluntario" #}
+                <h2>Registro Voluntario</h2>
+                {# Si quieres un subtítulo aquí, descomenta y pon texto #}
+                {# <p id="volunteer-subtitle-text">Completa tus datos</p> #}
+            </div>
+
+            <div id="volunteer-corner-filter"></div> {# Filtro blanco de la esquina #}
+
+            {# Formulario Django - Los campos generados por {{ form.as_p }} se estilizarán #}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }} {# Esto generará los <label> y <input> dentro de <p> #}
+                <button type="submit" class="volunteer-submit-button">Registrarme</button>
+            </form>
+
+           
+            <div id="volunteer-footer-area">
+                <div id="volunteer-text-link-container">
+                    <p>¿Ya tienes cuenta?</p>
+                    <a href="{% url 'login' %}">Inicia Sesión</a>
+                </div>
+            </div>
+
+        </div> {# Fin de .volunteer-form-box #}
+    </div> {# Fin de .volunteer-page-container #}
+
 </body>
 </html>

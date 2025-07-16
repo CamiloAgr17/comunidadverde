@@ -1,33 +1,76 @@
+{# templates/inicio/registro_organizacion.html #}
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Registro de Organización</title>
-  <script>
-    function obtenerUbicacion(latId, lngId) {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(pos) {
-          document.getElementById(latId).value = pos.coords.latitude;
-          document.getElementById(lngId).value = pos.coords.longitude;
-        }, function(error) {
-          alert("No se pudo obtener la ubicación.");
-        });
-      } else {
-        alert("Tu navegador no soporta geolocalización.");
-      }
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Organización</title>
+    {# --- ENLACE A TUS CSS --- #}
+    <link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
+    <link rel="stylesheet" href="{% static 'inicio/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'inicio/css/register_o_style.css' %}">
+    
+    {# Script para geolocalización, mantenido #}
+    <script>
+        function obtenerUbicacion(latId, lngId) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    document.getElementById(latId).value = pos.coords.latitude;
+                    document.getElementById(lngId).value = pos.coords.longitude;
+                }, function(error) {
+                    alert("No se pudo obtener la ubicación.");
+                });
+            } else {
+                alert("Tu navegador no soporta geolocalización.");
+            }
+        }
 
-    window.onload = function () {
-      obtenerUbicacion('id_latitud', 'id_longitud');
-    };
-  </script>
+        window.onload = function () {
+            obtenerUbicacion('id_latitud', 'id_longitud');
+            // Si tienes otros campos de ubicación para direcciones, aquí los llamarías también
+            // Por ejemplo: obtenerUbicacion('id_direccion_lat', 'id_direccion_lon');
+        };
+    </script>
 </head>
 <body>
-  <h2>Registro de Organización</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrar</button>
-  </form>
+    {# --- ESTRUCTURA DEL HEADER (viene de style.css) --- #}
+    <header class="main-header">
+        <div class="header-content">
+            <h1 class="site-title">Comunidad Verde</h1>
+        </div>
+    </header>
+
+    {# --- CONTENEDOR PRINCIPAL DE LA PÁGINA DE REGISTRO DE ORGANIZACIÓN --- #}
+    <div class="organization-page-container">
+        <div class="organization-form-box">
+            <div id="organization-bg-color"></div> {# Fondo morado superior #}
+
+            <div id="organization-title-section"> {# Área de título "Registro de Organización" #}
+                <h2>Registro de Organización</h2>
+                {# <p id="organization-subtitle-text">Ingresa los datos de tu organización</p> #}
+            </div>
+
+            <div id="organization-corner-filter"></div> {# Filtro blanco de la esquina #}
+
+            {# Formulario Django - Los campos generados por {{ form.as_p }} se estilizarán #}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }} {# Esto generará los <label> y <input> dentro de <p> #}
+                <button type="submit" class="organization-submit-button">Registrar</button>
+            </form>
+
+            {# Opcional: Sección inferior con enlace "Ya tienes cuenta?" si aplica #}
+            <div id="organization-footer-area">
+                <div id="organization-text-link-container">
+                    <p>¿Ya tienes cuenta?</p>
+                    <a href="{% url 'login' %}">Inicia Sesión</a>
+                </div>
+            </div>
+
+        </div> {# Fin de .organization-form-box #}
+    </div> {# Fin de .organization-page-container #}
+
 </body>
 </html>

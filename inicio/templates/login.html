@@ -18,14 +18,14 @@
             <h1 class="site-title">Comunidad Verde</h1>
             </div>
 </header>
-
+<h1 style="padding-top: 5;">Bienvenidos de nuevo</h1>
 <body>
+    
     <div class="main-container">
-        <div class="form">
+        <form class="form">
             <div id="background-color"></div>
             <div id="login-area">
                 <p>Login</p>
-                <p id="behind">Bienvenido de nuevo</p>
             </div>
             <div id="whitefilter"></div>
 
@@ -48,13 +48,13 @@
                 </div>
                 <div id="footer-area">
                     <button type="submit">Entrar</button>
-                    <div id="text-inside">
-                        <p>¿No tienes cuenta?</p>
-                        <a id="link" href="#">Regístrate</a>
-                    </div>
+                </div>
+                 <div id="text-inside">
+                        <p>¿No tienes cuenta?</p> 
+                        <a id="link" href="{% url 'registro' %}">Regístrate</a>
                 </div>
             </form>
-        </div>
+        </form>
     </div>
 </body>
 </html>
