@@ -1,0 +1,200 @@
+/* En tu archivo: inicio/css/registro_organizacion_style.css */
+
+/* --- Contenedor principal de la página (similar a .main-container) --- */
+.organization-page-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 80px; /* Espacio para el header */
+}
+
+/* --- Caja del formulario (similar a .form) --- */
+.organization-form-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    width: 30em; /* Mismo ancho que el formulario de login */
+    height: auto; /* Ajustaremos la altura dinámicamente */
+    min-height: 40em; /* Altura mínima similar al login */
+    border: 2px solid #24135a;
+    border-bottom-left-radius: 1.5em;
+    border-top-right-radius: 1.5em;
+    box-shadow:
+        -10px 0px 0px #24135a,
+        -10px 5px 5px rgb(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+    transition: all 0.25s ease;
+    padding: 0 1em;
+}
+
+/* --- Hover de la caja del formulario (similar a .form:hover) --- */
+.organization-form-box:hover {
+    width: 30.5em;
+    /* height: auto; /* Dejar en auto para que se adapte al contenido */
+}
+
+/* --- Área superior de color del formulario (similar a #background-color) --- */
+#organization-bg-color {
+    width: 100%;
+    height: 5em;
+    background-color: #6041bf;
+    position: absolute;
+    top: 0em;
+    z-index: 1;
+    transition: all 0.5s ease;
+    box-shadow: inset 5px 0px #24135a;
+}
+
+/* --- Área de título principal (similar a #login-area) --- */
+#organization-title-section {
+    width: 100%;
+    height: 5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+}
+
+#organization-title-section h2 { /* Título "Registro de Organización" */
+    font-size: 2em;
+    font-weight: bold;
+    position: static;
+    z-index: 2;
+    margin: 0;
+    line-height: 1.2;
+    color: white;
+}
+
+/* --- Subtítulo (opcional, si quisieras uno como "Completa tus datos") --- */
+/* #organization-subtitle-text {
+    top: 65%;
+    font-size: 1.2em;
+    font-weight: bold;
+    position: absolute;
+    z-index: 1;
+    left: 1em;
+    line-height: 15;
+    color: #6041bf;
+} */
+
+/* --- Filtro blanco de la esquina (similar a #whitefilter) --- */
+#organization-corner-filter {
+    width: 4.5em;
+    height: 4.5em;
+    top: 2.5px;
+    right: 2.5px;
+    position: absolute;
+    z-index: 2;
+    border-top-right-radius: 1.25em;
+    box-shadow: 35px -35px 0px -1px white;
+}
+
+/* --- ESTILOS PARA LOS CAMPOS DEL FORMULARIO GENERADOS POR DJANGO --- */
+/* Django form.as_p envuelve cada campo en un <p> */
+.organization-form-box form p {
+    width: 100%;
+    max-width: 90%; /* Limita el ancho como en #email-area */
+    margin: 0.5em auto; /* Espacio entre campos */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea etiquetas y campos a la izquierda */
+    position: relative; /* Para el z-index */
+    z-index: 1;
+}
+
+.organization-form-box form p label {
+    font-size: 1.2em; /* Tamaño de la etiqueta */
+    font-weight: bold;
+    color: #6041bf; /* Color de la etiqueta */
+    margin-bottom: 0.3em; /* Espacio entre etiqueta y input */
+}
+
+.organization-form-box form p input[type="text"],
+.organization-form-box form p input[type="email"],
+.organization-form-box form p input[type="password"],
+.organization-form-box form p input[type="url"], /* Puede que haya campos de URL */
+.organization-form-box form p input[type="tel"], /* Para números de teléfono */
+.organization-form-box form p input[type="number"],
+.organization-form-box form p textarea, /* Para campos de texto grandes como descripción */
+.organization-form-box form p select /* Para selectores (dropdowns) */
+{
+    width: 100%;
+    border: 2px solid #6041bf;
+    border-radius: 0.5em;
+    height: 3.5em; /* Altura del input */
+    padding-left: 1em;
+    font-size: 1.2em;
+    font-weight: 100;
+    transition: all 0.5s ease;
+    outline: none;
+    box-shadow: 0px 5px 5px -3px rgb(0, 0, 0, 0.2);
+    color: #6041bf; /* Color del texto dentro del input */
+}
+
+/* Ajuste específico para textarea para que no tenga una altura fija de input */
+.organization-form-box form p textarea {
+    height: 6em; /* Altura mayor para textarea */
+    padding-top: 0.5em; /* Pequeño padding interno superior */
+    resize: vertical; /* Permite redimensionar verticalmente */
+}
+
+/* Ajuste específico para select */
+.organization-form-box form p select {
+    padding-right: 1em; /* Ajuste para la flecha del select */
+}
+
+.organization-form-box form p input:focus,
+.organization-form-box form p textarea:focus,
+.organization-form-box form p select:focus { /* Efecto al enfocar el input */
+    border-color: #4b3294; /* Color más oscuro al enfocar */
+    box-shadow: 0px 0px 8px rgba(96, 65, 191, 0.6); /* Sombra de enfoque */
+}
+
+/* Estilo para los placeholders */
+.organization-form-box form p input::placeholder,
+.organization-form-box form p textarea::placeholder {
+    color: #6041bf;
+    font-weight: bold;
+}
+
+/* --- Estilo para el botón de envío (similar a #footer-area button) --- */
+.organization-submit-button { /* Clase para el botón de envío */
+    width: 100%;
+    max-width: 90%; /* Ancho similar a los campos */
+    margin: 1.5em auto; /* Margen superior para separarlo de los campos */
+    border: 2px solid #6041bf;
+    border-radius: 0.5em;
+    height: 3.5em;
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: all 0.25s ease;
+    color: white;
+    background-color: #6041bf;
+    box-shadow: 0px 5px 5px -3px rgb(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.organization-submit-button:hover {
+    border: 2px solid white;
+    background-color: #4b3294;
+    height: 4em;
+}
+
+.organization-submit-button:active {
+    color: #6041bf;
+    background-color: white;
+    width: 85%;
+}
+
+/* --- Hover del fondo de color #organization-bg-color (opción simple) --- */
+/* Como antes, para simplificar el hover del fondo con {{ form.as_p }} */
+.organization-form-box:hover #organization-bg-color {
+    height: 6em; /* Ligeramente más alto */
+}

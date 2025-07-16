@@ -1,0 +1,215 @@
+/* En tu archivo: inicio/css/registro_voluntario_style.css */
+
+/* --- Contenedor principal de la página (similar a .main-container) --- */
+.volunteer-page-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 80px; /* Espacio para el header */
+}
+
+/* --- Caja del formulario (similar a .form) --- */
+.volunteer-form-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    width: 30em; /* Mismo ancho que el formulario de login */
+    height: auto; /* Ajustaremos la altura dinámicamente si es necesario, o usa un valor fijo grande */
+    min-height: 40em; /* Altura mínima similar al login */
+    border: 2px solid #24135a;
+    border-bottom-left-radius: 1.5em;
+    border-top-right-radius: 1.5em;
+    box-shadow:
+        -10px 0px 0px #24135a,
+        -10px 5px 5px rgb(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+    transition: all 0.25s ease;
+    padding: 0 1em;
+}
+
+/* --- Hover de la caja del formulario (similar a .form:hover) --- */
+.volunteer-form-box:hover {
+    width: 30.5em;
+    /* height: auto; /* Dejar en auto para que se adapte al contenido */
+}
+
+/* --- Área superior de color del formulario (similar a #background-color) --- */
+#volunteer-bg-color {
+    width: 100%;
+    height: 5em;
+    background-color: #6041bf;
+    position: absolute;
+    top: 0em;
+    z-index: 1;
+    transition: all 0.5s ease;
+    box-shadow: inset 5px 0px #24135a;
+}
+
+/* --- Área de título principal (similar a #login-area) --- */
+#volunteer-title-section {
+    width: 100%;
+    height: 5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+}
+
+#volunteer-title-section h2 { /* Título "Registro Voluntario" */
+    font-size: 2em;
+    font-weight: bold;
+    position: static;
+    z-index: 2;
+    margin: 0;
+    line-height: 1.2;
+    color: white;
+}
+
+/* --- Subtítulo (opcional, si quisieras uno como "Bienvenido de nuevo") --- */
+/* Puedes añadir un subtítulo si lo necesitas, o quitar esta sección */
+/* #volunteer-subtitle-text {
+    top: 65%;
+    font-size: 1.2em;
+    font-weight: bold;
+    position: absolute;
+    z-index: 1;
+    left: 1em;
+    line-height: 15;
+    color: #6041bf;
+} */
+
+/* --- Filtro blanco de la esquina (similar a #whitefilter) --- */
+#volunteer-corner-filter {
+    width: 4.5em;
+    height: 4.5em;
+    top: 2.5px;
+    right: 2.5px;
+    position: absolute;
+    z-index: 2;
+    border-top-right-radius: 1.25em;
+    box-shadow: 35px -35px 0px -1px white;
+}
+
+/* --- ESTILOS PARA LOS CAMPOS DEL FORMULARIO GENERADOS POR DJANGO --- */
+/* Django form.as_p envuelve cada campo en un <p> */
+.volunteer-form-box form p {
+    width: 100%;
+    max-width: 90%; /* Limita el ancho como en #email-area */
+    margin: 0.5em auto; /* Espacio entre campos */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea etiquetas y campos a la izquierda */
+    position: relative; /* Para el z-index */
+    z-index: 1;
+}
+
+.volunteer-form-box form p label {
+    font-size: 1.2em; /* Tamaño de la etiqueta */
+    font-weight: bold;
+    color: #6041bf; /* Color de la etiqueta */
+    margin-bottom: 0.3em; /* Espacio entre etiqueta y input */
+}
+
+.volunteer-form-box form p input[type="text"],
+.volunteer-form-box form p input[type="email"],
+.volunteer-form-box form p input[type="password"],
+.volunteer-form-box form p input[type="date"], /* Para campos de fecha, si los hay */
+.volunteer-form-box form p input[type="number"] /* Para campos numéricos, si los hay */
+{
+    width: 100%;
+    border: 2px solid #6041bf;
+    border-radius: 0.5em;
+    height: 3.5em; /* Altura del input */
+    padding-left: 1em;
+    font-size: 1.2em;
+    font-weight: 100;
+    transition: all 0.5s ease;
+    outline: none;
+    box-shadow: 0px 5px 5px -3px rgb(0, 0, 0, 0.2);
+    color: #6041bf; /* Color del texto dentro del input */
+}
+
+.volunteer-form-box form p input:focus { /* Efecto al enfocar el input */
+    border-color: #4b3294; /* Color más oscuro al enfocar */
+    box-shadow: 0px 0px 8px rgba(96, 65, 191, 0.6); /* Sombra de enfoque */
+}
+
+/* Estilo para los placeholders */
+.volunteer-form-box form p input::placeholder {
+    color: #6041bf;
+    font-weight: bold;
+}
+
+/* --- Estilo para el botón de envío (similar a #footer-area button) --- */
+.volunteer-submit-button { /* Clase para el botón de envío */
+    width: 100%;
+    max-width: 90%; /* Ancho similar a los campos */
+    margin: 1.5em auto; /* Margen superior para separarlo de los campos */
+    border: 2px solid #6041bf;
+    border-radius: 0.5em;
+    height: 3.5em;
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: all 0.25s ease;
+    color: white;
+    background-color: #6041bf;
+    box-shadow: 0px 5px 5px -3px rgb(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.volunteer-submit-button:hover {
+    border: 2px solid white;
+    background-color: #4b3294;
+    height: 4em;
+}
+
+.volunteer-submit-button:active {
+    color: #6041bf;
+    background-color: white;
+    width: 85%; /* Ligeramente más pequeño al clickear */
+}
+
+/* --- Hover del fondo de color #volunteer-bg-color --- */
+/* Esto es más complejo para un formulario dinámico con {{ form.as_p }}.
+   Cada <p> es un "área". Necesitamos simular los hovers del login.
+   Podríamos usar :nth-of-type para apuntar a un <p> específico,
+   o simplificar el efecto para que solo el formulario completo tenga un hover.
+   Por simplicidad, vamos a simular el hover del fondo solo con el hover del submit button
+   y del form-box.
+
+   Si quieres un hover de fondo por cada campo, la estructura con {{ form.as_p }}
+   hará que sea más complicado usar los selectores de hermano (~) directamente,
+   ya que la posición de #volunteer-bg-color es absoluta y los <p> son hermanos de otras cosas.
+   Lo más sencillo es hacer que el hover se active al pasar el ratón por el formulario completo,
+   o que el botón de envío lo active.
+*/
+
+/* Opción 1: Hover del fondo al pasar el ratón por el formulario completo */
+.volunteer-form-box:hover #volunteer-bg-color {
+    /* Puedes elegir un efecto más simple si la complejidad de traducir los `transform: translateY` es mucha */
+    /* Por ejemplo, que el background-color simplemente se haga un poco más alto o cambie de color. */
+    height: 6em; /* Un poco más alto */
+    /* transform: translateY(0em); /* No cambia mucho de posición */
+}
+
+/* Opción 2 (más similar al login): Simular el hover del submit button */
+/* Necesitarás que el botón de envío NO esté dentro de un <p> para usar el selector ~ */
+/* Si el botón está directo como hijo de .volunteer-form-box */
+/* .volunteer-form-box > .volunteer-submit-button:hover ~ #volunteer-bg-color {
+    height: 10em;
+    transform: translateY(calc(100% - 10em - 1.5em)); /* Ajusta esto basado en la altura de los campos */
+
+
+/* POR AHORA, para simplicidad, NO voy a incluir los complejos hovers de transform: translateY del background-color
+   para cada campo. Esos se basaban en alturas fijas y el orden de los divs.
+   Con {{ form.as_p }}, es más difícil.
+   Si el formulario de login no tiene scroll, y este sí, es más complejo.
+   Lo mejor es que el hover del fondo sea más general, o solo en el botón de submit.
+*/

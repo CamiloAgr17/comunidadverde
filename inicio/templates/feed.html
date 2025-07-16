@@ -1,7 +1,18 @@
 {% load static %} {% block content %}
 <title>Publicaciones</title>
 <link rel="stylesheet" href="{% static 'feed/css/style.css' %}">
-<div class="layout-container">
+<link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
+<!DOCTYPE html>
+
+<header class="main-header">
+    <div class="header-content">
+        {# Aquí irá tu contenido específico del header para la temática de reciclaje #}
+        {# Por ejemplo, un título para tu sitio o un logo #}
+        <h1 class="site-title">Comunidad Verde</h1>
+    </div>
+</header>
+<main>
+    <div class="layout-container">
 
 
     <!-- SIDEBAR CON EL PERFIL Y BOTONES DE NAVEGACIÓN -->
@@ -51,34 +62,34 @@
     </main>
 
 
-    <!-- SIDEBAR EN LA DERECHA -->
-    <!-- aqui va el buscador y noticias -->
-    <!-- tmb pueden poner tipo "posts más relevantes" -->
-    <!-- y te muestra como 2 posts con varios likes y así -->
-    <aside class="sidebar-right">
-        <input type="text" placeholder="Buscar..." class="search-bar" />
-        <div class="info-box">
-            <h4>Noticia</h4>
-            <p>Contenido de la noticia</p>
-        </div>
-        <div class="info-box">
-            <h4>Otra Noticia</h4>
-            <p>Contenido</p>
-        </div>
-        <div class="info-box">
-            <h4>Información de Contacto</h4>
-            <p>info@ejemplo.com</p>
-        </div>
-    </aside>
+        <!-- SIDEBAR EN LA DERECHA -->
+        <!-- aqui va el buscador y noticias -->
+        <!-- tmb pueden poner tipo "posts más relevantes" -->
+        <!-- y te muestra como 2 posts con varios likes y así -->
+        <aside class="sidebar-right">
+            <input type="text" placeholder="Buscar..." class="search-bar" />
+            <div class="info-box">
+                <h4>Noticia</h4>
+                <p>Contenido de la noticia</p>
+            </div>
+            <div class="info-box">
+                <h4>Otra Noticia</h4>
+                <p>Contenido</p>
+            </div>
+            <div class="info-box">
+                <h4>Información de Contacto</h4>
+                <p>info@ejemplo.com</p>
+            </div>
+        </aside>
 
     <!-- Botón flotante -->
     <button id="create_post_btn" class="floating-button">Crear una Publicación</button>
 </div>
 
-<!-- Modal de Notificaciones -->
-<div id="modal_notificaciones" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
+    <!-- Modal de Notificaciones -->
+    <div id="modal_notificaciones" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
 
         <!-- aqui se deben pintar las notificaciones una vez esa logica este hecha-->
         <!-- si no hay tiempo para hacer notificaciones pues se quita el boton de arriba-->

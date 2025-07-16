@@ -1,39 +1,45 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'inicio/css/style.css' %}">
 <head>
-  <meta charset="UTF-8">
-  <title>Inicio</title>
-  <style>
-    body {
-      text-align: center;
-      font-family: sans-serif;
-      padding-top: 100px;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 20px;
-      font-size: 16px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> {# Importante para la responsividad #}
+    <title>Inicio</title>
+    {# --- ENLACE A TUS CSS --- #}
+    <link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
+    <link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
+    {# Carga tu nuevo CSS para la página de inicio #}
+    <link rel="stylesheet" href="{% static 'inicio/css/inicio_style.css' %}">
+    {# Si tienes un style.css general para body, etc., también lo pondrías aquí #}
 </head>
-<body>
-  <h1>Bienvenido</h1>
-  <p>¿Cómo deseas iniciar sesión?</p>
+<body> {# El body DEBE contener el header y el main #}
 
-<form action="{% url 'registro' %}" method="get" style="display:inline; margin-right: 10px;">
-  <button type="submit">Registrar</button>
-</form>
+    <header class="main-header">
+        <div class="header-content">
+            <h1 class="site-title">Comunidad Verde</h1>
+        </div>
+    </header>
 
-<form action="{% url 'login' %}" method="get" style="display:inline;">
-  <button type="submit">Iniciar Sesión</button>
-</form>
+    <main class="body_inicio">
+        <h1>Bienvenido</h1>
+        <p>¿Cómo deseas iniciar sesión?</p>
+        <div class="button_inicio">
+            {# Formulario para "Registrar" #}
+            <form action="{% url 'registro' %}" method="get" class="button-form">
+                <button type="submit">Registrar</button>
+            </form>
 
-<!-- quitar este botón luego -->
-<form action="{% url 'feed' %}" method="get" style= "display:inline; margin-right: 10px;">
-  <button type="submit"> BOTON FEED [BORRAR DESPUES]</button>
-</form>
+            {# Formulario para "Iniciar Sesión" #}
+            <form action="{% url 'login' %}" method="get" class="button-form">
+                <button type="submit">Iniciar Sesión</button>
+            </form>
+
+            {# BOTON TEMPORAL - BORRAR DESPUES #}
+            <form action="{% url 'feed' %}" method="get" class="button-form">
+                <button type="submit" class="temp-button">VER FEED [BORRAR DESPUES]</button>
+            </form>
+        </div>
+    </main>
 
 </body>
 </html>

@@ -1,0 +1,102 @@
+
+/* En tu archivo: inicio/css/inicio_style.css */
+
+/* Estilos para el cuerpo de la página */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #4CAF50, #fcfcfc); /* Degradado azul claro/grisáceo */
+    min-height: 100vh; /* Asegura que el degradado cubra toda la altura de la ventana */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Alinea el contenido al inicio, dejando espacio para el header */
+    color: #24135a; /* Color de texto principal */
+}
+
+/* Estilos para el contenedor principal (main) */
+.body_inicio {
+    flex-grow: 1; /* Permite que el contenido tome el espacio restante */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra verticalmente el contenido dentro de main */
+    align-items: center; /* Centra horizontalmente el contenido dentro de main */
+    text-align: center;
+    padding: 2em; /* Espacio alrededor del contenido */
+    max-width: 900px; /* Limita el ancho máximo para una mejor lectura */
+    width: 100%;
+    box-sizing: border-box; /* Incluye padding en el ancho */
+}
+
+/* Estilos para el título principal */
+.body_inicio h1 {
+    font-size: 3.5em; /* Tamaño grande para el título principal */
+    color: #6041bf; /* Color morado principal */
+    margin-bottom: 0.5em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el párrafo secundario */
+.body_inicio p {
+    font-size: 1.5em;
+    color: #24135a; /* Color azul oscuro del borde del login */
+    margin-bottom: 2em;
+}
+
+/* Contenedor de botones */
+.button_inicio {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
+    justify-content: center; /* Centra los botones */
+    gap: 20px; /* Espacio entre los botones */
+    margin-top: 1em;
+}
+
+/* Estilos para los botones */
+.button_inicio button {
+    background-color: #6041bf; /* Color morado principal, como en tus formularios */
+    color: white;
+    padding: 15px 30px; /* Tamaño generoso */
+    font-size: 1.2em;
+    font-weight: bold;
+    border: 2px solid #6041bf; /* Borde del mismo color */
+    border-radius: 0.5em; /* Bordes redondeados */
+    cursor: pointer;
+    transition: all 0.3s ease; /* Transición suave para los efectos */
+    min-width: 180px; /* Asegura un ancho mínimo para los botones */
+    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2); /* Sombra similar a tus inputs/botones de login */
+}
+
+/* Efectos hover para los botones */
+.button_inicio button:hover {
+    background-color: #4b3294; /* Morado más oscuro al pasar el ratón */
+    border-color: white; /* Borde blanco al pasar el ratón */
+    transform: translateY(-3px); /* Pequeño levantamiento */
+    box-shadow: 0px 8px 10px -3px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+}
+
+/* Efecto active (al hacer click) para los botones */
+.button_inicio button:active {
+    background-color: white;
+    color: #6041bf;
+    border-color: #6041bf;
+    transform: translateY(0);
+    box-shadow: 0px 3px 5px -2px rgba(0, 0, 0, 0.2);
+}
+
+/* Media Queries para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .body_inicio h1 {
+        font-size: 2.5em;
+    }
+
+    .body_inicio p {
+        font-size: 1.2em;
+    }
+
+    .button_inicio button {
+        width: 100%; /* Botones de ancho completo en móviles */
+        margin-bottom: 10px; /* Espacio entre ellos */
+    }
+}
