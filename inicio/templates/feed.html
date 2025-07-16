@@ -1,4 +1,5 @@
 {% load static %} {% block content %}
+<title>Publicaciones</title>
 <link rel="stylesheet" href="{% static 'feed/css/style.css' %}">
 <div class="layout-container">
 
@@ -6,51 +7,47 @@
     <!-- SIDEBAR CON EL PERFIL Y BOTONES DE NAVEGACIÓN -->
     <aside class="sidebar-left">
         <div class="user-profile">
-            
-            <!-- toda la info aquí debe ser sacada del usuario -->
-            <!-- el texto aquí es mero ejemplo de q debe haber -->
-
             <img src="{% static 'img/user-placeholder.png' %}" alt="User" class="user-avatar" />
-            <h3>Current User</h3>
-            <p>Biografía o Descripción del usuario</p>
+            <h3 id="current_username">Cargando...</h3>
+            <p id="user_type_description">Cargando tipo...</p>
             <div class="user-stats">
-                <div><strong>10</strong><br />Posts</div>
-                <div><strong>150</strong><br />Seguidores</div>
-                <div><strong>58</strong><br />Seguidos</div>
+                <div><strong><span id="user_posts_count">0</span></strong><br />Posts</div>
+                <div><strong><span id="user_followers_count">0</span></strong><br />Seguidores</div>
+                <div><strong><span id="user_following_count">0</span></strong><br />Seguidos</div>
             </div>
+            <h4>Etiquetas Favoritas</h4> {# Añadido para etiquetas #}
+            <ul class="user-tags" id="user_favorite_tags_list"> {# ID añadido #}
+                <li>Cargando...</li> {# Placeholder #}
+            </ul>
             <nav class="side-nav-buttons">
-                <button>Mi Perfil</button>
+                <button id="view_current_profile_btn">Mi Perfil</button> {# ID y función #}
                 <button id="btn_modal">Notificaciones</button>
                 <button>Mapa</button>
                 <button>Ajustes</button>
+                <form action="{% url 'logout' %}" method="post" style="display: block; text-align: center; margin-top: 10px;">
+                    {% csrf_token %}
+                    <button type="submit">Cerrar Sesión</button>
+                </form>
             </nav>
         </div>
     </aside>
 
     <!-- AQUI VAN LA LISTA DE POSTS ETC... -->
     <main class="feed-main">
-        <!-- ESTOS BOTONES NO SE SI LOS QUITAN O Q -->
-        <!-- pero ahi tan porsiacaso o si les quieren dar otra función -->
         <header class="feed-header">
-            <button class="tab">Mi Feed</button>
-            <button class="tab">Cerca de Mí</button> 
+            <h3>Publicaciones</h3>
         </header>
-
-        <!-- placeholder, pero esta es la logica de mostrar los posts -->
-        <!-- cambien o ajusten a su necesidad -->
-        {% for post in posts %}
-        <div class="post-card">
-            <div class="post-header">
-                <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
-                <strong>{{ post.autor.username }}</strong>
-            </div>
-            <p>{{ post.contenido }}</p>
-            {% if post.imagen %}
-            <img src="{{ post.imagen.url }}" class="post-image" />
-            {% endif %}
-            <small>{{ post.fecha_publicacion }}</small>
+        <div id="posts_container" class="posts-container">
+            <p>Cargando publicaciones...</p>
         </div>
-        {% endfor %}
+
+        <div id="loading_indicator" style="text-align: center; padding: 20px; font-style: italic; color: #888; display: none;">
+            Cargando más publicaciones...
+        </div>
+
+        <div class="load-more-btn-container" style="text-align: center; margin-top: 20px;">
+            <button id="load_more_posts_btn" style="display: none; padding: 10px 20px;">Cargar Más</button>
+        </div>
     </main>
 
 
@@ -75,7 +72,7 @@
     </aside>
 
     <!-- Botón flotante -->
-    <button class="floating-button">Crear una Publicación</button>
+    <button id="create_post_btn" class="floating-button">Crear una Publicación</button>
 </div>
 
 <!-- Modal de Notificaciones -->
@@ -94,6 +91,709 @@
     </div>
 </div>
 
+<div id="create_post_modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close create-post-close">&times;</span>
+        <h2>Crear Nueva Publicación</h2>
+        <textarea id="post_content_input" placeholder="¿Qué quieres compartir hoy?" rows="5" style="width: calc(100% - 22px); padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 1em;"></textarea>
+        <button id="submit_post_btn" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Publicar</button>
+    </div>
+</div>
+
+<div id="post_detail_modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close post-detail-close">&times;</span>
+        <h2>Detalles de la Publicación</h2>
+        <div id="detailed_post_content">
+            </div>
+        <div class="post-actions" style="margin-top: 10px;">
+            <button id="detail_like_btn" style="display: none; background: none; border: none; color: #007bff; cursor: pointer; padding: 5px 10px; font-size: 0.9em;">Me Gusta</button>
+        </div>
+        <div class="comments-section" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+            <h3>Comentarios</h3>
+            <div id="comments_list">
+                </div>
+            <div class="add-comment" style="margin-top: 15px;">
+                <textarea id="comment_content_input" placeholder="Escribe un comentario..." rows="2" style="width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1em;"></textarea>
+                <button id="submit_comment_btn" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Comentar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="profile_modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close profile-close">&times;</span>
+        <h2>Perfil de Usuario</h2>
+        <div class="user-profile">
+            <img src="{% static 'img/user-placeholder.png' %}" alt="User" class="user-avatar" />
+            <h3 id="profile_username_modal">Cargando...</h3>
+            <p id="profile_type_modal">Cargando tipo...</p>
+            <div class="user-stats">
+                <div class="stat-item"><strong><span id="profile_posts_count">0</span></strong><br />Posts</div>
+                <div class="stat-item"><strong><span id="profile_followers_count">0</span></strong><br />Seguidores</div>
+                <div class="stat-item"><strong><span id="profile_following_count">0</span></strong><br />Seguidos</div>
+            </div>
+            <h4>Etiquetas Favoritas</h4>
+            <ul class="user-tags" id="profile_favorite_tags_list">
+                <li>Cargando...</li>
+            </ul>
+            <button id="toggle_follow_user_btn" style="margin-top: 15px; width: 100%; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;"></button>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Variables globales para la carga infinita
+    let currentOffset = 0;
+    const limit = 10; // Número de posts a cargar por vez
+    let hasMorePosts = true;
+    let isLoading = false; // Bandera para evitar múltiples cargas simultáneas
+
+    // ID del usuario actual. Pasa el ID del usuario directamente desde el contexto de Django.
+   let currentUserId = {% if request.user.is_authenticated %}{{ request.user.id }}{% else %}null{% endif %};
+       if (currentUserId !== null) { // Asegura que es un número
+        currentUserId = parseInt(currentUserId);
+    }
+
+    // --- Funciones de Utilidad ---
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function showLoadingIndicator() {
+        document.getElementById('loading_indicator').style.display = 'block';
+    }
+
+    function hideLoadingIndicator() {
+        document.getElementById('loading_indicator').style.display = 'none';
+    }
+
+    function showLoadMoreButton() {
+        document.getElementById('load_more_posts_btn').style.display = 'block';
+    }
+
+    function hideLoadMoreButton() {
+        document.getElementById('load_more_posts_btn').style.display = 'none';
+    }
+
+    // --- Funciones de Renderizado ---
+    function renderPost(post) {
+        let postHtml = `
+            <div class="post-card" data-post-id="${post.id}">
+                <div class="post-header">
+                    <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
+                    <strong><a href="#" class="view-profile-link" data-user-id="${post.autor_id}">${post.autor}</a></strong>
+                    ${post.autor_id === currentUserId && !post.esta_eliminado ? `
+                        <div class="post-options">
+                            <button class="options-btn">...</button>
+                            <div class="options-menu" style="display: none;">
+                                <button class="delete-post-btn" data-post-id="${post.id}">Eliminar</button>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>`;
+
+        if (post.esta_eliminado) {
+            postHtml += `<p style="font-style: italic; color: #888;">Este post ha sido eliminado.</p>`;
+        } else {
+            postHtml += `<p>${post.contenido}</p>`;
+        }
+        
+        postHtml += `
+                <div class="post-meta">
+                    <small>${new Date(post.fecha_creacion).toLocaleString()}</small>
+                </div>
+                <div class="post-actions">
+                    ${post.conteo_comentarios > 0 ? `<button class="comment-btn" data-post-id="${post.id}">Ver Comentarios (${post.conteo_comentarios})</button>` : ''}
+                </div>
+            </div>`;
+        return postHtml;
+    }
+
+    function renderComment(comment) {
+        const canDelete = comment.autor_id === currentUserId; 
+        return `
+            <div class="comment-card" data-comment-id="${comment.id}">
+                <div class="comment-header">
+                    <img src="{% static 'img/user-icon.png' %}" class="avatar-xsmall" />
+                    <strong><a href="#" class="view-profile-link" data-user-id="${comment.autor_id}">${comment.autor}</a></strong>
+                    <small>${new Date(comment.fecha_creacion).toLocaleString()}</small>
+                </div>
+                <p>${comment.contenido}</p>
+                ${canDelete ? `<button class="delete-comment-btn" data-comment-id="${comment.id}">Eliminar</button>` : ''}
+            </div>
+        `;
+    }
+
+    // --- Funciones de Peticiones a la API ---
+
+    async function fetchCurrentUserProfile() {
+        // Solo intenta cargar el perfil si currentUserId no es null
+        if (!currentUserId) {
+            document.getElementById('current_username').textContent = 'No logueado';
+            document.getElementById('user_type_description').textContent = '';
+            document.getElementById('user_posts_count').textContent = 'N/A';
+            document.getElementById('user_followers_count').textContent = 'N/A';
+            document.getElementById('user_following_count').textContent = 'N/A';
+            document.getElementById('user_favorite_tags_list').innerHTML = '<li>Inicia sesión para ver.</li>';
+            document.getElementById('view_current_profile_btn').style.display = 'none'; // O deshabilitar
+            return;
+        }
+
+        try {
+            const response = await fetch(`/usuarios/${currentUserId}/`); 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            
+            document.getElementById('current_username').textContent = data.username;
+            document.getElementById('user_posts_count').textContent = data.posts;
+            document.getElementById('user_followers_count').textContent = data.seguidores_ids.length;
+            document.getElementById('user_following_count').textContent = data.seguidos_ids.length;
+            document.getElementById('user_type_description').textContent = data.es_voluntario ? 'Voluntario' : (data.es_organizacion ? 'Organización' : 'Usuario');
+
+            const favoriteTagsList = document.getElementById('user_favorite_tags_list');
+            favoriteTagsList.innerHTML = '';
+            if (data.etiquetas_favoritas.length > 0) {
+                data.etiquetas_favoritas.forEach(tag => {
+                    const li = document.createElement('li');
+                    li.textContent = tag;
+                    favoriteTagsList.appendChild(li);
+                });
+            } else {
+                favoriteTagsList.innerHTML = '<li>Ninguna etiqueta favorita.</li>';
+            }
+
+        } catch (error) {
+            console.error("Error al obtener el perfil del usuario actual:", error);
+            document.getElementById('current_username').textContent = 'Error al cargar perfil';
+        }
+    }
+
+    async function fetchPosts(offset, limit) {
+        if (isLoading || !hasMorePosts) return;
+        isLoading = true;
+        showLoadingIndicator();
+        hideLoadMoreButton();
+
+        try {
+            const params = new URLSearchParams({
+                offset: offset,
+                limite: limit
+            });
+            const response = await fetch(`/feed-data/?${params.toString()}`); 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            const postsContainer = document.getElementById('posts_container');
+            if (postsContainer) { // Solo si el contenedor existe
+        postsContainer.addEventListener('click', (event) => {
+            // --- Lógica para el clic en el nombre de usuario (enlace de perfil) ---
+            // Intenta encontrar el enlace de perfil que fue clickeado (o su padre si el clic fue en un texto interno)
+            const profileLink = event.target.closest('.view-profile-link');
+            
+            if (profileLink) { // Si encontramos un enlace de perfil
+                event.preventDefault(); // Evita que la página salte
+                const userId = parseInt(profileLink.dataset.userId); // Obtenemos el ID y lo convertimos a número
+                fetchUserProfile(userId); // Llamamos a la función para mostrar el perfil
+                return; // Importante: Salimos de la función para no procesar otros clics
+            }
+
+
+
+            // --- Lógica para el botón de opciones del post (los "...") ---
+            const optionsButton = event.target.closest('.options-btn');
+            if (optionsButton) { // Si encontramos un botón de opciones
+                event.preventDefault();
+                event.stopPropagation();
+                const optionsMenu = optionsButton.nextElementSibling; // Asume que el menú es el siguiente hermano
+                if (optionsMenu && optionsMenu.classList.contains('options-menu')) {
+                event.preventDefault(); 
+                
+                const optionsMenu = optionsButton.nextElementSibling; 
+                if (optionsMenu && optionsMenu.classList.contains('options-menu')) {
+                    // Cierra otros menús abiertos antes de abrir este
+                    document.querySelectorAll('.options-menu').forEach(menu => {
+                        if (menu !== optionsMenu) { 
+                            menu.style.display = 'none';
+                        }
+                    });
+                     // Alternar la visibilidad del menú actual
+                    optionsMenu.style.display = optionsMenu.style.display === 'block' ? 'none' : 'block';
+                }
+                
+                    document.querySelectorAll('.options-menu').forEach(menu => {
+                        if (menu !== optionsMenu) { // No cierres el menú actual
+                            menu.style.display = 'none';
+                        }
+                    });
+                    optionsMenu.style.display = optionsMenu.style.display === 'block' ? 'none' : 'block';
+                }
+                return;
+            }
+            // Si el clic no fue en ninguno de los elementos anteriores, no se hace nada más en este listener
+        }); // Fin del postsContainer.addEventListener
+    } else {
+        console.error("El contenedor 'posts_container' no fue encontrado al cargar el DOM.");
+    }
+            
+
+            if (offset === 0) { 
+                postsContainer.innerHTML = '';
+            }
+            
+            if (data.posts.length === 0 && offset === 0) {
+                postsContainer.innerHTML = '<p>No se encontraron publicaciones.</p>';
+            } else {
+                data.posts.forEach(post => {
+                    postsContainer.insertAdjacentHTML('beforeend', renderPost(post));
+                });
+            }
+
+            currentOffset = data.siguiente_offset || 0;
+            hasMorePosts = data.hay_mas;
+
+            if (hasMorePosts) {
+                showLoadMoreButton();
+            } else {
+                hideLoadMoreButton();
+            }
+
+        } catch (error) {
+            console.error("Error al obtener publicaciones:", error);
+            document.getElementById('posts_container').innerHTML = '<p style="color: red;">Error al cargar publicaciones.</p>';
+        } finally {
+            isLoading = false;
+            hideLoadingIndicator();
+        }
+    }
+
+    async function createPost(content) {
+        if (!content.trim()) {
+            alert("El contenido de la publicación no puede estar vacío.");
+            return;
+        }
+        try {
+            const response = await fetch('/posts/crear/', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ contenido: content })
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            alert(data.mensaje);
+            document.getElementById('post_content_input').value = '';
+            document.getElementById('create_post_modal').style.display = 'none';
+            currentOffset = 0; 
+            hasMorePosts = true; 
+            fetchPosts(currentOffset, limit);
+            fetchCurrentUserProfile(); 
+        } catch (error) {
+            console.error("Error al crear publicación:", error);
+            alert("Error al crear la publicación.");
+        }
+    }
+
+    async function deletePost(postId) {
+        if (!currentUserId) {
+            alert("Debes iniciar sesión para eliminar publicaciones.");
+            return;
+        }
+        if (!confirm("¿Estás seguro de que quieres eliminar esta publicación?")) {
+            return;
+        }
+        try {
+            const response = await fetch(`/posts/${postId}/eliminar/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            alert(data.mensaje);
+            currentOffset = 0; 
+            hasMorePosts = true;
+            fetchPosts(currentOffset, limit);
+            fetchCurrentUserProfile();
+            document.getElementById('post_detail_modal').style.display = 'none';
+        } catch (error) {
+            console.error("Error al eliminar publicación:", error);
+            alert("Error al eliminar la publicación.");
+        }
+    }
+
+    async function fetchPostAndComments(postId) {
+        try {
+            const response = await fetch(`/posts/${postId}/comentarios/`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            
+            const postDetailContent = document.getElementById('detailed_post_content');
+            const commentsList = document.getElementById('comments_list');
+            const deletePostBtn = document.getElementById('detail_delete_post_btn');
+            const detailLikeBtn = document.getElementById('detail_like_btn');
+            const submitCommentBtn = document.getElementById('submit_comment_btn');
+            const commentContentInput = document.getElementById('comment_content_input');
+
+            postDetailContent.innerHTML = '';
+            commentsList.innerHTML = '';
+            commentContentInput.value = '';
+            detailLikeBtn.style.display = 'none';
+            deletePostBtn.style.display = 'none';
+            submitCommentBtn.onclick = null;
+            
+            const postInfo = data.post_info;
+            let postHtml = `
+                <div class="detailed-post-card" data-post-id="${postInfo.id}">
+                    <div class="post-header">
+                        <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
+                        <strong><a href="#" class="view-profile-link" data-user-id="${postInfo.autor_id}">${postInfo.autor}</a></strong>
+                        <small>${new Date(postInfo.fecha_creacion).toLocaleString()}</small>
+                    </div>`;
+
+            if (postInfo.esta_eliminado) {
+                postHtml += `<p style="font-style: italic; color: #888;">${postInfo.contenido}</p>`;
+                commentContentInput.disabled = true;
+                submitCommentBtn.disabled = true;
+            } else {
+                postHtml += `<p>${postInfo.contenido}</p>`;
+                // Solo muestra botones de interacción si el usuario está logueado
+                if (currentUserId) { 
+                    detailLikeBtn.style.display = 'inline-block';
+                }
+                if (currentUserId) { // Solo permite comentar si está logueado
+                    commentContentInput.disabled = false;
+                    submitCommentBtn.disabled = false;
+                    submitCommentBtn.onclick = () => createComment(postInfo.id, commentContentInput.value);
+                } else {
+                    commentContentInput.disabled = true;
+                    submitCommentBtn.disabled = true;
+                    commentContentInput.placeholder = "Inicia sesión para comentar...";
+                }
+            }
+            postDetailContent.innerHTML = postHtml;
+
+            if (data.comentarios.length > 0) {
+                data.comentarios.forEach(comment => {
+                    commentsList.insertAdjacentHTML('beforeend', renderComment(comment));
+                });
+            } else {
+                commentsList.innerHTML = '<p>Sé el primer usuario en comentar.</p>';
+            }
+
+            // Solo adjunta event listeners para eliminar comentarios si está logueado
+            if (currentUserId) {
+                commentsList.querySelectorAll('.delete-comment-btn').forEach(btn => {
+                    btn.onclick = (event) => deleteComment(event.target.dataset.commentId);
+                });
+            }
+            document.getElementById('post_detail_modal').style.display = 'block';
+
+        } catch (error) {
+            console.error("Error al obtener detalles del post y comentarios:", error);
+            alert("Error al cargar los detalles de la publicación.");
+        }
+    }
+
+    async function createComment(postId, content) {
+        if (!currentUserId) {
+            alert("Debes iniciar sesión para crear comentarios.");
+            return;
+        }
+        if (!content.trim()) {
+            alert("El comentario no puede estar vacío.");
+            return;
+        }
+        try {
+            const response = await fetch('/comentarios/crear/', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ post_id: postId, contenido: content })
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            alert(data.mensaje);
+            document.getElementById('comment_content_input').value = '';
+            fetchPostAndComments(postId);
+            currentOffset = 0; 
+            hasMorePosts = true;
+            fetchPosts(currentOffset, limit); 
+            fetchCurrentUserProfile();
+        } catch (error) {
+            console.error("Error al crear comentario:", error);
+            alert("Error al crear el comentario.");
+        }
+    }
+
+    async function deleteComment(commentId) {
+        if (!currentUserId) {
+            alert("Debes iniciar sesión para eliminar comentarios.");
+            return;
+        }
+        if (!confirm("¿Estás seguro de que quieres eliminar este comentario?")) {
+            return;
+        }
+        try {
+            const response = await fetch(`/comentarios/${commentId}/eliminar/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            alert(data.mensaje);
+            const currentPostId = document.getElementById('detailed_post_content').dataset.postId;
+            if (currentPostId) {
+                fetchPostAndComments(currentPostId);
+                currentOffset = 0; 
+                hasMorePosts = true;
+                fetchPosts(currentOffset, limit); 
+                fetchCurrentUserProfile();
+            }
+        } catch (error) {
+            console.error("Error al eliminar comentario:", error);
+            alert("Error al eliminar el comentario.");
+        }
+    }
+
+    async function fetchUserProfile(userId) {
+        try {
+            const response = await fetch(`/usuarios/${userId}/`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            document.getElementById('profile_username_modal').textContent = data.username;
+            document.getElementById('profile_type_modal').textContent = data.es_voluntario ? 'Voluntario' : (data.es_organizacion ? 'Organización' : 'Usuario');
+            document.getElementById('profile_posts_count').textContent = data.conteo_actividad_total;
+            document.getElementById('profile_followers_count').textContent = data.seguidores_ids.length;
+            document.getElementById('profile_following_count').textContent = data.seguidos_ids.length;
+
+            const profileFavoriteTagsList = document.getElementById('profile_favorite_tags_list');
+            profileFavoriteTagsList.innerHTML = '';
+            if (data.etiquetas_favoritas.length > 0) {
+                data.etiquetas_favoritas.forEach(tag => {
+                    const li = document.createElement('li');
+                    li.textContent = tag;
+                    profileFavoriteTagsList.appendChild(li);
+                });
+            } else {
+                profileFavoriteTagsList.innerHTML = '<li>Ninguna etiqueta favorita.</li>';
+            }
+
+            const toggleFollowBtn = document.getElementById('toggle_follow_user_btn');
+            if (userId === currentUserId) {
+                toggleFollowBtn.style.display = 'none';
+            } else {
+                toggleFollowBtn.style.display = 'block';
+                toggleFollowBtn.textContent = data.esta_siguiendo ? 'Dejar de Seguir' : 'Seguir';
+                // Solo adjunta el evento si el usuario actual está logueado
+                if (currentUserId) {
+                    toggleFollowBtn.onclick = () => toggleFollowUser(userId);
+                } else {
+                    toggleFollowBtn.disabled = true;
+                    toggleFollowBtn.textContent = 'Inicia sesión para seguir';
+                }
+            }
+
+            document.getElementById('profile_modal').style.display = 'block';
+
+        } catch (error) {
+            console.error("Error al obtener el perfil de usuario:", error);
+            alert("Error al cargar el perfil del usuario.");
+        }
+    }
+
+    async function toggleFollowUser(userIdToFollow) {
+        if (!currentUserId) {
+            alert("Debes iniciar sesión para seguir a otros usuarios.");
+            return;
+        }
+        try {
+            const response = await fetch('/usuarios/alternar-seguimiento/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ usuario_id: userIdToFollow })
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            alert(data.mensaje);
+            fetchUserProfile(userIdToFollow);
+            fetchCurrentUserProfile();
+        } catch (error) {
+            console.error("Error al alternar seguimiento de usuario:", error);
+            alert("Error al cambiar el estado de seguimiento del usuario.");
+        }
+    }
+
+
+    // --- Inicialización y Event Listeners ---
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchCurrentUserProfile();
+        fetchPosts(currentOffset, limit);
+        
+        // Deshabilitar botón de crear publicación si no está logueado
+        const createPostBtn = document.getElementById('create_post_btn');
+        if (!currentUserId) {
+            createPostBtn.disabled = true;
+            createPostBtn.textContent = 'Inicia sesión para publicar';
+        }
+
+        // Lógica del Scroll Infinito
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500 && hasMorePosts && !isLoading) {
+                fetchPosts(currentOffset, limit);
+            }
+        });
+
+        // Event listener para el botón "Cargar más"
+        document.getElementById('load_more_posts_btn').addEventListener('click', () => {
+            fetchPosts(currentOffset, limit);
+        });
+        
+        // Event delegation para botones de posts (Comentarios, Eliminar, Ver Perfil, Opciones)
+        document.getElementById('posts_container').addEventListener('click', (event) => {
+            if (event.target.classList.contains('comment-btn')) {
+                const postId = event.target.dataset.postId;
+                fetchPostAndComments(postId);
+            } else if (event.target.classList.contains('delete-post-btn')) {
+                const postId = event.target.dataset.postId;
+                // Cerrar el menú de opciones después de hacer clic en eliminar
+                event.target.closest('.options-menu').style.display = 'none';
+                deletePost(postId);
+            } else if (event.target.classList.contains('view-profile-link')) {
+                event.preventDefault();
+                const userId = parseInt(targetElement.dataset.userId);
+                fetchUserProfile(userId);
+            } else if (event.target.classList.contains('options-btn')) {
+                //Lógica para mostrar/ocultar el menú de opciones
+                event.stopPropagation(); // Evita que el click se propague y cierre otros menús
+                const menu = event.target.nextElementSibling;
+                // Cierra otros menús abiertos
+                document.querySelectorAll('.options-menu').forEach(openMenu => {
+                    if (openMenu !== menu) {
+                        openMenu.style.display = 'none';
+                    }
+                });
+                menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            }
+        });
+
+        // Cerrar menús de opciones si se hace clic fuera de ellos
+        document.addEventListener('click', (event) => {
+        // Obtenemos todos los menús de opciones actualmente visibles
+        const openMenus = document.querySelectorAll('.options-menu[style*="display: block"]');
+
+        openMenus.forEach(menu => {
+            const optionsButton = menu.previousElementSibling; // El botón de los 3 puntos asociado
+            
+            // Si el clic NO fue en el botón de opciones que abrió este menú
+            // Y el clic NO fue DENTRO del menú
+            // Entonces cierra el menú
+            if (optionsButton && !optionsButton.contains(event.target) && !menu.contains(event.target)) {
+                menu.style.display = 'none';
+                console.log("Menú cerrado por clic fuera.");
+            }
+        });
+    });
+
+        // Botón para ver el perfil del usuario actual (en el sidebar izquierdo)
+        document.getElementById('view_current_profile_btn').addEventListener('click', () => {
+            if (currentUserId) { 
+                fetchUserProfile(currentUserId);
+            } else {
+                alert("Debes iniciar sesión para ver tu perfil.");
+            }
+        });
+
+
+        // --- Lógica de Modales ---
+        const notificationModal = document.getElementById("modal_notificaciones");
+        const btnOpenNotificationModal = document.getElementById("btn_modal");
+        const closeNotificationModal = notificationModal.querySelector(".close");
+
+        btnOpenNotificationModal.onclick = function() { notificationModal.style.display = "block"; }
+        closeNotificationModal.onclick = function() { notificationModal.style.display = "none"; }
+
+        const createPostModal = document.getElementById('create_post_modal');
+        const closeCreatePostModal = document.querySelector('.create-post-close');
+        const submitPostBtn = document.getElementById('submit_post_btn');
+        if (currentUserId) { 
+            createPostBtn.onclick = () => { createPostModal.style.display = 'block'; }
+            submitPostBtn.onclick = () => {
+                const content = document.getElementById('post_content_input').value;
+                createPost(content);
+            }
+        }
+        closeCreatePostModal.onclick = () => { createPostModal.style.display = 'none'; }
+
+        const profileModal = document.getElementById('profile_modal');
+        const closeProfileModal = document.querySelector('.profile-close');
+        closeProfileModal.onclick = () => { profileModal.style.display = 'none'; }
+
+        const postDetailModal = document.getElementById('post_detail_modal');
+        const closePostDetailModal = document.querySelector('.post-detail-close');
+        closePostDetailModal.onclick = () => { postDetailModal.style.display = 'none'; }
+
+        // Manejar clics fuera de los modales para cerrarlos
+        window.onclick = function(event) {
+            if (event.target == notificationModal) { notificationModal.style.display = "none"; }
+            if (event.target == createPostModal) { createPostModal.style.display = "none"; }
+            if (event.target == profileModal) { profileModal.style.display = "none"; }
+            if (event.target == postDetailModal) { postDetailModal.style.display = "none"; }
+        }
+
+        document.getElementById('detail_like_btn').addEventListener('click', function() {
+            if (!currentUserId) {
+                alert("Debes iniciar sesión para dar 'Me Gusta'.");
+                return;
+            }
+            alert('Funcionalidad de "Me Gusta" aún no implementada.');
+        });
+    });
+
+</script>
 
 <script>
     var modal = document.getElementById("modal_notificaciones");
