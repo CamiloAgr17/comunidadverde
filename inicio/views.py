@@ -268,22 +268,27 @@ def registro_voluntario(request):
     if request.method == 'POST':
         form = RegistroVoluntarioForm(request.POST)
         if form.is_valid():
-            form.save()
-            return render(request, 'seleccionar_etiquetas.html', {'form': form})
+            usuario = form.save()
+            # Crear perfil voluntario si no existe
+            Voluntario.objects.get_or_create(user=usuario)
+            # Iniciar sesión automático
+            login(request, usuario)
+            # Redirigir a seleccionar etiquetas
+            return redirect('seleccionar_etiquetas')
     else:
         form = RegistroVoluntarioForm()
     return render(request, 'registro_voluntario.html', {'form': form})
-
 def registro_organizacion(request):
     if request.method == 'POST':
         form = RegistroOrganizacionForm(request.POST)
         if form.is_valid():
-            form.save()
-            return render(request, 'seleccionar_etiquetas.html', {'form': form})
+            usuario = form.save()
+            Organizacion.objects.get_or_create(user=usuario)
+            login(request, usuario)
+            return redirect('seleccionar_etiquetas')
     else:
         form = RegistroOrganizacionForm()
     return render(request, 'registro_organizacion.html', {'form': form})
-
 
 def login_view(request):
     if request.method == 'POST':
@@ -294,7 +299,7 @@ def login_view(request):
 
             # Revisa si es voluntario u organización
             if hasattr(user, 'voluntario') or hasattr(user, 'organizacion'):
-                return redirect('feed')  # redirige al feed
+                return redirect('feed')  # redirige al feed si tiene rol válido
             else:
                 logout(request)
                 return render(request, 'login.html', {
@@ -303,7 +308,7 @@ def login_view(request):
                 })
     else:
         form = AuthenticationForm()
-    return render(request, 'feed.html', {'form': form})
+    return render(request, 'login.html', {'form': form})  # 👈 aquí va login.html
 
 
 
@@ -321,7 +326,8 @@ def seleccionar_etiquetas(request):
             perfil = Organizacion.objects.get(user=usuario)
             tipo = 'organizacion'
         except Organizacion.DoesNotExist:
-            perfil = None
+            perfil = Voluntario.objects.create(user=usuario)
+            tipo = 'voluntario'
 
     etiquetas = Etiqueta.objects.all()
 
@@ -330,9 +336,9 @@ def seleccionar_etiquetas(request):
 
     if request.method == 'POST':
         seleccionadas = request.POST.getlist('etiquetas')
-        perfil.etiquetas_favoritas.set(seleccionadas) 
+        perfil.etiquetas_favoritas.set(seleccionadas)
         perfil.save()
-        return redirect('pagina_inicio')
+        return redirect('feed') 
 
     return render(request, 'seleccionar_etiquetas.html', {
         'etiquetas': etiquetas,

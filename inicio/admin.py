@@ -1,6 +1,6 @@
 
 from django.contrib import admin
-from .models import Organizacion, Voluntario, Etiqueta, Post, Comentario, Seguimiento
+from .models import Organizacion, Voluntario, Etiqueta, Post, Comentario, Seguimiento,Etiqueta
 
 @admin.register(Etiqueta)
 class EtiquetaAdmin(admin.ModelAdmin):
@@ -20,7 +20,7 @@ class ComentarioAdmin(admin.ModelAdmin):
 
 @admin.register(Voluntario)
 class VoluntarioAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'nombre', 'latitud', 'longitud', 'mostrar_etiquetas')
+    list_display = ('user', 'nombre', 'latitud', 'longitud', 'mostrar_etiquetas')
 
     def mostrar_etiquetas(self, obj):
         return ", ".join([e.nombre for e in obj.etiquetas_favoritas.all()])
@@ -29,8 +29,7 @@ class VoluntarioAdmin(admin.ModelAdmin):
 
 @admin.register(Organizacion)
 class OrganizacionAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'nombre', 'descripcion', 'telefono', 'latitud', 'longitud', 'mostrar_etiquetas')
-
+    list_display = ('user', 'nombre', 'latitud', 'longitud')
     def mostrar_etiquetas(self, obj):
         return ", ".join([e.nombre for e in obj.etiquetas_favoritas.all()])
     mostrar_etiquetas.short_description = 'Etiquetas Favoritas'
