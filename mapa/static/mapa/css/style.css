@@ -1,7 +1,13 @@
-         body, html, #map {
+         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
         }
         
+        #map{
+          position: relative;
+          width: 100%;
+          height: 100%
+        }
+
         .mapboxgl-ctrl.my-style-control {
             background: white;
             border-radius: 4px;
@@ -51,43 +57,71 @@
             background: #ddd;
         }
 
+        .maplibregl-ctrl-top-right {
+          gap: 8px; /* Espacio entre los controles */
+        }
+
 /* CSS PARA CONTROL CUSTOM */
-.custom-toggle-control {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  padding: 6px;
-  background-color: rgba(255, 255, 255, 0.85);
-  border-radius: 6px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-}
+/* 
+        .custom-toggle-control {
+          order: -1; /* Lo pone antes que los otros controles 
+        }
 
-.custom-toggle-control button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: background 0.2s;
-}
+        /* .custom-toggle-control {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 4px;
+          background-color: rgba(255, 255, 255, 0.85);
+          border-radius: 4px;
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+          margin-top: 8px;
+        } */
 
-.custom-toggle-control button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
+        .custom-toggle-control button {
+          width: 30px;
+          height: 30px;
+          padding: 2px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          border-radius: 4px;
+          transition: background 0.2s;
+        }
 
-.custom-toggle-control img {
-  width: 20px;
-  height: 20px;
-}
+        .custom-toggle-control button:hover {
+          background-color: rgba(0, 0, 0, 0.05);
+        }
 
-.view-options {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 4px;
-}
+        .custom-toggle-control img {
+          width: 18px;
+          height: 18px;
+        }
 
-.hidden {
-  display: none;
-}
+        .view-options {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          margin-top: 4px;
+        }
+
+        .view-options button {
+          width: 30px;
+          height: 30px;
+          padding: 2px;
+          border: none;
+          background: none;
+          border-radius: 2px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .view-options button img {
+          width: 18px;
+          height: 18px;
+        }
+
+        .hidden {
+          display: none;
+        } 

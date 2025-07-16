@@ -19,6 +19,10 @@
     <div id="map"></div>
 
     <script>
+        const centros = {{ centros_json|safe }};
+    </script>
+
+    <script>
         const estilos = {
             streets: 'https://api.maptiler.com/maps/streets/style.json?key=sze1ZxSVTfvtlbFXog86',
             satelite: 'https://api.maptiler.com/maps/hybrid/style.json?key=sze1ZxSVTfvtlbFXog86',
@@ -67,17 +71,7 @@
         // });
 
         // Marcadores desde Django
-        const centros = JSON.parse('{{ centros|safe|escapejs }}'.replaceAll("'", '"'));
-        centros.forEach(centro => {
-            new maplibregl.Marker()
-                .setLngLat([centro.lng, centro.lat])
-                .setPopup(
-                    new maplibregl.Popup().setHTML(
-                        `<strong>${centro.nombre}</strong><br>Materiales: ${centro.materiales}`
-                    )
-                )
-                .addTo(map);
-        });
+        
 
         class ViewToggleControl {
             onAdd(map) {
@@ -93,7 +87,7 @@
                 toggleBtn.title = "Cambiar vista";
 
                 const icon = document.createElement("img");
-                icon.src = "{% static 'icons/map-icon.svg' %}";
+                icon.src = "{% static 'icons/map.png' %}";
                 icon.alt = "Toggle View";
                 toggleBtn.appendChild(icon);
 
@@ -105,8 +99,8 @@
                 viewOptions.id = "viewOptions";
 
                 const options = [
-                    { style: "streets-v2", title: "Vista Calle", icon: "street-view-icon.svg" },
-                    { style: "satellite-v2", title: "Vista Satélite", icon: "satellite-icon.svg" }
+                    { style: "streets", title: "Vista Calle", icon: "person.png" },
+                    { style: "satelite", title: "Vista Satélite", icon: "satellite.png" }
                 ];
 
                 options.forEach(opt => {
@@ -115,7 +109,7 @@
                     btn.title = opt.title;
 
                     const img = document.createElement("img");
-                    img.src = `{% static 'icons/${opt.icon}' %}`;
+                    img.src = `{% static 'icons/' %}${opt.icon}`;;
                     img.alt = opt.title;
 
                     btn.appendChild(img);
@@ -133,7 +127,7 @@
                 viewOptions.querySelectorAll("[data-style]").forEach(btn => {
                     btn.addEventListener("click", () => {
                         const style = btn.getAttribute("data-style");
-                        map.setStyle(`https://api.maptiler.com/maps/${style}/style.json?key=sze1ZxSVTfvtlbFXog86`);
+                        map.setStyle(estilos[style]);;
                         viewOptions.classList.add("hidden");
                     });
                 });
@@ -147,6 +141,7 @@
             }
         }
 
+        map.addControl(new ViewToggleControl(), "top-right");
     </script>
 </body>
 </html>
