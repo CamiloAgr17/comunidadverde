@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 import json
 from .models import Post, Etiqueta, Voluntario, Organizacion, Seguimiento, User, Comentario
+from django.db.models import F, ExpressionWrapper, IntegerField
 
 @login_required # Asegura que solo usuarios logueados puedan acceder a esta vista
 def feed_view(request):
@@ -344,4 +345,18 @@ def seleccionar_etiquetas(request):
 def feed(request):
     #aqui hay que poner que agarre los posts, pero no han hecho lo de los posts
     #asiq ta vacio
-    return render(request, 'feed.html',)
+
+    posts_populares = (
+        Post.objects.filter(esta_eliminado=False)
+        .annotate(popularidad=ExpressionWrapper(
+            F('conteo_likes') + F('conteo_comentarios') * 2, 
+            output_field=IntegerField()
+        ))
+        .order_by('-popularidad', '-fecha_creacion')[:3] 
+    )
+
+
+    return render(request, 'feed.html',{
+        'posts_populares': posts_populares,
+        'request': request
+    })
