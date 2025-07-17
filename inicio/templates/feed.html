@@ -256,29 +256,51 @@
             </div>
         </div>
     </div>
-
-    <div id="profile_modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close profile-close">&times;</span>
-            <h2>Perfil de Usuario</h2>
-            <div class="user-profile">
-                <img src="{% static 'img/user-placeholder.png' %}" alt="User" class="user-avatar" />
-                <h3 id="profile_username_modal">Cargando...</h3>
-                <p id="profile_type_modal">Cargando tipo...</p>
-                <div class="user-stats">
-                    <div class="stat-item"><strong><span id="profile_posts_count">0</span></strong><br />Posts</div>
-                    <div class="stat-item"><strong><span id="profile_followers_count">0</span></strong><br />Seguidores</div>
-                    <div class="stat-item"><strong><span id="profile_following_count">0</span></strong><br />Seguidos</div>
-                </div>
-                <h4>Etiquetas Favoritas</h4>
-                <ul class="user-tags" id="profile_favorite_tags_list">
-                    <li>Cargando...</li>
-                </ul>
-                <button id="toggle_follow_user_btn" style="margin-top: 15px; width: 100%; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;"></button>
+<div id="profile_modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close profile-close">&times;</span>
+        <h2>Perfil de Usuario</h2>
+        <div class="user-profile">
+            <img src="{% static 'img/user-placeholder.png' %}" alt="User" class="user-avatar" />
+            <h3 id="profile_username_modal">{{ usuario.username }}</h3>
+            <p id="profile_type_modal">
+                {% if es_voluntario %}
+                    Voluntario
+                {% elif es_organizacion %}
+                    Organización
+                {% else %}
+                    Usuario
+                {% endif %}
+            </p>
+            <div class="user-stats">
+                <div class="stat-item"><strong><span id="profile_posts_count">{{ posts_count }}</span></strong><br />Posts</div>
+                <div class="stat-item"><strong><span id="profile_followers_count">{{ seguidores_count }}</span></strong><br />Seguidores</div>
+                <div class="stat-item"><strong><span id="profile_following_count">{{ seguidos_count }}</span></strong><br />Seguidos</div>
             </div>
+
+            {% if es_organizacion and telefono %}
+                <div id="whatsapp_btn_container" style="margin-top: 15px;">
+                    <a href="https://wa.me/{{ telefono|regex_replace:'\\D','' }}" target="_blank"
+                       style="display: inline-block; padding: 10px 20px; background-color: #25D366; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                        <i class="fab fa-whatsapp"></i> Contactar por WhatsApp
+                    </a>
+                </div>
+            {% endif %}
+
+            <h4>Etiquetas Favoritas</h4>
+            <ul class="user-tags" id="profile_favorite_tags_list">
+                {% for tag in etiquetas_favoritas %}
+                    <li>{{ tag.nombre }}</li>
+                {% empty %}
+                    <li>No tiene etiquetas favoritas.</li>
+                {% endfor %}
+            </ul>
+
+            <!-- Aquí podrías poner el botón seguir/dejar de seguir si quieres -->
         </div>
     </div>
-</body>
+</div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -290,11 +312,9 @@
     let isLoading = false; // Bandera para evitar múltiples cargas simultáneas
 
     // ID del usuario actual. Pasa el ID del usuario directamente desde el contexto de Django.
-   let currentUserId = {% if request.user.is_authenticated %}{{ request.user.id }}{% else %}null{% endif %};
-       if (currentUserId !== null) { // Asegura que es un número
-        currentUserId = parseInt(currentUserId);
-    }
-
+  
+    let currentUserId = "{{ request.user.id|default_if_none:'' }}";
+    currentUserId = currentUserId === "" ? null : parseInt(currentUserId);
     // --- Funciones de Utilidad ---
     function getCookie(name) {
         let cookieValue = null;
