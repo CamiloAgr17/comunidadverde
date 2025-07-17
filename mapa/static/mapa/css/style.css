@@ -34,33 +34,35 @@
 
 .header-content .buscador {
   display: flex;
+  position: relative;
   align-items: center;
-  justify-content: space-between;
   text-align: center;
   pointer-events: all;
-  padding-left: 2em;
+  padding-left: 2em; /* mantén si quieres espacio al inicio */
+  width: 100%;
 }
 
 .buscador__input {
   font-family: inherit;
   font-size: inherit;
-  background-color: #f4f2f2;
+  background-color: white;
   border: none;
   color: #000000;
+  width: 25em;
   padding: 0.7rem 1rem;
   border-radius: 30px;
-  width: 20em;
-  transition: all ease-in-out .5s;
-  margin-right: -2rem;
+  transition: all ease-in-out 0.5s;
+  margin-right: 0; /* eliminar margen negativo */
 }
 
-.buscador__input:hover, .buscador__input:focus {
+.buscador__input:hover,
+.buscador__input:focus {
   box-shadow: 0 0 1em #00000013;
 }
 
 .buscador__input:focus {
   outline: none;
-  background-color: #f0eeee;
+  background-color: white;
 }
 
 .buscador__input::-webkit-input-placeholder {
@@ -69,13 +71,19 @@
 }
 
 .buscador__input:focus + .buscador__button {
-  background-color: #f0eeee;
+  background-color: white;
 }
 
 .buscador__button {
   border: none;
-  background-color: #f4f2f2;
-  margin-top: .1em;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  padding: 0.3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
 .buscador__button:hover {
@@ -88,7 +96,6 @@
   fill: #b4b4b4;
 }
 
-
 @media (max-width: 600px) {
   .header-content {
     flex-direction: column;
@@ -99,6 +106,41 @@
     width: 100%;
   }
 }
+
+/* CSS Sugerencias Buscador */
+
+.buscador__input-wrapper {
+  position: relative;
+  display:flex;
+  z-index: 998;
+}
+
+.sugerencias-lista {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  width: 100%;
+  margin-top: 2px;
+  padding: 0;
+  list-style: none;
+  z-index: 10000;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+  display: flex;
+}
+
+.sugerencias-lista li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+
+.sugerencias-lista li:hover {
+  background-color: white;
+}
+
 
 
         #map{
