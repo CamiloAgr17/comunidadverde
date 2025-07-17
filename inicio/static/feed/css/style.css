@@ -276,3 +276,24 @@
   height: 220px;
   opacity: 1;
 }
+
+
+.like-btn {
+    background: none;
+    border: none;
+    color: #ccc; /* Default color */
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 5px 10px;
+    display: inline-flex; /* To align heart and count */
+    align-items: center;
+    gap: 5px; /* Space between heart and count */
+}
+
+.like-btn.liked {
+    color: #e0245e; /* Red color for liked state */
+}
+
+.like-count {
+    font-size: 0.9em;
+}
