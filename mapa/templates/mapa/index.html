@@ -10,149 +10,169 @@
     <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css' />
 
 </head>
-<body>>
-    <div id="map"></div>
 
-    <script>
-        const organizaciones = {{ organizaciones_json|safe }};
-    </script>
+    <header class="main-header">
+        <div class="header-content">
+            <a href="{% url 'feed' %}">
+                <img src="{% static 'images/logo_icont.png' %}" alt="LOGO">
+            </a>
+            <!-- Buscador -->
+             <div class="buscador">
+                <input type="text" id="buscador" placeholder="Buscar organización..." class="buscador__input" />
+                <button class="buscador__button">
+                    <svg class="buscador__icon" aria-hidden="true" viewBox="0 0 24 24">
+                        <g>
+                            <path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path>
+                        </g>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
 
-    <script>
-        const estilos = {
-            streets: 'https://api.maptiler.com/maps/streets/style.json?key=sze1ZxSVTfvtlbFXog86',
-            satelite: 'https://api.maptiler.com/maps/hybrid/style.json?key=sze1ZxSVTfvtlbFXog86',
-        };
+    <body>
+        <div id="map"></div>
 
-        const map = new maplibregl.Map({
-            container: 'map',
-            style: estilos.streets,
-            center: [-79.5, 9.0],
-            zoom: 12
-        });
+        <script>
+            const organizaciones = {{ organizaciones_json|safe }};
+        </script>
 
-        map.addControl(new maplibregl.NavigationControl());
+        <script>
+            const estilos = {
+                streets: 'https://api.maptiler.com/maps/streets/style.json?key=sze1ZxSVTfvtlbFXog86',
+                satelite: 'https://api.maptiler.com/maps/hybrid/style.json?key=sze1ZxSVTfvtlbFXog86',
+            };
 
-        const geolocate = new maplibregl.GeolocateControl({
-            positionOptions: { enableHighAccuracy: true },
-            trackUserLocation: true,
-            showUserHeading: true
-        });
-        map.addControl(geolocate);
-
-        map.on('load', () => {
-            geolocate.trigger(); // Intenta activarlo
-
-            geolocate.on('geolocate', (event) => {
-                const { longitude, latitude } = event.coords;
-
-                console.log("Ubicación detectada:", latitude, longitude);
-
-                map.flyTo({
-                    center: [longitude, latitude],
-                    zoom: 14,
-                    essential: true
-                });
-
-                new maplibregl.Marker({ color: 'blue' })  // marcador azul
-                    .setLngLat([longitude, latitude])
-                    .addTo(map);
+            const map = new maplibregl.Map({
+                container: 'map',
+                style: estilos.streets,
+                center: [-79.5, 9.0],
+                zoom: 12
             });
-        });
 
-        // Cambio de estilo
-        // document.getElementById('styleSelector').addEventListener('change', function (e) {
-        //     const estiloSeleccionado = e.target.value;
-        //     map.setStyle(estilos[estiloSeleccionado]);
-        // });
+            map.addControl(new maplibregl.NavigationControl());
 
-        // Marcadores desde Django
-        
+            const geolocate = new maplibregl.GeolocateControl({
+                positionOptions: { enableHighAccuracy: true },
+                trackUserLocation: true,
+                showUserHeading: true
+            });
+            map.addControl(geolocate);
 
-        class ViewToggleControl {
-            onAdd(map) {
-                this.map = map;
+            map.on('load', () => {
+                geolocate.trigger(); // Intenta activarlo
 
-                // Crear contenedor principal del control
-                this.container = document.createElement("div");
-                this.container.className = "maplibregl-ctrl maplibregl-ctrl-group custom-toggle-control";
+                geolocate.on('geolocate', (event) => {
+                    const { longitude, latitude } = event.coords;
 
-                // Botón principal
-                const toggleBtn = document.createElement("button");
-                toggleBtn.id = "toggleViewBtn";
-                toggleBtn.title = "Cambiar vista";
+                    console.log("Ubicación detectada:", latitude, longitude);
 
-                const icon = document.createElement("img");
-                icon.src = "{% static 'icons/map.png' %}";
-                icon.alt = "Toggle View";
-                toggleBtn.appendChild(icon);
-
-                this.container.appendChild(toggleBtn);
-
-                // Opciones (inicialmente ocultas)
-                const viewOptions = document.createElement("div");
-                viewOptions.className = "view-options hidden";
-                viewOptions.id = "viewOptions";
-
-                const options = [
-                    { style: "streets", title: "Vista Calle", icon: "person.png" },
-                    { style: "satelite", title: "Vista Satélite", icon: "satellite.png" }
-                ];
-
-                options.forEach(opt => {
-                    const btn = document.createElement("button");
-                    btn.setAttribute("data-style", opt.style);
-                    btn.title = opt.title;
-
-                    const img = document.createElement("img");
-                    img.src = `{% static 'icons/' %}${opt.icon}`;;
-                    img.alt = opt.title;
-
-                    btn.appendChild(img);
-                    viewOptions.appendChild(btn);
-                });
-
-                this.container.appendChild(viewOptions);
-
-                // Evento para mostrar/ocultar menú
-                toggleBtn.addEventListener("click", () => {
-                    viewOptions.classList.toggle("hidden");
-                });
-
-                // Evento para cambiar estilo
-                viewOptions.querySelectorAll("[data-style]").forEach(btn => {
-                    btn.addEventListener("click", () => {
-                        const style = btn.getAttribute("data-style");
-                        map.setStyle(estilos[style]);;
-                        viewOptions.classList.add("hidden");
+                    map.flyTo({
+                        center: [longitude, latitude],
+                        zoom: 14,
+                        essential: true
                     });
+
+                    new maplibregl.Marker({ color: 'blue' })  // marcador azul
+                        .setLngLat([longitude, latitude])
+                        .addTo(map);
                 });
+            });
 
-                return this.container;
+            // Cambio de estilo
+            // document.getElementById('styleSelector').addEventListener('change', function (e) {
+            //     const estiloSeleccionado = e.target.value;
+            //     map.setStyle(estilos[estiloSeleccionado]);
+            // });
+
+            // Marcadores desde Django
+            
+
+            class ViewToggleControl {
+                onAdd(map) {
+                    this.map = map;
+
+                    // Crear contenedor principal del control
+                    this.container = document.createElement("div");
+                    this.container.className = "maplibregl-ctrl maplibregl-ctrl-group custom-toggle-control";
+
+                    // Botón principal
+                    const toggleBtn = document.createElement("button");
+                    toggleBtn.id = "toggleViewBtn";
+                    toggleBtn.title = "Cambiar vista";
+
+                    const icon = document.createElement("img");
+                    icon.src = "{% static 'icons/map.png' %}";
+                    icon.alt = "Toggle View";
+                    toggleBtn.appendChild(icon);
+
+                    this.container.appendChild(toggleBtn);
+
+                    // Opciones (inicialmente ocultas)
+                    const viewOptions = document.createElement("div");
+                    viewOptions.className = "view-options hidden";
+                    viewOptions.id = "viewOptions";
+
+                    const options = [
+                        { style: "streets", title: "Vista Calle", icon: "person.png" },
+                        { style: "satelite", title: "Vista Satélite", icon: "satellite.png" }
+                    ];
+
+                    options.forEach(opt => {
+                        const btn = document.createElement("button");
+                        btn.setAttribute("data-style", opt.style);
+                        btn.title = opt.title;
+
+                        const img = document.createElement("img");
+                        img.src = `{% static 'icons/' %}${opt.icon}`;;
+                        img.alt = opt.title;
+
+                        btn.appendChild(img);
+                        viewOptions.appendChild(btn);
+                    });
+
+                    this.container.appendChild(viewOptions);
+
+                    // Evento para mostrar/ocultar menú
+                    toggleBtn.addEventListener("click", () => {
+                        viewOptions.classList.toggle("hidden");
+                    });
+
+                    // Evento para cambiar estilo
+                    viewOptions.querySelectorAll("[data-style]").forEach(btn => {
+                        btn.addEventListener("click", () => {
+                            const style = btn.getAttribute("data-style");
+                            map.setStyle(estilos[style]);;
+                            viewOptions.classList.add("hidden");
+                        });
+                    });
+
+                    return this.container;
+                }
+
+                onRemove() {
+                    this.container.remove();
+                    this.map = undefined;
+                }
             }
 
-            onRemove() {
-                this.container.remove();
-                this.map = undefined;
-            }
-        }
+            map.addControl(new ViewToggleControl(), "top-right");
 
-        map.addControl(new ViewToggleControl(), "top-right");
+            organizaciones.forEach(org => {
+                if (org.latitud && org.longitud) {
+                    new maplibregl.Marker({ color: 'green' })
+                        .setLngLat([org.longitud, org.latitud])
+                        .setPopup(
+                            new maplibregl.Popup().setHTML(`
+                                <strong>${org.nombre}</strong><br/>
+                                Dirección: ${org.direccion || 'No disponible'}<br/>
+                                Teléfono: ${org.telefono || 'No disponible'}
+                            `)
+                        )
+                        .addTo(map);
+                }
+            });
 
-        organizaciones.forEach(org => {
-            if (org.latitud && org.longitud) {
-                new maplibregl.Marker({ color: 'green' })
-                    .setLngLat([org.longitud, org.latitud])
-                    .setPopup(
-                        new maplibregl.Popup().setHTML(`
-                            <strong>${org.nombre}</strong><br/>
-                            Dirección: ${org.direccion || 'No disponible'}<br/>
-                            Teléfono: ${org.telefono || 'No disponible'}
-                        `)
-                    )
-                    .addTo(map);
-            }
-        });
-
-    </script>
-</body>
+        </script>
+    </body>
 </html>

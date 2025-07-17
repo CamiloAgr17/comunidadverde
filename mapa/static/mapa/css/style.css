@@ -2,6 +2,105 @@
             margin: 0; padding: 0; width: 100%; height: 100%;
         }
         
+  /* Header */
+.main-header {
+    background-color: transparent; /* Un verde visible */
+    color: black;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: start;
+    pointer-events: none;
+}
+
+.header-content {
+    padding: 10px;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: all;
+}
+
+.header-content img {
+  width: 100px;
+  height: auto; 
+  object-fit: cover;
+  pointer-events:all;
+}
+
+.header-content .buscador {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  pointer-events: all;
+  padding-left: 2em;
+}
+
+.buscador__input {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: #f4f2f2;
+  border: none;
+  color: #000000;
+  padding: 0.7rem 1rem;
+  border-radius: 30px;
+  width: 20em;
+  transition: all ease-in-out .5s;
+  margin-right: -2rem;
+}
+
+.buscador__input:hover, .buscador__input:focus {
+  box-shadow: 0 0 1em #00000013;
+}
+
+.buscador__input:focus {
+  outline: none;
+  background-color: #f0eeee;
+}
+
+.buscador__input::-webkit-input-placeholder {
+  font-weight: 100;
+  color: #000000;
+}
+
+.buscador__input:focus + .buscador__button {
+  background-color: #f0eeee;
+}
+
+.buscador__button {
+  border: none;
+  background-color: #f4f2f2;
+  margin-top: .1em;
+}
+
+.buscador__button:hover {
+  cursor: pointer;
+}
+
+.buscador__icon {
+  height: 1.3em;
+  width: 1.3em;
+  fill: #b4b4b4;
+}
+
+
+@media (max-width: 600px) {
+  .header-content {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .buscador {
+    width: 100%;
+  }
+}
+
+
         #map{
           position: relative;
           width: 100%;
@@ -125,3 +224,6 @@
         .hidden {
           display: none;
         } 
+
+
+       
