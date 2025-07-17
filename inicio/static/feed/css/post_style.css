@@ -1,0 +1,131 @@
+/* post_style.css */
+
+/* Estilos de tarjeta de Uiverse.io para publicaciones individuales */
+.card {
+    position: relative;
+    background-color: #30344c; /* Fondo gris oscuro */
+    padding: 1em;
+    z-index: 5;
+    box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    max-width: 300px; /* Ancho máximo para cada tarjeta */
+    width: 100%; /* Asegura que la tarjeta ocupe el 100% de su contenedor hasta el max-width */
+    transition: 200ms ease-in-out;
+    box-sizing: border-box; /* Incluir padding y border en el ancho/alto */
+    color: #c0c3d7; /* Color de texto general para la tarjeta */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.username {
+    color: #C6E1ED; /* Azul claro para el nombre de usuario */
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+}
+
+.body .text {
+    margin: 0 10px 0 0;
+    white-space: pre-line;
+    color: #c0c3d7; /* Gris más claro para el contenido principal del texto */
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: 4px;
+}
+
+.footer {
+    position: relative;
+    width: 100%;
+    color: #9fa4aa; /* Gris para el texto del pie de página */
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: none;
+    margin-top: 10px;
+}
+
+.footer div {
+    margin-right: 1rem;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.footer svg {
+    margin-right: 5px;
+    height: 100%;
+    stroke: #9fa4aa; /* Color del borde/trazo para los SVG en el footer */
+}
+
+.viewer span {
+    height: 20px;
+    width: 20px;
+    background-color: rgb(28, 117, 219); /* Azul para el fondo del círculo del viewer */
+    margin-right: -6px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    display: grid;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
+    font-size: 8px;
+    color: #fff; /* Color del texto del número en el círculo */
+    padding: 2px;
+}
+
+.viewer span svg {
+    stroke: #fff; /* Color del trazo del SVG dentro del círculo del viewer */
+}
+
+/* Estilos para el contenedor de publicaciones para que se apilen verticalmente */
+.posts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espacio entre las publicaciones */
+    align-items: center; /* Centra las tarjetas horizontalmente */
+    width: 100%; /* El contenedor toma todo el ancho disponible */
+    max-width: 650px; /* Limita el ancho total del contenedor en pantallas grandes */
+    margin: 0 auto; /* Centra el contenedor completo */
+    padding: 20px 0; /* Un poco de padding arriba y abajo */
+}
+
+/* Estilos para el encabezado del feed (Publicaciones) */
+.feed-header {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #C6E1ED; /* Color del título "Publicaciones" */
+    font-size: 1.8em;
+    margin-top: 0;
+}
+
+/* Estilos para los mensajes de carga (si los usas dinámicamente) */
+#loading_indicator {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.7); /* Color para el mensaje de carga */
+}
+
+/* Estilos para el botón de cargar más (si lo usas dinámicamente) */
+#load_more_posts_btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #4682B4; /* Azul para el botón */
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#load_more_posts_btn:hover {
+    background-color: #5B92CD;
+}
