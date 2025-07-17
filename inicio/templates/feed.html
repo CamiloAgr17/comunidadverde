@@ -21,7 +21,7 @@
         {# Aquí irá tu contenido específico del header para la temática de reciclaje #}
         {# Por ejemplo, un título para tu sitio o un logo #}
         <h1 class="site-title">
-            <img src="{% static 'images/logo.png' %}" alt="LOGO">
+            
         </h1>
     </div>
 </header>
@@ -32,7 +32,7 @@
     <!-- SIDEBAR CON EL PERFIL Y BOTONES DE NAVEGACIÓN -->
     <aside class="sidebar-left">
         <div class="user-profile">
-            <img src="{% static 'images/perfil.png' %}" alt="User" class="user-avatar" />
+          
             <h3 id="current_username" style="color: white;">Cargando...</h3>
             <p id="user_type_description" style="color: white;">Cargando tipo...</p>
             <div class="user-stats">
@@ -360,52 +360,63 @@ if (currentUserId) {
     function hideLoadMoreButton() {
         document.getElementById('load_more_posts_btn').style.display = 'none';
     }
-
- function renderPost(post) {
+function renderPost(post) {
     let postHtml = `
         <div class="post-card" data-post-id="${post.id}">
-            <div class="post-header">
-                <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
-                <strong><a href="#" class="view-profile-link" data-user-id="${post.autor_id}">${post.autor}</a></strong>
-                ${post.autor_id === currentUserId && !post.esta_eliminado ? `
-                    <div class="post-options">
-                        <button class="options-btn">...</button>
-                        <div class="options-menu" style="display: none;">
-                            <button class="delete-post-btn" data-post-id="${post.id}">Eliminar</button>
-                        </div>
+            <div class="post-header" style="display: flex; align-items: center; justify-content: space-between;">
+                <strong>
+                    <a href="#" class="view-profile-link" data-user-id="${post.autor_id}">${post.autor}</a>
+                </strong>`;
+
+    if (post.autor_id === currentUserId && !post.esta_eliminado) {
+        postHtml += `
+                <div class="post-options">
+                    <button class="options-btn">...</button>
+                    <div class="options-menu" style="display: none;">
+                        <button class="delete-post-btn" data-post-id="${post.id}">Eliminar</button>
                     </div>
-                ` : ''}
-            </div>`;
+                </div>`;
+    }
+
+    postHtml += `</div>`; // cierre post-header
 
     if (post.esta_eliminado) {
         postHtml += `<p style="font-style: italic; color: #888;">Este post ha sido eliminado.</p>`;
     } else {
         postHtml += `<p>${post.contenido}</p>`;
-    }
 
-    // WhatsApp solo para organizaciones con número válido
-    if (post.es_organizacion && post.telefono_whatsapp) {
-        postHtml += `
-            <div class="post-contact">
-                <a href="https://wa.me/${post.telefono_whatsapp}" target="_blank" class="whatsapp-btn" title="Contactar por WhatsApp">
-                    <img src="https://cdn-icons-png.flaticon.com/512/220/220236.png" alt="WhatsApp" width="24" height="24" style="vertical-align: middle; margin-left: 8px;" />
-                    <span style="margin-left: 4px;">WhatsApp</span>
-                </a>
-            </div>
-        `;
+        if (post.etiquetas && post.etiquetas.length > 0) {
+            postHtml += `<div class="post-tags" style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;">`;
+            post.etiquetas.forEach(etiqueta => {
+                postHtml += `<span class="tag" style="background-color: #eee; color: #555; padding: 2px 6px; border-radius: 4px; font-size: 0.8em;">${etiqueta}</span>`;
+            });
+            postHtml += `</div>`;
+        }
     }
 
     postHtml += `
-            <div class="post-meta">
+            <div class="post-meta" style="margin-top: 6px;">
                 <small>${new Date(post.fecha_creacion).toLocaleString()}</small>
             </div>
-            <div class="post-actions">
-                <button class="like-btn ${post.usuario_dio_like ? 'liked' : ''}" data-post-id="${post.id}">
+            <div class="post-actions" style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
+                <button class="like-btn ${post.usuario_dio_like ? 'liked' : ''}" data-post-id="${post.id}" style="display: flex; align-items: center; gap: 5px;">
                     ❤️ <span class="like-count">${post.conteo_likes}</span>
                 </button>
-                ${post.conteo_comentarios > 0 ? `<button class="comment-btn" data-post-id="${post.id}">Ver Comentarios (${post.conteo_comentarios})</button>` : ''}
+                
+                ${post.conteo_comentarios > 0 ? `
+                <button class="comment-btn" data-post-id="${post.id}" style="display: flex; align-items: center; gap: 5px;">
+                    💬 <span>${post.conteo_comentarios}</span>
+                </button>` : ''}
+                
+                ${post.telefono_whatsapp ? `
+                <a href="https://wa.me/${post.telefono_whatsapp}" target="_blank" 
+                   style="display: flex; align-items: center; gap: 5px; text-decoration: none; color: #25D366; font-weight: 500;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/220/220236.png" alt="WhatsApp" width="20" height="20" />
+                    <span>Contactar</span>
+                </a>` : ''}
             </div>
         </div>`;
+    
     return postHtml;
 }
 
