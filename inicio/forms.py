@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Voluntario, Organizacion
 from django.contrib.auth.forms import AuthenticationForm
+from mapa.models import CentroReciclaje
 
 
 class RegistroVoluntarioForm(UserCreationForm):
@@ -19,12 +20,19 @@ class RegistroVoluntarioForm(UserCreationForm):
         user.email = self.cleaned_data['email']
         if commit:
             user.save()
-            Voluntario.objects.create(
+            voluntario = Voluntario.objects.create(
                 user=user,
                 nombre=self.cleaned_data['nombre'],
                 latitud=self.cleaned_data['latitud'],
                 longitud=self.cleaned_data['longitud']
             )
+            if voluntario.latitud and voluntario.longitud:
+                CentroReciclaje.objects.create(
+                    nombre=voluntario.nombre,
+                    lat=voluntario.latitud,
+                    lng=voluntario.longitud,
+                    materiales="Voluntario"
+                )
         return user
 
 class RegistroOrganizacionForm(UserCreationForm):
@@ -42,11 +50,18 @@ class RegistroOrganizacionForm(UserCreationForm):
         user.email = self.cleaned_data['email']
         if commit:
             user.save()
-            Organizacion.objects.create(
+            organizacion = Organizacion.objects.create(
                 user=user,
                 nombre=self.cleaned_data['nombre'],
                 telefono=self.cleaned_data['telefono'],
                 latitud=self.cleaned_data['latitud'],
                 longitud=self.cleaned_data['longitud']
             )
+            if organizacion.latitud and organizacion.longitud:
+                CentroReciclaje.objects.create(
+                    nombre=organizacion.nombre,
+                    lat=organizacion.latitud,
+                    lng=organizacion.longitud,
+                    materiales="Organización"
+                )
         return user
