@@ -1,341 +1,186 @@
-h2 {
-    /* Posicionamos el h2 absolutamente respecto al body */
-    position: absolute; /* Saca el h2 del flujo normal del documento */
-    top: 20px;          /* 20px desde el borde superior */
-    left: 20px;         /* 20px desde el borde izquierdo */
-    margin: 0;          /* Elimina cualquier margen predeterminado que pueda afectarlo */
-    color: #333;        /* Color de texto para el h2 */
-    z-index: 10;        /* Asegura que esté por encima de otros elementos si hay solapamiento */
+/* Estilos generales para el body y centrado del formulario */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif; /* Fuente genérica, puedes especificar una si deseas */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f0f2f5; /* Fondo gris muy claro para el body */
+    align-items: center; /* Centra el contenido horizontalmente */
+    justify-content: center; /* Centra el contenido verticalmente */
 }
 
+
+.site-title {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+/* Estilo para el h1 "Bienvenidos de nuevo" que no está en el formulario */
+.page-intro-heading {
+    text-align: center;
+    color: #333;
+    font-size: 2.2rem;
+    position: absolute; /* Para que no afecte el centrado del formulario */
+    top: 80px; /* Ajusta según la altura de tu header */
+    width: 100%;
+    margin: 0;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Contenedor principal del formulario */
 .main-container {
+    flex-grow: 1; /* Permite que el contenedor principal ocupe el espacio restante */
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%; /* Asegura que ocupe todo el ancho disponible para centrar */
+    padding: 20px;
+    box-sizing: border-box; /* Incluye padding en el ancho */
+}
+
+/* Estilos del formulario de login */
+.login-form {
+    max-width: 400px; /* Ancho máximo del formulario como en la imagen */
     width: 100%;
-    margin-top: 0;
+    padding: 40px; /* Relleno interno del formulario */
+    background: #ffffff; /* Fondo blanco sólido */
+    border-radius: 12px; /* Bordes redondeados */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra los elementos dentro del formulario */
 }
 
-body {
-    margin: 0; /* Elimina el margen predeterminado del body */
-    display: flex; /* Habilita Flexbox en el body */
-    justify-content: center; /* Centra horizontalmente el contenido */
-    align-items: center; /* Centra verticalmente el contenido */
-    min-height: 100vh; /* Asegura que el body ocupe al menos el 100% del alto de la ventana */
-    background-color: #f0f0f0; /* Un color de fondo suave para que se note el centrado */
-    font-family: sans-serif; /* Mantiene la fuente que tenías */
+.form-heading {
+    text-align: center;
+    color: #333; /* Color de texto oscuro */
+    font-size: 2rem; /* Tamaño de fuente grande */
+    font-weight: bold; /* Negrita */
+    margin-bottom: 30px; /* Espacio debajo del título */
+    letter-spacing: 1px; /* Espaciado entre letras */
+    text-transform: uppercase; /* MAYÚSCULAS */
 }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: white;
-  width: 30em; /* ¡Ajustado a 30em! */
-  height: 40em; /* ¡Ajustado a 40em! */
-  border: 2px solid #24135a;
-  border-bottom-left-radius: 1.5em;
-  border-top-right-radius: 1.5em;
-  box-shadow:
-    -10px 0px 0px #24135a,
-    -10px 5px 5px rgb(0, 0, 0, 0.2);
-  overflow: hidden;
-  position: relative;
-  transition: all 0.25s ease;
-  padding: 0 1em;
+.input-group {
+    position: relative;
+    margin-bottom: 25px; /* Espacio entre grupos de input */
+    width: 100%; /* Ocupa todo el ancho disponible */
 }
 
-#login-area,
-#email-area,
-#password-area,
-#footer-area {
-  width: 100%;
+.input-group .label {
+    position: absolute;
+    top: 15px; /* Ajusta la posición inicial para que coincida con el padding del input */
+    left: 20px;
+    font-size: 1rem; /* Tamaño de fuente del label */
+    color: #888; /* Color de texto más claro para el label */
+    pointer-events: none; /* Asegura que el label no bloquee el input */
+    transition: all 0.2s ease-out; /* Transición suave para el movimiento del label */
 }
 
-#login-area {
-  width: 100%;
-  height: 5em; /* Aumentado para el nuevo tamaño */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
+.input-group input {
+    width: calc(100% - 40px); /* Ancho del 100% menos el padding horizontal */
+    padding: 15px 20px; /* Relleno interno del input */
+    font-size: 1rem;
+    color: #333;
+    background-color: #f5f5f5; /* Fondo gris claro para el input */
+    border: 1px solid #ddd; /* Borde suave */
+    border-radius: 8px; /* Bordes redondeados del input */
+    outline: none; /* Quita el contorno al enfocar */
+    transition: border-color 0.3s ease; /* Transición para el color del borde */
 }
 
-#login-area p {
-  top: 0.5em; /* Ajustado ligeramente */
-  font-size: 2em; /* Aumentado ligeramente para el nuevo tamaño del formulario */
-  font-weight: bold;
-  position:static;
-  z-index: 2;
+/* Efecto de label flotante: cuando el input no está vacío O está enfocado */
+.input-group input:not(:placeholder-shown) + .label,
+.input-group input:focus + .label {
+    top: -10px; /* Sube la etiqueta */
+    left: 15px;
+    font-size: 0.75rem; /* Tamaño de fuente más pequeño */
+    color: #58bc82; /* Color verde */
+    background-color: #fff; /* Fondo blanco para el label flotante */
+    padding: 0 5px; /* Pequeño padding para despegar del input */
+    border-radius: 3px;
+    z-index: 1; /* Asegura que el label esté por encima del input */
 }
 
-#login-area #behind {
-  top: 65%; /* Ajustado */
-  font-size: 1.2em; /* Aumentado */
-  font-weight: bold;
-  position: absolute;
-  z-index: 1;
-  left: 0;
+
+.input-group input:focus {
+    border-color: #58bc82; /* Borde verde al enfocar */
+    box-shadow: 0 0 5px rgba(88, 188, 130, 0.3); /* Sombra sutil al enfocar */
 }
 
-#behind {
-  position: absolute;
-  left: 1em; /* Ajustado ligeramente */
-  line-height: 15;
-  color: #6041bf;
+.forgot-password {
+    text-align: right;
+    width: 100%; /* Ocupa todo el ancho */
+    margin-bottom: 25px; /* Espacio debajo del enlace */
 }
 
-#email-area {
-  max-width: 90%; /* Limita el ancho máximo para dejar un margen a los lados */
-  width: 100%; /* Permite que se expanda hasta max-width */
-  margin: 0em auto 0 auto; /* Centra horizontalmente el elemento dentro del .form */
-  height: 9em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  transition: all 0.25s ease;
+.forgot-password a {
+    font-size: 0.9rem;
+    color: #58bc82; /* Color verde para el enlace */
+    text-decoration: none; /* Sin subrayado */
+    transition: color 0.3s ease;
 }
 
-#email-area input {
-  width: 100%;
-  border: 2px solid #6041bf;
-  border-radius: 0.5em;
-  height: 3.5em; /* Aumentado la altura del input */
-  padding-left: 1em;
-  font-size: 1.2em; /* Aumentado el tamaño de fuente del input */
-  font-weight: 100;
-  transition: all 0.5s ease;
-  outline: none;
-  box-shadow: 0px 5px 5px -3px rgb(0, 0, 0, 0.2);
+.forgot-password a:hover {
+    color: #45a56b; /* Verde más oscuro al pasar el ratón */
 }
 
-#password-area {
-   max-width: 90%; /* Limita el ancho máximo */
-  width: 100%; /* Permite que se expanda hasta max-width */
-  margin: 0 auto; /* Centra horizontalmente */
-  height: 9em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  transition: all 0.25s ease;
+.submit {
+    width: 100%; /* Ancho completo */
+    padding: 15px;
+    background-color: #58bc82; /* Fondo verde */
+    color: #fff; /* Texto blanco */
+    border: none;
+    border-radius: 30px; /* Mucho borde redondeado para el botón */
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 25px; /* Espacio debajo del botón */
 }
 
-#recover-password {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end; /* Alinea el enlace a la derecha */
-  padding-right: 1em; /* Espacio a la derecha */
-  align-items: end;
+.submit:hover {
+    background-color: #45a56b; /* Verde más oscuro al pasar el ratón */
+    transform: translateY(-2px); /* Pequeño efecto de elevación */
+    box-shadow: 0 5px 15px rgba(88, 188, 130, 0.4); /* Sombra al pasar el ratón */
 }
 
-#password-area input {
-  width: 100%;
-  border: 2px solid #6041bf;
-  font-size: 1.2em; /* Aumentado el tamaño de fuente del input */
-  border-radius: 0.5em;
-  height: 3.5em; /* Aumentado la altura del input */
-  padding-left: 1em;
-  transition: all 0.25s ease;
-  outline: none;
-  box-shadow: 0px 5px 5px -3px rgb(0, 0, 0, 0.2);
+.signup-link {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #333;
+    width: 100%; /* Ocupa todo el ancho */
 }
 
-#password-area a {
-  padding-top: 1em; /* Ajustado */
-  font-size: 1em; /* Ajustado */
-  font-weight: bold;
-  transition: all 0.25s ease;
-  color: #6041bf;
+.signup-link a {
+    color: #58bc82; /* Color verde para el enlace de registro */
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
 }
 
-#footer-area {
-   max-width: 90%; 
-  width: 100%; 
-  margin: 0 auto; 
-  height: 7em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  color: #6041bf;
-  transition: all 0.25s ease;
+.signup-link a:hover {
+    color: #45a56b;
 }
 
-#footer-area button {
-  width: 100%;
-  border: 2px solid #6041bf;
-  border-radius: 0.5em;
-  height: 3.5em; /* Aumentado la altura del botón */
-  padding-left: 1em;
-  font-size: 1.2em; /* Aumentado el tamaño de fuente del botón */
-  font-weight: 100;
-  transition: all 0.25s ease;
-  color: white;
-  font-weight: bold;
-  background-color: #6041bf;
-  box-shadow: 0px 5px 5px -3px rgb(0, 0, 0, 0.2);
+/* Animación de entrada (fade in) */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
-#footer-area p,
-#footer-area a {
-  font-size: 1em; /* Ajustado */
-  transition: all 0.25s ease;
-}
-
-#text-inside {
-    /* Quita padding-top si no lo necesitas, ya que display: flex lo centrará mejor */
-    /* padding-top: 0em; */
-    display: flex; /* Cambia a 'flex' para mejor control del flujo */
-    align-items: center; /* Centra verticalmente los elementos dentro de #text-inside */
-    justify-content: center; /* Opcional: Centra horizontalmente todo el bloque */
-    gap: 0.5em; /* Añade un pequeño espacio entre el <p> y el <a> */
-    margin-top: 0.5em; /* Ajusta este margen si necesitas separar #text-inside de otros elementos */
-    width: 100%; /* Asegura que ocupe todo el ancho disponible para su padre */
-    /* background-color: lightblue; /* Temporal para depurar: ver su área */
-}
-
-#text-inside p {
-    margin: 0; /* Elimina el margen predeterminado del párrafo */
-    /* Si quieres que el texto del párrafo sea diferente al de "Regístrate" */
-    /* font-size: 0.9em; */
-    /* color: #555; */
-}
-
-#text-inside a#link { /* Asegúrate de que el selector sea específico si hay otros <a> */
-    text-decoration: none; /* Quita el subrayado predeterminado */
-    color: #6041bf; /* Color del enlace, como el resto de tu UI */
-    font-weight: bold;
-    /* Puedes ajustar el tamaño de fuente si es necesario */
-    /* font-size: 0.9em; */
-}
-
-#link {
-  padding-left: 0.1em;
-  font-weight: bold;
-}
-
-#background-color {
-  width: 100%;
-  height: 5em; /* Ajustado para el nuevo login-area height */
-  background-color: #6041bf;
-  position: absolute;
-  top: 0em;
-  z-index: 1;
-  transition: all 0.5s ease;
-  box-shadow: inset 5px 0px #24135a;
-}
-
-#link-circle {
-  width: 100%;
-  height: 6em; /* Ajustado */
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding-left: 15%;
-  padding-right: 15%;
-}
-
-#link-circle svg {
-  transition: all 0.25s ease;
-}
-
-#whitefilter {
-  width: 4.5em; /* Ajustado */
-  height: 4.5em; /* Ajustado */
-  top: 2.5px;
-  right: 2.5px;
-  position: absolute;
-  z-index: 2;
-  border-top-right-radius: 1.25em;
-  box-shadow: 35px -35px 0px -1px white;
-}
-
-::placeholder {
-  color: #6041bf;
-  font-weight: bold;
-}
-
-.form:hover {
-  width: 30.5em; /* Ajustado para el hover */
-  height: 40.5em; /* Ajustado para el hover */
-}
-
-#email-area:hover ~ #background-color {
-  height: 8em; /* Ajustado para el nuevo email-area height */
-  transform: translateY(6.5em); /* Ajustado para reflejar el nuevo tamaño de #login-area y #email-area */
-}
-
-#email-area:hover,
-#password-area:hover,
-#footer-area:hover {
-    max-width: 95%;
-}
-
-#email-area:hover p {
-  color: white;
-}
-
-#email-area:hover input {
-  color: white;
-  border: 2px solid white;
-  background-color: #6041bf;
-  height: 4em; /* Ajustado */
-}
-
-#email-area:hover ::placeholder {
-  color: white;
-}
-
-#password-area:hover ~ #background-color {
-  height: 8em; /* Ajustado para el nuevo password-area height */
-  transform: translateY(14em); /* Ajustado para reflejar los nuevos tamaños de las áreas superiores */
-}
-
-#footer-area:hover ~ #background-color {
-  height: 10em; /* Ajustado para el nuevo footer-area height */
-  transform: translateY(27em); /* Ajustado para reflejar los nuevos tamaños de todas las áreas superiores */
-}
-
-#password-area:hover p {
-  color: white;
-}
-
-#password-area:hover a {
-  color: white;
-  padding-right: 5%;
-}
-
-#password-area:hover input {
-  color: white;
-  border: 2px solid white;
-  background-color: #6041bf;
-  height: 4em; /* Ajustado */
-}
-
-#password-area:hover ::placeholder {
-  color: white;
-}
-
-#footer-area:hover p,
-#footer-area:hover a {
-  color: white;
-}
-
-#footer-area:hover button {
-  border: 2px solid white;
-  background-color: #6041bf;
-  height: 4em; /* Ajustado */
-}
-
-#footer-area button:active {
-  color: #6041bf;
-  background-color: white;
-  width: 90%;
-}
-
-#link-circle svg:hover {
-  transform: scale(1.25);
-  margin: 0.5em;
+/* Media Queries para responsividad */
+@media (max-width: 480px) {
+    .login-form {
+        padding: 30px;
+        width: 90%;
+    }
 }
