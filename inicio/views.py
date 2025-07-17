@@ -419,23 +419,57 @@ def seleccionar_etiquetas(request):
     })
 
 
+# @login_required
+# def feed(request):
+#     #aqui hay que poner que agarre los posts, pero no han hecho lo de los posts
+#     #asiq ta vacio
+
+#     posts_populares = (
+#         Post.objects.filter(esta_eliminado=False)
+#         .annotate(popularidad=ExpressionWrapper(
+#             F('conteo_likes') + F('conteo_comentarios') * 2, 
+#             output_field=IntegerField()
+#         ))
+#         .order_by('-popularidad', '-fecha_creacion')[:3] 
+#     )
+
+
+#     return render(request, 'feed.html',{
+#         'posts_populares': posts_populares,
+#         'request': request
+#     })
+
 @login_required
 def feed(request):
-    #aqui hay que poner que agarre los posts, pero no han hecho lo de los posts
-    #asiq ta vacio
+    # Ya no recuperamos posts populares ni solo organizaciones.
+    # Ahora recuperamos a todos los usuarios activos.
+    # Usamos .select_related() para precargar los perfiles de Organizacion y Voluntario
+    # Esto es crucial para el rendimiento y evitar muchas consultas a la DB en el template.
+    todos_los_usuarios_activos = User.objects.filter(is_active=True).order_by('username').select_related('organizacion', 'voluntario')
+    
+    # Preparamos una lista para los usuarios con su tipo de perfil
+    usuarios_con_tipo = []
+    for usuario in todos_los_usuarios_activos:
+        # Excluimos al usuario actual de la lista de "Otros Usuarios" si no quieres que se vea a sí mismo
+        if usuario == request.user:
+            continue
 
-    posts_populares = (
-        Post.objects.filter(esta_eliminado=False)
-        .annotate(popularidad=ExpressionWrapper(
-            F('conteo_likes') + F('conteo_comentarios') * 2, 
-            output_field=IntegerField()
-        ))
-        .order_by('-popularidad', '-fecha_creacion')[:3] 
-    )
+        tipo_perfil = "Normal" # Por defecto, si no es ni organizacion ni voluntario
+        
+        # Verificar si es una organización
+        if hasattr(usuario, 'organizacion') and usuario.organizacion is not None:
+            tipo_perfil = "Organización"
+        # Verificar si es un voluntario (si no fue ya una organización)
+        elif hasattr(usuario, 'voluntario') and usuario.voluntario is not None:
+            tipo_perfil = "Voluntario"
+        
+        usuarios_con_tipo.append({
+            'user_obj': usuario,
+            'tipo': tipo_perfil
+        })
 
-
-    return render(request, 'feed.html',{
-        'posts_populares': posts_populares,
+    return render(request, 'feed.html', {
+        'usuarios_con_tipo': usuarios_con_tipo, # Nueva variable de contexto para el sidebar
         'request': request
     })
 
