@@ -15,6 +15,17 @@ def feed_view(request):
     #Vista que renderiza la plantilla principal del feed.
     #Pasa el objeto 'request' al contexto para acceder a 'request.user.id' en la plantilla.
     return render(request, 'feed.html', {'request': request})
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_GET
+from django.http import JsonResponse
+
+def normalizar_telefono(telefono):
+    if telefono:
+        numero = ''.join(filter(str.isdigit, telefono))
+        if not numero.startswith('507'):
+            numero = '507' + numero
+        return numero
+    return None
 
 @login_required
 @require_GET
@@ -25,18 +36,21 @@ def feed_api_view(request):
     offset = int(request.GET.get('offset', 0))
 
     posts_queryset = Post.objects.filter(esta_eliminado=False).select_related('autor').prefetch_related('etiquetas').order_by('-fecha_creacion')
+
+    total_posts = posts_queryset.count()  # Mejor hacer count solo 1 vez
+
     posts_a_devolver = posts_queryset[offset:offset + limite]
 
     posts_data = []
     for post in posts_a_devolver:
-        usuario_dio_like = post.likes_recibidos.filter(usuario=request.user).exists()
+        usuario_dio_like = post.likes_recibidos.filter(usuario=usuario_actual).exists()
 
         # Verificar si el autor es una organización
         telefono_whatsapp = None
         es_organizacion = False
         try:
             organizacion = Organizacion.objects.get(user=post.autor)
-            telefono_whatsapp = organizacion.telefono
+            telefono_whatsapp = normalizar_telefono(organizacion.telefono)
             es_organizacion = True
         except Organizacion.DoesNotExist:
             pass
@@ -47,16 +61,16 @@ def feed_api_view(request):
             'autor': post.autor.username,
             'autor_id': post.autor.id,
             'fecha_creacion': post.fecha_creacion.isoformat(),
-            'conteo_likes': post.conteo_likes,
-            'conteo_comentarios': post.conteo_comentarios,
+            'conteo_likes': post.conteo_likes if hasattr(post, 'conteo_likes') else 0,
+            'conteo_comentarios': post.conteo_comentarios if hasattr(post, 'conteo_comentarios') else 0,
             'etiquetas': [etiqueta.nombre for etiqueta in post.etiquetas.all()],
             'esta_eliminado': post.esta_eliminado,
             'usuario_dio_like': usuario_dio_like,
             'telefono_whatsapp': telefono_whatsapp,
-            'es_organizacion': es_organizacion  # ✅ agregado
+            'es_organizacion': es_organizacion
         })
 
-    hay_mas = (offset + limite) < posts_queryset.count()
+    hay_mas = (offset + limite) < total_posts
 
     return JsonResponse({
         'posts': posts_data,
@@ -66,14 +80,7 @@ def feed_api_view(request):
 
 
 def obtener_etiquetas_para_post(request):
-    #API para obtener todas las etiquetas disponibles en formato JSON.
-    #Esta vista es usada por JavaScript para rellenar los checkboxes del modal.
-    # Obtiene todas las etiquetas, solo los campos 'id' y 'nombre', y las ordena por nombre.
-
     etiquetas = Etiqueta.objects.all().values('id', 'nombre').order_by('nombre')
-    
-    # Devuelve la lista de diccionarios como una respuesta JSON.
-    # 'safe=False' es necesario porque estamos devolviendo una lista de diccionarios, no un diccionario raíz.
     return JsonResponse(list(etiquetas), safe=False)
 
 @login_required
