@@ -1,565 +1,67 @@
-body {
-        font-family: sans-serif;
-        margin: 0;
-        background-color: #f0f2f5;
-        display: flex;
-        justify-content: flex-start;
-        align-items: flex-start;
-        min-height: 100vh;
-    }
-.sidebar-left {
-    margin: 20px;
-    background: transparent; /* Background will be handled by the waves */
-    box-shadow: 0px 8px 28px -9px rgba(0,0,0,0.45);
-    position: relative;
-    width: 280px;
-    height: auto;
-    border-radius: 16px;
-    overflow: hidden;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 1;
-}
-
-/* Wave animation for background - UPDATED FOR BLUE GRADIENT */
-.wave {
-    position: absolute;
-    width: 540px;
-    height: 700px;
-    opacity: 0.6;
-    left: 0;
-    top: 0;
-    margin-left: -50%;
-    margin-top: -70%;
-    /* Updated gradient for celeste (sky blue) */
-    background: linear-gradient(744deg, #87CEEB, #4682B4 60%, #ADD8E6); /* Lighter blue to deeper blue */
-    border-radius: 40%;
-    animation: wave 55s infinite linear;
-    z-index: 0;
-}
-
-.wave:nth-child(2) {
-    top: 210px;
-    animation-duration: 50s;
-}
-
-.wave:nth-child(3) {
-    top: 420px;
-    animation-duration: 45s;
-}
-
-@keyframes wave {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* User profile specific styles */
-.user-profile {
-    text-align: center;
-    z-index: 1;
-    position: relative;
-    width: 100%;
-    padding: 0 20px;
-    box-sizing: border-box;
-}
-
-.user-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-    border: 3px solid rgba(255, 255, 255, 0.8);
-}
-
-.user-profile h3,
-.user-profile p,
-.user-profile .user-stats div,
-.user-profile .user-tags li {
-    color: white; /* Keeping text white for contrast against blue waves */
-    margin-bottom: 5px;
-    word-wrap: break-word;
-}
-
-.user-profile h3 {
-    font-size: 1.5em;
-    margin-top: 0;
-}
-
-.user-profile p {
-    font-size: 0.9em;
-    opacity: 0.8;
-}
-
-.user-stats {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    margin: 15px 0;
-}
-
-.user-stats div {
-    font-size: 0.9em;
-    line-height: 1.3;
-}
-
-.user-stats strong {
-    font-size: 1.2em;
-}
-
-.user-tags {
-    list-style: none;
-    padding: 0;
-    margin: 15px 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-}
-
-.user-tags li {
-    background-color: rgba(255, 255, 255, 0.2); /* Keep tags slightly transparent white */
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.8em;
-}
-
-/* Navigation button styles */
-nav {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 0 20px;
-    box-sizing: border-box;
-}
-
-.animated-button {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.15);
-    color: white;
-    font-size: 1em;
-    cursor: pointer;
-    overflow: hidden;
-    transition: background-color 0.3s ease;
-    z-index: 1;
-}
-
-.animated-button:hover {
-    background-color: rgba(255, 255, 255, 0.25);
-}
-
-.animated-button svg {
-    width: 20px;
-    height: 20px;
-    fill: white;
-    transition: transform 0.3s ease;
-}
-
-.animated-button .text {
-    position: relative;
-    z-index: 1;
-}
-
-.animated-button .arr-1 {
-    transform: translateX(0%);
-}
-
-.animated-button:hover .arr-1 {
-    transform: translateX(200%);
-}
-
-.animated-button .arr-2 {
-    transform: translateX(-200%);
-}
-
-.animated-button:hover .arr-2 {
-    transform: translateX(0%);
-}
-
-.animated-button .circle {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: scale(0);
-    opacity: 0;
-    transition: transform 0.4s ease, opacity 0.4s ease;
-    z-index: 0;
-}
-
-.animated-button:hover .circle {
-    transform: scale(1);
-    opacity: 1;
-}
-
-.notification-badge {
-    background-color: #ff4081;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 7px;
-    font-size: 0.7em;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    z-index: 2;
-}
-
-/* Card Right */
-/* Common sidebar styling */
-.sidebar-left,
-.sidebar-right {
-    margin: 20px;
-    background: transparent;
-    box-shadow: 0px 8px 28px -9px rgba(0,0,0,0.45);
-    position: relative;
-    width: 280px;
-    height: auto;
-    border-radius: 16px;
-    overflow: hidden;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 1;
-}
-
-/* Wave animation for background - UPDATED FOR BLUE GRADIENT */
-.wave {
-    position: absolute;
-    width: 540px;
-    height: 700px;
-    opacity: 0.6;
-    left: 0;
-    top: 0;
-    margin-left: -50%;
-    margin-top: -70%;
-    /* Updated gradient for celeste (sky blue) */
-    background: linear-gradient(744deg, #87CEEB, #4682B4 60%, #ADD8E6);
-    border-radius: 40%;
-    animation: wave 55s infinite linear;
-    z-index: 0;
-}
-
-.wave:nth-child(2) {
-    top: 210px;
-    animation-duration: 50s;
-}
-
-.wave:nth-child(3) {
-    top: 420px;
-    animation-duration: 45s;
-}
-
-@keyframes wave {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* User profile specific styles (from sidebar-left, kept for completeness) */
-.user-profile {
-    text-align: center;
-    z-index: 1;
-    position: relative;
-    width: 100%;
-    padding: 0 20px;
-    box-sizing: border-box;
-}
-
-.user-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-    border: 3px solid rgba(255, 255, 255, 0.8);
-}
-
-.user-profile h3,
-.user-profile p,
-.user-profile .user-stats div,
-.user-profile .user-tags li {
-    color: white;
-    margin-bottom: 5px;
-    word-wrap: break-word;
-}
-
-.user-profile h3 {
-    font-size: 1.5em;
-    margin-top: 0;
-}
-
-.user-profile p {
-    font-size: 0.9em;
-    opacity: 0.8;
-}
-
-.user-stats {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    margin: 15px 0;
-}
-
-.user-stats div {
-    font-size: 0.9em;
-    line-height: 1.3;
-}
-
-.user-stats strong {
-    font-size: 1.2em;
-}
-
-.user-tags {
-    list-style: none;
-    padding: 0;
-    margin: 15px 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-}
-
-.user-tags li {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.8em;
-}
-
-/* Navigation button styles (from sidebar-left, kept for completeness) */
-nav {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 0 20px;
-    box-sizing: border-box;
-}
-
-.animated-button {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.15);
-    color: white;
-    font-size: 1em;
-    cursor: pointer;
-    overflow: hidden;
-    transition: background-color 0.3s ease;
-    z-index: 1;
-}
-
-.animated-button:hover {
-    background-color: rgba(255, 255, 255, 0.25);
-}
-
-.animated-button svg {
-    width: 20px;
-    height: 20px;
-    fill: white;
-    transition: transform 0.3s ease;
-}
-
-.animated-button .text {
-    position: relative;
-    z-index: 1;
-}
-
-.animated-button .arr-1 {
-    transform: translateX(0%);
-}
-
-.animated-button:hover .arr-1 {
-    transform: translateX(200%);
-}
-
-.animated-button .arr-2 {
-    transform: translateX(-200%);
-}
-
-.animated-button:hover .arr-2 {
-    transform: translateX(0%);
-}
-
-.animated-button .circle {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: scale(0);
-    opacity: 0;
-    transition: transform 0.4s ease, opacity 0.4s ease;
-    z-index: 0;
-}
-
-.animated-button:hover .circle {
-    transform: scale(1);
-    opacity: 1;
-}
-
-.notification-badge {
-    background-color: #ff4081;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 7px;
-    font-size: 0.7em;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    z-index: 2;
-}
-
-/* --- Styles specific to sidebar-right --- */
-
-/* Search Label */
-.search-label {
-    position: relative;
-    width: calc(100% - 40px);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    z-index: 1;
-}
-
-.search-label .input {
-    width: 100%;
-    padding: 10px 40px 10px 50px; /* Adjusted padding for slash icon */
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #000000; /* Changed to black */
-    font-size: 1em;
-    box-sizing: border-box;
-}
-
-.search-label .input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.search-icon {
-    position: absolute;
-    right: 15px;
-    width: 20px;
-    height: 20px;
-    fill: white; /* Kept white for contrast with the black input text */
-}
-
-.slash-icon {
-    position: absolute;
-    left: 15px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.8em;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    padding: 2px 5px;
-    border-radius: 4px;
-    background-color: rgba(255, 255, 255, 0.1);
-    z-index: 2;
-}
-
-
-/* Popular Posts Cards */
-.sidebar-right nav {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: 100%;
-    padding: 0 20px;
-    box-sizing: border-box;
-}
-
-.sidebar-right nav p {
-    color: white;
-    text-align: center;
-}
-
 .card {
-    background-color: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
-    padding: 15px;
-    color: white; /* Default for all text in card */
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-    z-index: 1;
+  --border-radius: 0.75rem;
+  --primary-color: greenyellow;
+  --secondary-color: #3c3852;
+  width: 250px;
+  font-family: "Arial";
+  padding: 1rem;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  background: #f1f1f3;
+  box-shadow: 0px 8px 16px 0px rgb(0 0 0 / 3%);
+  position: relative;
 }
 
-.card:hover {
-    transform: translateY(-3px);
-    background-color: rgba(255, 255, 255, 0.25);
+.card > * + * {
+  margin-top: 1.1em;
 }
 
-.card_title {
-    font-weight: bold;
-    font-size: 1.1em;
-    margin-bottom: 5px;
-    display: block;
+.card .card__content {
+  color: var(--secondary-color);
+  font-size: 0.86rem;
 }
 
-.card_content {
-    font-size: 0.9em;
-    line-height: 1.4;
-    margin-bottom: 10px;
-    opacity: 0.7; /* Made more opaque */
+.card .card__title {
+  padding: 5;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background-color: black;
+  color: white;
 }
 
-.card_date {
-    font-size: 0.8em;
-    opacity: 0.7;
-    text-align: right;
+.card .card__date {
+  color: #6e6b80;
+  font-size: 0.8rem;
 }
 
-.card__arrow {
-    position: absolute;
-    bottom: 10px;
-    right: 15px;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform: translateX(100%);
-    opacity: 0;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+.card .card__arrow {
+  position: absolute;
+  background: var(--primary-color);
+  padding: 0.4rem;
+  border-top-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+  bottom: 0;
+  right: 0;
+  transition: 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card svg {
+  transition: 0.2s;
+}
+
+/* hover */
+.card:hover .card__title {
+  color: var(--primary-color);
+  text-decoration: underline;
 }
 
 .card:hover .card__arrow {
-    transform: translateX(0);
-    opacity: 1;
+  background: #111;
 }
 
-.card__arrow svg {
-    fill: white;
+.card:hover .card__arrow svg {
+  transform: translateX(3px);
 }

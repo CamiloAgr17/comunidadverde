@@ -1,16 +1,3 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background: #0c960c;
-     background: linear-gradient(180deg,rgba(12, 150, 12, 1) 0%, rgba(8, 64, 8, 1) 15%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start; /* Alinea el contenido al inicio, dejando espacio para el header */
-    color: #24135a; /* Color de texto principal */
-}
-
 .page_bk {
     background-color: white;
 }
@@ -42,7 +29,7 @@ body {
 }
 
 .feed-main {
-    background-color: transparent;
+    background-color: white;
     grid-area: main;
 }
 
