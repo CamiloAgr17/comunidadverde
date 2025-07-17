@@ -19,28 +19,27 @@ def feed_view(request):
 @login_required
 @require_GET
 def feed_api_view(request):
- 
-    # API para obtener el feed de publicaciones del usuario, con scroll infinito.
-    # Solo muestra posts no eliminados lógicamente.
     usuario_actual = request.user
-    
-    # Parámetros para el scroll infinito: 'offset' y 'limite'
-    limite = int(request.GET.get('limite', 10)) # Cuántos posts cargar por vez
-    offset = int(request.GET.get('offset', 0)) # Desde qué posición empezar
 
-    # Consulta base para los posts: solo incluimos posts NO eliminados
-    # Ordenamos por fecha de creación descendente para mostrar los más recientes primero
+    limite = int(request.GET.get('limite', 10))
+    offset = int(request.GET.get('offset', 0))
+
     posts_queryset = Post.objects.filter(esta_eliminado=False).select_related('autor').prefetch_related('etiquetas').order_by('-fecha_creacion')
-
-    # Aplicar offset y limite para la paginación del scroll
     posts_a_devolver = posts_queryset[offset:offset + limite]
 
     posts_data = []
     for post in posts_a_devolver:
+        usuario_dio_like = post.likes_recibidos.filter(usuario=request.user).exists()
 
-        usuario_dio_like = False
-        if request.user.is_authenticated:
-            usuario_dio_like = post.likes_recibidos.filter(usuario=request.user).exists()
+        # Verificar si el autor es una organización
+        telefono_whatsapp = None
+        es_organizacion = False
+        try:
+            organizacion = Organizacion.objects.get(user=post.autor)
+            telefono_whatsapp = organizacion.telefono
+            es_organizacion = True
+        except Organizacion.DoesNotExist:
+            pass
 
         posts_data.append({
             'id': post.id,
@@ -52,10 +51,11 @@ def feed_api_view(request):
             'conteo_comentarios': post.conteo_comentarios,
             'etiquetas': [etiqueta.nombre for etiqueta in post.etiquetas.all()],
             'esta_eliminado': post.esta_eliminado,
-            'usuario_dio_like': usuario_dio_like, 
+            'usuario_dio_like': usuario_dio_like,
+            'telefono_whatsapp': telefono_whatsapp,
+            'es_organizacion': es_organizacion  # ✅ agregado
         })
-    
-    # Indicar si hay más posts disponibles para cargar
+
     hay_mas = (offset + limite) < posts_queryset.count()
 
     return JsonResponse({
@@ -63,6 +63,7 @@ def feed_api_view(request):
         'hay_mas': hay_mas,
         'siguiente_offset': offset + limite if hay_mas else None
     })
+
 
 def obtener_etiquetas_para_post(request):
     #API para obtener todas las etiquetas disponibles en formato JSON.

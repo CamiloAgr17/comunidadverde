@@ -46,7 +46,7 @@
             </ul>
             <nav>
                 <!-- Boton Perfil -->
-                <button class="animated-button" id="view_current_profile_btn">
+               <button class="animated-button" id="view_current_profile_btn" style="display:none">
                     <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
@@ -101,7 +101,7 @@
                 </button>
 
                 <!-- Boton Ajustes -->
-                <button class="animated-button" id="btn_modal_settings">
+              <button class="animated-button" id="btn_modal_settings" style="display:none">
                     <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
@@ -320,11 +320,14 @@
     let hasMorePosts = true;
     let isLoading = false; // Bandera para evitar múltiples cargas simultáneas
 
-    // ID del usuario actual. Pasa el ID del usuario directamente desde el contexto de Django.
-   let currentUserId = {% if request.user.is_authenticated %}{{ request.user.id }}{% else %}null{% endif %};
-       if (currentUserId !== null) { // Asegura que es un número
-        currentUserId = parseInt(currentUserId);
-    }
+   let currentUserId = "{{ request.user.id|default_if_none:'' }}";
+
+if (currentUserId) {
+    currentUserId = parseInt(currentUserId);
+} else {
+    currentUserId = null;
+}
+
 
     // --- Funciones de Utilidad ---
     function getCookie(name) {
@@ -358,43 +361,53 @@
         document.getElementById('load_more_posts_btn').style.display = 'none';
     }
 
-    // --- Funciones de Renderizado ---
-    function renderPost(post) {
-        let postHtml = `
-            <div class="post-card" data-post-id="${post.id}">
-                <div class="post-header">
-                    <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
-                    <strong><a href="#" class="view-profile-link" data-user-id="${post.autor_id}">${post.autor}</a></strong>
-                    ${post.autor_id === currentUserId && !post.esta_eliminado ? `
-                        <div class="post-options">
-                            <button class="options-btn">...</button>
-                            <div class="options-menu" style="display: none;">
-                                <button class="delete-post-btn" data-post-id="${post.id}">Eliminar</button>
-                            </div>
+ function renderPost(post) {
+    let postHtml = `
+        <div class="post-card" data-post-id="${post.id}">
+            <div class="post-header">
+                <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
+                <strong><a href="#" class="view-profile-link" data-user-id="${post.autor_id}">${post.autor}</a></strong>
+                ${post.autor_id === currentUserId && !post.esta_eliminado ? `
+                    <div class="post-options">
+                        <button class="options-btn">...</button>
+                        <div class="options-menu" style="display: none;">
+                            <button class="delete-post-btn" data-post-id="${post.id}">Eliminar</button>
                         </div>
-                    ` : ''}
-                </div>`;
-
-        if (post.esta_eliminado) {
-            postHtml += `<p style="font-style: italic; color: #888;">Este post ha sido eliminado.</p>`;
-        } else {
-            postHtml += `<p>${post.contenido}</p>`;
-        }
-        
-        //AQUI TA EL BOTON DE LIKE PA EL QUE QUIERA DECORAR ESTA XUXA
-        postHtml += `
-                <div class="post-meta">
-                    <small>${new Date(post.fecha_creacion).toLocaleString()}</small>
-                </div>
-                <div class="post-actions">
-                    <button class="like-btn ${post.usuario_dio_like ? 'liked' : ''}" data-post-id="${post.id}">
-                        ❤️ <span class="like-count">${post.conteo_likes}</span>
-                    </button>
-                    ${post.conteo_comentarios > 0 ? `<button class="comment-btn" data-post-id="${post.id}">Ver Comentarios (${post.conteo_comentarios})</button>` : ''}
-                </div>
+                    </div>
+                ` : ''}
             </div>`;
-        return postHtml;
+
+    if (post.esta_eliminado) {
+        postHtml += `<p style="font-style: italic; color: #888;">Este post ha sido eliminado.</p>`;
+    } else {
+        postHtml += `<p>${post.contenido}</p>`;
     }
+
+    // WhatsApp solo para organizaciones con número válido
+    if (post.es_organizacion && post.telefono_whatsapp) {
+        postHtml += `
+            <div class="post-contact">
+                <a href="https://wa.me/${post.telefono_whatsapp}" target="_blank" class="whatsapp-btn" title="Contactar por WhatsApp">
+                    <img src="https://cdn-icons-png.flaticon.com/512/220/220236.png" alt="WhatsApp" width="24" height="24" style="vertical-align: middle; margin-left: 8px;" />
+                    <span style="margin-left: 4px;">WhatsApp</span>
+                </a>
+            </div>
+        `;
+    }
+
+    postHtml += `
+            <div class="post-meta">
+                <small>${new Date(post.fecha_creacion).toLocaleString()}</small>
+            </div>
+            <div class="post-actions">
+                <button class="like-btn ${post.usuario_dio_like ? 'liked' : ''}" data-post-id="${post.id}">
+                    ❤️ <span class="like-count">${post.conteo_likes}</span>
+                </button>
+                ${post.conteo_comentarios > 0 ? `<button class="comment-btn" data-post-id="${post.id}">Ver Comentarios (${post.conteo_comentarios})</button>` : ''}
+            </div>
+        </div>`;
+    return postHtml;
+}
 
     function renderComment(comment) {
         const canDelete = comment.autor_id === currentUserId; 
