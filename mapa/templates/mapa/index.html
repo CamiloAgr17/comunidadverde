@@ -10,16 +10,11 @@
     <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css' />
 
 </head>
-<body>
-    <!-- <h1>Centros de Reciclaje</h1>
-    <select id="styleSelector">
-        <option value="streets">Mapa Normal</option>
-        <option value="satelite">Satélite</option>
-    </select> -->
+<body>>
     <div id="map"></div>
 
     <script>
-        const centros = {{ centros_json|safe }};
+        const organizaciones = {{ organizaciones_json|safe }};
     </script>
 
     <script>
@@ -142,6 +137,22 @@
         }
 
         map.addControl(new ViewToggleControl(), "top-right");
+
+        organizaciones.forEach(org => {
+            if (org.latitud && org.longitud) {
+                new maplibregl.Marker({ color: 'green' })
+                    .setLngLat([org.longitud, org.latitud])
+                    .setPopup(
+                        new maplibregl.Popup().setHTML(`
+                            <strong>${org.nombre}</strong><br/>
+                            Dirección: ${org.direccion || 'No disponible'}<br/>
+                            Teléfono: ${org.telefono || 'No disponible'}
+                        `)
+                    )
+                    .addTo(map);
+            }
+        });
+
     </script>
 </body>
 </html>
