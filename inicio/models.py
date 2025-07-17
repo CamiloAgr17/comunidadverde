@@ -109,3 +109,15 @@ class Seguimiento(models.Model):
 
     def __str__(self):
         return f"{self.seguidor.username} sigue a {self.seguido.username}"
+
+# Likes para os posts
+class Like(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes_dados')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes_recibidos')
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('usuario', 'post')  # evita duplicados
+
+    def __str__(self):
+        return f"{self.usuario.username} le dio like al post {self.post.id}"

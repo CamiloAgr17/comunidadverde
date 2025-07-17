@@ -343,11 +343,15 @@
             postHtml += `<p>${post.contenido}</p>`;
         }
         
+        //AQUI TA EL BOTON DE LIKE PA EL QUE QUIERA DECORAR ESTA XUXA
         postHtml += `
                 <div class="post-meta">
                     <small>${new Date(post.fecha_creacion).toLocaleString()}</small>
                 </div>
                 <div class="post-actions">
+                    <button class="like-btn ${post.usuario_dio_like ? 'liked' : ''}" data-post-id="${post.id}">
+                        ❤️ <span class="like-count">${post.conteo_likes}</span>
+                    </button>
                     ${post.conteo_comentarios > 0 ? `<button class="comment-btn" data-post-id="${post.id}">Ver Comentarios (${post.conteo_comentarios})</button>` : ''}
                 </div>
             </div>`;
@@ -797,6 +801,40 @@
         }
     }
 
+    //Like y dislike de publicaciones
+    async function toggleLike(postId, likeButton) {
+        if (!currentUserId) {
+            alert("Debes iniciar sesión para dar 'Me Gusta'.");
+            return;
+        }
+        try {
+            const response = await fetch('/posts/alternar-like/', { // This URL needs to be defined in your urls.py
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ post_id: postId })
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            
+            const likeCountSpan = likeButton.querySelector('.like-count');
+            if (data.liked) {
+                likeButton.classList.add('liked');
+                likeCountSpan.textContent = parseInt(likeCountSpan.textContent) + 1;
+            } else {
+                likeButton.classList.remove('liked');
+                likeCountSpan.textContent = parseInt(likeCountSpan.textContent) - 1;
+            }
+        } catch (error) {
+            console.error("Error al alternar like:", error);
+            alert("Error al procesar tu 'Me Gusta'.");
+        }
+    }
+
 
     // --- Inicialización y Event Listeners ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -847,6 +885,10 @@
                     }
                 });
                 menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            } else if (event.target.closest('.like-btn')) {
+                const likeButton = event.target.closest('.like-btn');
+                const postId = likeButton.dataset.postId;
+                toggleLike(postId, likeButton);
             }
         });
 
@@ -913,14 +955,15 @@
             if (event.target == profileModal) { profileModal.style.display = "none"; }
             if (event.target == postDetailModal) { postDetailModal.style.display = "none"; }
         }
-
+        
+        /*
         document.getElementById('detail_like_btn').addEventListener('click', function() {
             if (!currentUserId) {
                 alert("Debes iniciar sesión para dar 'Me Gusta'.");
                 return;
             }
             alert('Funcionalidad de "Me Gusta" aún no implementada.');
-        });
+        }); */
     });
 
 </script>

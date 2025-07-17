@@ -17,4 +17,6 @@ urlpatterns = [
     path('comentarios/<int:comentario_id>/eliminar/', views.eliminar_comentario, name='eliminar_comentario'),
     path('usuarios/<int:user_id>/', views.obtener_perfil_usuario, name='obtener_perfil_usuario'),
     path('usuarios/alternar-seguimiento/', views.alternar_seguimiento_usuario, name='alternar_seguimiento_usuario'),
+    path('api/like/', views.alternar_like_post, name='alternar_like_post'),
+    path('posts/alternar-like/', views.alternar_like_post, name='alternar_like_post'),
 ]

@@ -7,7 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 import json
-from .models import Post, Etiqueta, Voluntario, Organizacion, Seguimiento, User, Comentario
+from .models import Post, Etiqueta, Voluntario, Organizacion, Seguimiento, User, Comentario, Like
 from django.db.models import F, ExpressionWrapper, IntegerField
 
 @login_required # Asegura que solo usuarios logueados puedan acceder a esta vista
@@ -37,6 +37,11 @@ def feed_api_view(request):
 
     posts_data = []
     for post in posts_a_devolver:
+
+        usuario_dio_like = False
+        if request.user.is_authenticated:
+            usuario_dio_like = post.likes_recibidos.filter(usuario=request.user).exists()
+
         posts_data.append({
             'id': post.id,
             'contenido': post.contenido,
@@ -46,7 +51,8 @@ def feed_api_view(request):
             'conteo_likes': post.conteo_likes,
             'conteo_comentarios': post.conteo_comentarios,
             'etiquetas': [etiqueta.nombre for etiqueta in post.etiquetas.all()],
-            'esta_eliminado': post.esta_eliminado
+            'esta_eliminado': post.esta_eliminado,
+            'usuario_dio_like': usuario_dio_like, 
         })
     
     # Indicar si hay más posts disponibles para cargar
@@ -366,3 +372,25 @@ def feed(request):
         'posts_populares': posts_populares,
         'request': request
     })
+
+# QUITAR PONER LIKES
+@login_required
+@require_POST
+def alternar_like_post(request):
+    try:
+        data = json.loads(request.body)
+        post_id = data.get('post_id')
+        post = get_object_or_404(Post, id=post_id)
+
+        like, creado = Like.objects.get_or_create(usuario=request.user, post=post)
+        if not creado:
+            like.delete()
+            post.conteo_likes = post.likes_recibidos.count()
+            post.save()
+            return JsonResponse({'estado': 'exito', 'liked': False})
+        else:
+            post.conteo_likes += 1
+            post.save()
+            return JsonResponse({'estado': 'exito', 'liked': True})
+    except Exception as e:
+        return JsonResponse({'estado': 'error', 'mensaje': f'Error al alternar like: {str(e)}'}, status=500)
