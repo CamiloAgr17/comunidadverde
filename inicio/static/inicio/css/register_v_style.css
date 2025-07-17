@@ -1,5 +1,18 @@
 /* En tu archivo: inicio/css/registro_voluntario_style.css */
 
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #277a9c;
+    background: linear-gradient(180deg,rgba(39, 122, 156, 1) 40%, rgba(29, 140, 74, 1) 75%); /* Asegura que el degradado cubra toda la altura de la ventana */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Alinea el contenido al inicio, dejando espacio para el header */
+    color: rgb(0, 0, 0); /* Color de texto principal */
+}
+
 /* --- Contenedor principal de la página (similar a .main-container) --- */
 .volunteer-page-container {
     flex-grow: 1;

@@ -6,7 +6,8 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    background: linear-gradient(0deg,rgba(209, 248, 17, 1) 0%, rgba(102, 153, 40, 1) 50%, rgba(2, 64, 61, 1) 100%);    min-height: 100vh; /* Asegura que el degradado cubra toda la altura de la ventana */    min-height: 100vh; /* Asegura que el degradado cubra toda la altura de la ventana */
+    background: #277a9c;
+    background: linear-gradient(180deg,rgba(39, 122, 156, 1) 20%, rgba(29, 140, 74, 1) 90%); /* Asegura que el degradado cubra toda la altura de la ventana */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -30,58 +31,82 @@ body {
 
 /* Estilos para el título principal */
 .body_inicio h1 {
-    font-size: 3.5em; /* Tamaño grande para el título principal */
-    color: #6041bf; /* Color morado principal */
-    margin-bottom: 0.5em;
+    margin-bottom: 1em;
+    padding-right: 1em;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Estilos para el párrafo secundario */
-.body_inicio p {
-    font-size: 1.5em;
-    color: #24135a; /* Color azul oscuro del borde del login */
-    margin-bottom: 2em;
+.button-group {
+  display: flex;
+  gap: 5rem; /* Espacio entre los botones */
 }
 
 /* Contenedor de botones */
-.button_inicio {
-    display: flex;
-    flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
-    justify-content: center; /* Centra los botones */
-    gap: 20px; /* Espacio entre los botones */
-    margin-top: 1em;
+.button {
+  all: unset;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-top: 1px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1px;
+  border: mediumspringgreen solid 0.15em;
+  border-radius: 0.25em;
+  color: white;
+  font-size: 1.5em;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border 300ms, color 300ms;
+  user-select: none;
 }
 
-/* Estilos para los botones */
-.button_inicio button {
-    background-color: #6041bf; /* Color morado principal, como en tus formularios */
-    color: white;
-    padding: 15px 30px; /* Tamaño generoso */
-    font-size: 1.2em;
-    font-weight: bold;
-    border: 2px solid #6041bf; /* Borde del mismo color */
-    border-radius: 0.5em; /* Bordes redondeados */
-    cursor: pointer;
-    transition: all 0.3s ease; /* Transición suave para los efectos */
-    min-width: 180px; /* Asegura un ancho mínimo para los botones */
-    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2); /* Sombra similar a tus inputs/botones de login */
+.button p {
+  z-index: 1;
 }
 
-/* Efectos hover para los botones */
-.button_inicio button:hover {
-    background-color: #4b3294; /* Morado más oscuro al pasar el ratón */
-    border-color: white; /* Borde blanco al pasar el ratón */
-    transform: translateY(-3px); /* Pequeño levantamiento */
-    box-shadow: 0px 8px 10px -3px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+.button:hover {
+  color: #212121;
 }
 
-/* Efecto active (al hacer click) para los botones */
-.button_inicio button:active {
-    background-color: white;
-    color: #6041bf;
-    border-color: #6041bf;
-    transform: translateY(0);
-    box-shadow: 0px 3px 5px -2px rgba(0, 0, 0, 0.2);
+.button:active {
+  border-color: teal;
+}
+
+.button::after, .button::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  aspect-ratio: 1;
+  background: mediumspringgreen;
+  opacity: 100%;
+  border-radius: 50%;
+  transition: transform 500ms, background 300ms;
+}
+
+.button::before {
+  left: 0;
+  transform: translateX(-12em);
+}
+
+.button::after {
+  right: 0;
+  transform: translateX(12em);
+}
+
+.button:hover:before {
+  transform: translateX(-1em);
+}
+
+.button:hover:after {
+  transform: translateX(1em);
+}
+
+.button:active:before,
+.button:active:after {
+  background: teal;
 }
 
 /* Media Queries para pantallas más pequeñas */
@@ -94,7 +119,7 @@ body {
         font-size: 1.2em;
     }
 
-    .button_inicio button {
+    .button {
         width: 100%; /* Botones de ancho completo en móviles */
         margin-bottom: 10px; /* Espacio entre ellos */
     }

@@ -1,216 +1,122 @@
 /* En tu archivo: inicio/css/register_style.css */
-
-/* --- Contenedor principal de la página de registro (similar a .main-container) --- */
-.register-page-container { /* Renombrado de .main-container */
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    
-}
-
-/* --- Caja del formulario de registro (similar a .form) --- */
-.register-form-box { /* Renombrado de .form */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: white;
-    width: 30em; /* Copiado de .form */
-    height: 40em; /* Copiado de .form. Ajusta si los campos de registro son muchos. */
-    border: 2px solid #24135a;
-    border-bottom-left-radius: 1.5em;
-    border-top-right-radius: 1.5em;
-    box-shadow:
-        -10px 0px 0px #24135a,
-        -10px 5px 5px rgb(0, 0, 0, 0.2);
-    overflow: hidden;
-    position: relative;
-    transition: all 0.25s ease;
-    padding: 0 1em;
-}
-
-/* --- Hover de la caja del formulario (similar a .form:hover) --- */
-.register-form-box:hover { /* Renombrado de .form:hover */
-    width: 30.5em; /* Copiado de .form:hover */
-    height: 40.5em; /* Copiado de .form:hover */
-}
-
-/* --- Área superior de color del formulario (similar a #background-color) --- */
-#register-bg-color { /* Renombrado de #background-color */
-    width: 100%;
-    height: 5em; /* Copiado de #background-color */
-    background-color: #6041bf;
-    position: absolute;
-    top: 0em;
-    z-index: 1;
-    transition: all 0.5s ease;
-    box-shadow: inset 5px 0px #24135a;
-}
-
-/* --- Área de título principal (similar a #login-area) --- */
-#register-title-section { /* Renombrado de #login-area */
-    width: 100%;
-    height: 5em; /* Copiado de #login-area */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    position: relative; /* Necesario para posicionar el subtítulo #register-subtitle-text */
-    overflow: hidden;
-    z-index: 2; /* Para que esté por encima de #register-bg-color */
-}
-
-#register-title-section h2 { /* Título "Registro" (similar a #login-area p) */
-    font-size: 2em; /* Copiado de #login-area p */
-    font-weight: bold;
-    position: static; /* Asegura que no se posicione de forma absoluta */
-    z-index: 2;
+body {
     margin: 0;
-    line-height: 1.2;
-    color: white; /* Asegúrate de que el color sea blanco */
-}
-
-/* --- Subtítulo "Elige tu tipo de cuenta" (similar a #behind) --- */
-#register-subtitle-text { /* Renombrado de #behind */
-    top: 65%; /* Copiado de #behind */
-    font-size: 1.2em; /* Copiado de #behind */
-    font-weight: bold;
-    position: absolute;
-    z-index: 1;
-    left: 1em; /* Copiado de #behind */
-    line-height: 15; /* Copiado de #behind */
-    color: #6041bf;
-}
-
-/* --- Filtro blanco de la esquina (similar a #whitefilter) --- */
-#register-corner-filter { /* Renombrado de #whitefilter */
-    width: 4.5em; /* Copiado de #whitefilter */
-    height: 4.5em; /* Copiado de #whitefilter */
-    top: 2.5px;
-    right: 2.5px;
-    position: absolute;
-    z-index: 2;
-    border-top-right-radius: 1.25em;
-    box-shadow: 35px -35px 0px -1px white;
-}
-
-/* --- Contenedores de botones (simulando #email-area y #password-area) --- */
-.register-button-wrapper { /* Clase para cada formulario de botón */
-    width: 100%;
-    max-width: 90%; /* Limita el ancho máximo para dejar un margen a los lados */
-    margin: 0em auto 0 auto; /* Centra horizontalmente el elemento y añade margen */
-    height: 9em; /* Copiado de #email-area / #password-area */
+    padding: 0;
+    background: #277a9c;
+    background: linear-gradient(180deg,rgba(39, 122, 156, 1) 20%, rgba(29, 140, 74, 1) 90%); /* Asegura que el degradado cubra toda la altura de la ventana */
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
-    transition: all 0.25s ease;
-}
-
-.register-button-wrapper button { /* Estilo del botón real dentro del wrapper */
-    width: 100%;
-    border: 2px solid #6041bf;
-    border-radius: 0.5em;
-    height: 3.5em; /* Copiado de input en #email-area / #password-area */
-    padding-left: 1em; /* Copiado de input */
-    font-size: 1.2em; /* Copiado de input */
-    font-weight: bold; /* Hacerlo bold como el botón de Login */
-    transition: all 0.25s ease;
-    color: white;
-    background-color: #6041bf;
-    box-shadow: 0px 5px 5px -3px rgb(0, 0, 0, 0.2);
-    cursor: pointer;
-}
-
-/* --- Hover de los contenedores de botones (simulando hovers de #email-area, #password-area) --- */
-.register-button-wrapper:hover {
-    max-width: 95%; /* Copiado de :hover en email-area, password-area */
-}
-
-.register-button-wrapper:hover button {
-    color: white; /* Copiado de :hover en email-area/password-area input */
-    border: 2px solid white; /* Copiado de :hover en email-area/password-area input */
-    background-color: #6041bf; /* Copiado de :hover en email-area/password-area input */
-    height: 4em; /* Copiado de :hover en email-area/password-area input */
-}
-
-.register-button-wrapper button:active { /* Copiado de #footer-area button:active */
-    color: #6041bf;
-    background-color: white;
-    width: 90%;
-}
-
-/* --- Hovers del fondo de color #register-bg-color (simulando los hovers de #background-color) --- */
-/* Para esto, necesitamos que las alturas de .register-button-wrapper coincidan con #email-area y #password-area.
-   Y la estructura del HTML debe permitir el selector de hermano `~`. */
-
-/* Hover del PRIMER botón (simula #email-area:hover ~ #background-color) */
-.register-button-wrapper:first-of-type:hover ~ #register-bg-color {
-    height: 8em; /* Copiado */
-    transform: translateY(6.5em); /* Copiado */
-}
-
-/* Hover del SEGUNDO botón (simula #password-area:hover ~ #background-color) */
-.register-button-wrapper:last-of-type:hover ~ #register-bg-color {
-    height: 8em; /* Copiado */
-    transform: translateY(14em); /* Copiado */
-}
-
-/* --- Área inferior de enlaces (similar a #footer-area) --- */
-#register-footer-area { /* Renombrado de #footer-area */
-    max-width: 90%;
-    width: 100%;
-    margin: 0 auto;
-    height: 7em; /* Copiado de #footer-area */
-    display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: flex-start; /* Alinea el contenido al inicio, dejando espacio para el header */
+    color: white; /* Color de texto principal */
+}
+
+/* Estilos para el contenedor principal (main) */
+.body_inicio {
+    flex-grow: 1; /* Permite que el contenido tome el espacio restante */
+    display: flex;
     flex-direction: column;
-    color: #6041bf;
-    transition: all 0.25s ease;
-}
-
-/* --- Hover del área inferior de enlaces (similar a #footer-area:hover) --- */
-#register-footer-area:hover { /* Renombrado de #footer-area:hover */
-    max-width: 95%; /* Copiado */
-}
-
-#register-footer-area:hover p,
-#register-footer-area:hover a { /* Copiado de #footer-area:hover p, a */
-    color: white;
-}
-
-/* --- Hover del fondo de color para #register-footer-area (similar a #footer-area:hover ~ #background-color) --- */
-#register-footer-area:hover ~ #register-bg-color {
-    height: 10em; /* Copiado */
-    transform: translateY(27em); /* Copiado */
-}
-
-/* --- Contenedor de texto y enlace inferior (similar a #text-inside) --- */
-#register-text-link-container { /* Renombrado de #text-inside */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em; /* Espacio entre el párrafo y el enlace */
-    margin-top: 0.5em;
+    justify-content: center; /* Centra verticalmente el contenido dentro de main */
+    align-items: center; /* Centra horizontalmente el contenido dentro de main */
+    text-align: center;
+    padding: 2em; /* Espacio alrededor del contenido */
+    max-width: 900px; /* Limita el ancho máximo para una mejor lectura */
     width: 100%;
+    box-sizing: border-box; /* Incluye padding en el ancho */
 }
 
-#register-text-link-container p { /* Párrafo "¿Ya tienes cuenta?" */
-    margin: 0; /* Elimina márgenes predeterminados */
-    font-size: 1em; /* Copiado de #footer-area p */
-    transition: all 0.25s ease;
+/* Estilos para el título principal */
+.body_inicio h1 img {
+    padding-right: 2em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-#register-text-link-container a { /* Enlace "Inicia Sesión" */
-    text-decoration: none; /* Quita el subrayado */
-    color: #6041bf; /* Color del enlace */
-    font-weight: bold;
-    padding-left: 0.1em; /* Copiado de #link */
-    font-size: 1em; /* Copiado de #footer-area a */
-    transition: all 0.25s ease;
+
+/* Estilos para el párrafo secundario */
+.button-group {
+  display: flex;
+  gap: 5rem; /* Espacio entre los botones */
 }
 
-/* No hay placeholders, link-circle ni svg en el diseño de registro que estamos replicando,
-   así que no necesitamos copiar esos estilos. */
+/* Contenedor de botones */
+.button {
+  all: unset;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-top: 1px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1px;
+  border: mediumspringgreen solid 0.15em;
+  border-radius: 0.25em;
+  color: white;
+  font-size: 1.5em;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border 300ms, color 300ms;
+  user-select: none;
+}
+
+.button p {
+  z-index: 1;
+}
+
+.button:hover {
+  color: #212121;
+}
+
+.button:active {
+  border-color: teal;
+}
+
+.button::after, .button::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  aspect-ratio: 1;
+  background: mediumspringgreen;
+  opacity: 100%;
+  border-radius: 50%;
+  transition: transform 500ms, background 300ms;
+}
+
+.button::before {
+  left: 0;
+  transform: translateX(-18em);
+}
+
+.button::after {
+  right: 0;
+  transform: translateX(18em);
+}
+
+.button:hover:before {
+  transform: translateX(-1em);
+}
+
+.button:hover:after {
+  transform: translateX(1em);
+}
+
+.button:active:before,
+.button:active:after {
+  background: teal;
+}
+
+/* Media Queries para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .body_inicio h1 {
+        font-size: 2.5em;
+    }
+
+    .body_inicio p {
+        font-size: 1.2em;
+    }
+
+    .button {
+        width: 100%; /* Botones de ancho completo en móviles */
+        margin-bottom: 10px; /* Espacio entre ellos */
+    }
+}

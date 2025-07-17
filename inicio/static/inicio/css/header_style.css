@@ -11,17 +11,15 @@ body {
 
 .main-header {
     background-color: transparent; /* Un verde visible */
-    border-color: transparent;
     color: white;
-    padding: 1rem 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    width: 100%;
-    position: sticky;
+    padding: 1rem;
+    width: 80%;
+    position: relative;
     top: 0;
     z-index: 1000;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: left;
+    align-items: left;
 }
 
 .header-content {
