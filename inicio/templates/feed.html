@@ -326,44 +326,59 @@
     function hideLoadMoreButton() {
         document.getElementById('load_more_posts_btn').style.display = 'none';
     }
-
-    // --- Funciones de Renderizado ---
-    function renderPost(post) {
-        let postHtml = `
-            <div class="post-card" data-post-id="${post.id}">
-                <div class="post-header">
-                    <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
-                    <strong><a href="#" class="view-profile-link" data-user-id="${post.autor_id}">${post.autor}</a></strong>
-                    ${post.autor_id === currentUserId && !post.esta_eliminado ? `
-                        <div class="post-options">
-                            <button class="options-btn">...</button>
-                            <div class="options-menu" style="display: none;">
-                                <button class="delete-post-btn" data-post-id="${post.id}">Eliminar</button>
-                            </div>
+function renderPost(post) {
+    let postHtml = `
+        <div class="post-card" data-post-id="${post.id}">
+            <div class="post-header">
+                <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
+                <strong>
+                    <a href="#" class="view-profile-link" data-user-id="${post.autor_id}">${post.autor}</a>
+                </strong>
+                ${post.telefono ? `
+                    <a href="https://wa.me/${post.telefono}" target="_blank" class="whatsapp-link">
+                       <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 24px; height: 24px;">
+                    </a>
+                ` : ''}
+                ${post.autor_id === currentUserId && !post.esta_eliminado ? `
+                    <div class="post-options">
+                        <button class="options-btn">...</button>
+                        <div class="options-menu" style="display: none;">
+                            <button class="delete-post-btn" data-post-id="${post.id}">Eliminar</button>
                         </div>
-                    ` : ''}
-                </div>`;
-
-        if (post.esta_eliminado) {
-            postHtml += `<p style="font-style: italic; color: #888;">Este post ha sido eliminado.</p>`;
-        } else {
-            postHtml += `<p>${post.contenido}</p>`;
-        }
-        
-        //AQUI TA EL BOTON DE LIKE PA EL QUE QUIERA DECORAR ESTA XUXA
-        postHtml += `
-                <div class="post-meta">
-                    <small>${new Date(post.fecha_creacion).toLocaleString()}</small>
-                </div>
-                <div class="post-actions">
-                    <button class="like-btn ${post.usuario_dio_like ? 'liked' : ''}" data-post-id="${post.id}">
-                        ❤️ <span class="like-count">${post.conteo_likes}</span>
-                    </button>
-                    ${post.conteo_comentarios > 0 ? `<button class="comment-btn" data-post-id="${post.id}">Ver Comentarios (${post.conteo_comentarios})</button>` : ''}
-                </div>
+                    </div>
+                ` : ''}
             </div>`;
-        return postHtml;
+
+    if (post.esta_eliminado) {
+        postHtml += `<p style="font-style: italic; color: #888;">Este post ha sido eliminado.</p>`;
+    } else {
+        postHtml += `<p>${post.contenido}</p>`;
     }
+
+    // Mostrar etiquetas
+    if (post.etiquetas && post.etiquetas.length > 0) {
+        postHtml += `<div class="post-tags">`;
+        post.etiquetas.forEach(tag => {
+            postHtml += `<span class="tag">${tag}</span>`;
+        });
+        postHtml += `</div>`;
+    }
+
+    postHtml += `
+            <div class="post-meta">
+                <small>${new Date(post.fecha_creacion).toLocaleString()}</small>
+            </div>
+            <div class="post-actions">
+                <button class="like-btn ${post.usuario_dio_like ? 'liked' : ''}" data-post-id="${post.id}">
+                    ❤️ <span class="like-count">${post.conteo_likes}</span>
+                </button>
+                ${post.conteo_comentarios > 0 ? `<button class="comment-btn" data-post-id="${post.id}">Ver Comentarios (${post.conteo_comentarios})</button>` : ''}
+            </div>
+        </div>`;
+
+    return postHtml;
+}
+
 
     function renderComment(comment) {
         const canDelete = comment.autor_id === currentUserId; 
