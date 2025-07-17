@@ -69,10 +69,11 @@ body {
 .checkbox-group-container {
     width: 100%;
     margin-bottom: 25px; 
-    max-height: 300px; /* Limita la altura para que no se extienda demasiado */
+    max-height: 200px; /* Limita la altura para que no se extienda demasiado */
     overflow-y: auto; /* Agrega scroll si hay muchas etiquetas */
+    overflow-x: hidden;
     padding-right: 5px; /* Para evitar que el scrollbar se pegue al contenido */
-    box-sizing: border-box;
+    box-sizing:content-box;
 }
 
 /* --- ESTILOS DE CHECKBOX DE UIVERSE.IO --- */
