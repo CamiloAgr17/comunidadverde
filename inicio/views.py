@@ -19,39 +19,28 @@ def feed_view(request):
 @login_required
 @require_GET
 def feed_api_view(request):
-    import re  # asegurarse de tener el módulo re
+ 
+    # API para obtener el feed de publicaciones del usuario, con scroll infinito.
+    # Solo muestra posts no eliminados lógicamente.
     usuario_actual = request.user
-    limite = int(request.GET.get('limite', 10))
-    offset = int(request.GET.get('offset', 0))
+    
+    # Parámetros para el scroll infinito: 'offset' y 'limite'
+    limite = int(request.GET.get('limite', 10)) # Cuántos posts cargar por vez
+    offset = int(request.GET.get('offset', 0)) # Desde qué posición empezar
 
-    etiquetas_favoritas = []
+    # Consulta base para los posts: solo incluimos posts NO eliminados
+    # Ordenamos por fecha de creación descendente para mostrar los más recientes primero
+    posts_queryset = Post.objects.filter(esta_eliminado=False).select_related('autor').prefetch_related('etiquetas').order_by('-fecha_creacion')
 
-    if hasattr(usuario_actual, 'voluntario'):
-        etiquetas_favoritas = list(usuario_actual.voluntario.etiquetas_favoritas.all())
-    elif hasattr(usuario_actual, 'organizacion'):
-        etiquetas_favoritas = list(usuario_actual.organizacion.etiquetas_favoritas.all())
-
-    base_queryset = Post.objects.filter(esta_eliminado=False).select_related('autor').prefetch_related('etiquetas')
-
-    if etiquetas_favoritas:
-        posts_con_match = base_queryset.filter(etiquetas__in=etiquetas_favoritas).distinct().order_by('-fecha_creacion')
-        posts_sin_match = base_queryset.exclude(id__in=posts_con_match.values_list('id', flat=True)).order_by('-fecha_creacion')
-        posts_combinados = list(posts_con_match) + list(posts_sin_match)
-    else:
-        posts_combinados = list(base_queryset.order_by('-fecha_creacion'))
-
-    total_posts = len(posts_combinados)
-    posts_paginados = posts_combinados[offset:offset + limite]
+    # Aplicar offset y limite para la paginación del scroll
+    posts_a_devolver = posts_queryset[offset:offset + limite]
 
     posts_data = []
-    for post in posts_paginados:
-        usuario_dio_like = post.likes_recibidos.filter(usuario=usuario_actual).exists()
+    for post in posts_a_devolver:
 
-        # Obtener teléfono limpio si el autor es una organización
-        telefono = None
-        if hasattr(post.autor, 'organizacion'):
-            telefono_raw = post.autor.organizacion.telefono
-            telefono = re.sub(r'\D', '', telefono_raw) if telefono_raw else None
+        usuario_dio_like = False
+        if request.user.is_authenticated:
+            usuario_dio_like = post.likes_recibidos.filter(usuario=request.user).exists()
 
         posts_data.append({
             'id': post.id,
@@ -61,19 +50,20 @@ def feed_api_view(request):
             'fecha_creacion': post.fecha_creacion.isoformat(),
             'conteo_likes': post.conteo_likes,
             'conteo_comentarios': post.conteo_comentarios,
-            'etiquetas': [e.nombre for e in post.etiquetas.all()],
+            'etiquetas': [etiqueta.nombre for etiqueta in post.etiquetas.all()],
             'esta_eliminado': post.esta_eliminado,
-            'usuario_dio_like': usuario_dio_like,
-            'telefono': telefono,
+            'usuario_dio_like': usuario_dio_like, 
         })
-
-    hay_mas = (offset + limite) < total_posts
+    
+    # Indicar si hay más posts disponibles para cargar
+    hay_mas = (offset + limite) < posts_queryset.count()
 
     return JsonResponse({
         'posts': posts_data,
         'hay_mas': hay_mas,
         'siguiente_offset': offset + limite if hay_mas else None
     })
+
 def obtener_etiquetas_para_post(request):
     #API para obtener todas las etiquetas disponibles en formato JSON.
     #Esta vista es usada por JavaScript para rellenar los checkboxes del modal.
