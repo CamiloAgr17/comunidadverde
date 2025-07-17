@@ -1,49 +1,57 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Seleccionar Etiquetas</title>
-  <style>
-    form {
-      margin-top: 20px;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      cursor: pointer;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Etiquetas</title>
+    {% load static %}
+    {# --- ENLACE A TUS CSS --- #}
+    <link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
+    <link rel="stylesheet" href="{% static 'inicio/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'inicio/css/select_tags_style.css' %}"> {# Este es el archivo CSS donde irán los nuevos estilos #}
+    <link href="https://fonts.googleapis.com/css2?family=Sansita+Swashed:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h2>Selecciona tus etiquetas favoritas</h2>
+    <header class="main-header">
+        <div class="header-content">
+            <h1 class="site-title">
+                <img src="{% static 'images/logo.png' %}" alt="LOGO">
+            </h1>
+        </div>
+    </header>
+    <div class="main-container"> 
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            
+            <div class="form-heading">Tus Temas Favoritos</div>
 
-  {% if perfil %}
-    <form method="post">
-      {% csrf_token %}
-      
-      {% if etiquetas %}
-        {% for etiqueta in etiquetas %}
-          <label>
-            <input type="checkbox" name="etiquetas" value="{{ etiqueta.id }}"
-              {% if etiqueta in perfil.etiquetas_favoritas.all %}checked="checked"{% endif %}>
-            {{ etiqueta.nombre }}
-          </label>
-        {% endfor %}
-      {% else %}
-        <p>No hay etiquetas disponibles.</p>
-      {% endif %}
-  
-      <button type="submit">Guardar selección</button>
-    </form>
-  {% else %}
-    <p>No tienes un perfil asignado. Por favor, contacta con el administrador.</p>
-  {% endif %}
-  
+            {% if perfil %}
+                <div class="checkbox-group-container">
+                    {% if etiquetas %}
+                        {% for etiqueta in etiquetas %}
+                            {# AQUI CAMBIAMOS LA ESTRUCTURA PARA EL NUEVO ESTILO DE CHECKBOX #}
+                            <label class="checkbox-wrapper">
+                                <input type="checkbox" name="etiquetas" value="{{ etiqueta.id }}"
+                                    {% if etiqueta in perfil.etiquetas_favoritas.all %}checked="checked"{% endif %}>
+                                <div class="checkmark">
+                                    <svg viewBox="0 0 24 24">
+                                        <path fill="currentColor" d="M9.707 19.121L4.586 14L3.172 15.414L9.707 21.949L21.949 9.707L20.535 8.293L9.707 19.121Z"></path>
+                                    </svg>
+                                </div>
+                                <div class="label">{{ etiqueta.nombre }}</div>
+                            </label>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-tags-message">No hay etiquetas disponibles.</p>
+                    {% endif %}
+                </div>
+            
+                <button type="submit" class="submit">Guardar selección</button>
+            {% else %}
+                <p class="error-message">No tienes un perfil asignado. Por favor, contacta con el administrador.</p>
+            {% endif %}
+            
+        </form>
+    </div>
 </body>
 </html>
-
-

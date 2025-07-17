@@ -7,42 +7,33 @@
     <title>Iniciar Sesión</title>
     <link rel="stylesheet" href="{% static 'inicio/css/login_style.css' %}">
     <link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
-    {# Elimina cualquier otro CSS que pudiera estar interfiriendo, como header_style.css #}
+    {# Asegúrate de que style.css también esté enlazado si contiene estilos globales #}
+    <link rel="stylesheet" href="{% static 'inicio/css/style.css' %}"> 
 </head>
- <header class="main-header">
+<body>
+    <header class="main-header">
         <div class="header-content">
-            <img src="{% static 'images/logo.png' %}" alt="LOGO">
+            <h1 class="site-title">
+                <img src="{% static 'images/logo.png' %}" alt="LOGO">
+            </h1>
         </div>
     </header>
-<body>
     <div class="main-container">
-        {# La clase "login-form" es crucial para aplicar los estilos #}
         <form method="post" class="login-form">
             {% csrf_token %}
-            {{ form.non_field_errors }} {# Muestra errores generales del formulario #}
+            {{ form.non_field_errors }} 
 
-            {# El div "form-heading" para el título del formulario #}
             <div class="form-heading">LOGIN</div>
 
-            <div class="input-group">
-                {# La etiqueta <label> con la clase "label" debe ir ANTES del input #}
-                <label class="label" for="{{ form.username.id_for_label }}">Email</label>
-                {# El input de Django. Asegúrate de que tu form.username renderice un input type="text" o "email" #}
-                {{ form.username }}
-            </div>
-
-            <div class="input-group">
-                {# La etiqueta <label> con la clase "label" debe ir ANTES del input #}
-                <label class="label" for="{{ form.password.id_for_label }}">Password</label>
-                {# El input de Django. Asegúrate de que tu form.password renderice un input type="password" #}
-                {{ form.password }}
-            </div>
-
-            <div class="forgot-password">
-                <a href="#">Forgot password?</a>
-            </div>
-
-            {# El botón de submit con la clase "submit" #}
+            {# Iteramos sobre los campos del formulario para renderizar etiqueta y campo #}
+            {% for field in form %}
+                <div class="input-group">
+                    {# AQUI ESTÁ EL CAMBIO CLAVE: Renderizamos la etiqueta y luego el widget #}
+                    <label for="{{ field.id_for_label }}" class="input-label-static">{{ field.label }}</label>
+                    {{ field.as_widget }} 
+                    {{ field.errors }} 
+                </div>
+            {% endfor %}
             <button class="submit" type="submit">Log In</button>
 
             <div class="signup-link">
