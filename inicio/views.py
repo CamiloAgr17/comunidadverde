@@ -378,14 +378,14 @@ def feed(request):
 @require_POST
 def alternar_like_post(request):
     try:
-        data: json.loads(request.body)
+        data = json.loads(request.body)
         post_id = data.get('post_id')
         post = get_object_or_404(Post, id=post_id)
 
-        like, creado = Like.objectos.get_or_create(usuario=request.user, post=post)
+        like, creado = Like.objects.get_or_create(usuario=request.user, post=post)
         if not creado:
             like.delete()
-            post.conteo_likes = post.likes_count()
+            post.conteo_likes = post.likes_recibidos.count()
             post.save()
             return JsonResponse({'estado': 'exito', 'liked': False})
         else:
