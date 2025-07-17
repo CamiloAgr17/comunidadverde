@@ -17,36 +17,34 @@
 <!DOCTYPE html>
 
 <header class="main-header">
-    <div class="header-content">
-        {# Aquí irá tu contenido específico del header para la temática de reciclaje #}
-        {# Por ejemplo, un título para tu sitio o un logo #}
-        <h1 class="site-title">
-            
-        </h1>
-    </div>
-</header>
+        <div class="header-content">
+            <h1 class="site-title">
+                <img src="{% static 'images/logo.png' %}" alt="LOGO">
+            </h1>
+        </div>
+    </header>
 <body>
     <div class="layout-container">
 
 
     <!-- SIDEBAR CON EL PERFIL Y BOTONES DE NAVEGACIÓN -->
     <aside class="sidebar-left">
-        <div class="user-profile">
-
-            <h3 id="current_username" style="color: white;">Cargando...</h3>
-            <p id="user_type_description" style="color: white;">Cargando tipo...</p>
-            <div class="user-stats">
-                <div style="color: white;"><strong><span id="user_posts_count" style="color: white;">0</span></strong><br />Posts</div>
-                <div style="color: white;"><strong><span id="user_followers_count" style="color: white;">0</span></strong><br />Seguidores</div>
-                <div style="color: white;"><strong><span id="user_following_count" style="color: white;">0</span></strong><br />Seguidos</div>
-            </div>
-            <h4 style="color: white;">Etiquetas Favoritas</h4> {# Añadido para etiquetas #}
-            <ul class="user-tags" id="user_favorite_tags_list" style="color: white;"> {# ID añadido #}
-                <li>Cargando...</li> {# Placeholder #}
-            </ul>
-            <nav>
-                <!-- Boton Perfil -->
-               <button class="animated-button" id="view_current_profile_btn" style="display:none">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="user-profile">
+        <h3 id="current_username" style="color: white;">Cargando...</h3>
+        <p id="user_type_description" style="color: white;">Cargando tipo...</p>
+        <div class="user-stats">
+            <div style="color: white;"><strong><span id="user_posts_count" style="color: white;">0</span></strong><br />Posts</div>
+            <div style="color: white;"><strong><span id="user_followers_count" style="color: white;">0</span></strong><br />Seguidores</div>
+            <div style="color: white;"><strong><span id="user_following_count" style="color: white;">0</span></strong><br />Seguidos</div>
+        </div>
+        <h4 style="color: white;">Etiquetas Favoritas</h4>
+        <ul class="user-tags" id="user_favorite_tags_list" style="color: white;">
+            <li>Cargando...</li>
+        </ul>
+        <nav>
+            <button class="animated-button" id="view_current_profile_btn" style="display:none">
                     <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
@@ -62,46 +60,43 @@
                         </path>
                      </svg>
                 </button> {# ID y función #}
-                
-                <!-- Boton Notificaciones -->
-                <button class="animated-button" id="open_notifications_modal_btn">
-                    <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                            >
-                        </path>
-                    </svg>
-                     <span class="text"> Notificaciones </span> 
-                     <span id="unread_notifications_count" class="notification-badge" style="display: none;">0</span>
-                     <span class="circle"></span>
-                     <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                            >
-                        </path>
-                     </svg>
-                </button>
 
-                     <!-- Boton Mapa -->
-                <button class="animated-button" onclick="window.location.href='{% url 'mapa' %}'">
-                    <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                            >
-                        </path>
-                    </svg>
-                     <span class="text"> Mapas </span> 
-                     <span class="circle"></span>
-                     <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                            >
-                        </path>
-                     </svg>
-                </button>
+            <button class="animated-button" id="open_notifications_modal_btn">
+                <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                    >
+                    </path>
+                </svg>
+                <span class="text"> Notificaciones </span> 
+                <span id="unread_notifications_count" class="notification-badge" style="display: none;">0</span>
+                <span class="circle"></span>
+                <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                    >
+                    </path>
+                </svg>
+            </button>
 
-                <!-- Boton Ajustes -->
-              <button class="animated-button" id="btn_modal_settings" style="display:none">
+            <button class="animated-button" onclick="window.location.href='{% url 'mapa' %}'">
+                <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                    >
+                    </path>
+                </svg>
+                <span class="text"> Mapas </span> 
+                <span class="circle"></span>
+                <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                    >
+                    </path>
+                </svg>
+            </button>
+
+            <button class="animated-button" id="btn_modal_settings" style="display:none">
                     <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
@@ -118,29 +113,30 @@
                      </svg>
                 </button>
 
-                <!-- Boton Cerrar Sesion -->
-                <form action="{% url 'logout' %}" method="post" style="display: block; text-align: center;">
-                    {% csrf_token %}
-                    <button class="animated-button" type="submit">
-                    <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                            >
-                        </path>
-                    </svg>
-                     <span class="text"> Cerrar Sesión </span> 
-                     <span class="circle"></span>
-                     <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                            >
-                        </path>
-                     </svg>
+
+
+            <form action="{% url 'logout' %}" method="post" style="display: block; text-align: center;">
+                {% csrf_token %}
+                <button class="animated-button" type="submit">
+                <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                        >
+                    </path>
+                </svg>
+                <span class="text"> Cerrar Sesión </span> 
+                <span class="circle"></span>
+                <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+                    >
+                    </path>
+                </svg>
                 </button>
-                </form>
-            </nav>
-        </div>
-    </aside>
+            </form>
+        </nav>
+    </div>
+</aside>
 
     <!-- AQUI VAN LA LISTA DE POSTS ETC... -->
     <main class="feed-main">
@@ -165,70 +161,8 @@
         <!-- aqui va el buscador y noticias -->
         <!-- tmb pueden poner tipo "posts más relevantes" -->
         <!-- y te muestra como 2 posts con varios likes y así -->
-        {% comment %} <aside class="sidebar-right">
-            <label class="search-label">
-                <input type="text" name="text" class="input" required="" placeholder="Buscar..." />
-                    <kbd class="slash-icon">/</kbd>
-                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 512 512" xml:space="preserve">
-                <g>
-                    <path d="M55.146 51.887 41.588 37.786A22.926 22.926 0 0 0 46.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 0 0 .083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z" fill="currentColor" data-original="#000000" class=""></path>
-                </g>
-                </svg>
-            </label>
-            <nav>
-                {% if posts_populares %}
-                    {% for post in posts_populares %}
-                    <div class="card">
-                        <span class="card_title">{{post.autor.username}}</span>
-                        <p class="card_content">
-                            {{post.contenido | truncatewords:20}}
-                        </p>
-                        <div class="card_date">
-                            {{ post.fecha_creacion|date:"d M Y H:i" }}
-                        </div>
-                        <div class="card__arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="15" width="15">
-                                <path fill="#fff" d="M13.4697 17.9697C13.1768..."></path>
-                            </svg>
-                        </div>
-                    </div> 
-                    {% endfor %}
-                {% else %}
-                    <p style="color:white">No hay publicaciones populares aún.</p>
-                {% endif %}
-            </nav>
-        </aside> {% endcomment %}
-        <aside class="sidebar-right">
-            <label class="search-label">
-                <input type="text" name="text" class="input" required="" placeholder="Buscar..." />
-                <kbd class="slash-icon">/</kbd>
-                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 512 512" xml:space="preserve">
-                <g>
-                    <path d="M55.146 51.887 41.588 37.786A22.926 22.926 0 0 0 46.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 0 0 .083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z" fill="currentColor" data-original="#000000" class=""></path>
-                </g>
-                </svg>
-            </label>
-            <nav>
-                <h3 style="color: white; margin-bottom: 10px;">Otros Usuarios</h3>
-                {% if usuarios_con_tipo %}
-                    {% for item in usuarios_con_tipo %}
-                        <div class="card" style="margin-bottom: 10px; display: flex; align-items: center; cursor: pointer;"
-                            onclick="window.location.href='/usuarios/{{ item.user_obj.id }}/'"> {# Asumiendo una URL para perfiles de usuario #}
-                            {# Placeholder para la foto de perfil: Muestra la primera letra del username #}
-                            <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #5C6BC0; display: flex; justify-content: center; align-items: center; margin-right: 10px; flex-shrink: 0;">
-                                <span style="color: white; font-weight: bold; font-size: 1.2em;">{{ item.user_obj.username.0|upper }}</span>
-                            </div>
-                            <span class="card_title" style="margin: 0;">
-                                {{ item.user_obj.username }} 
-                                <small style="color: #bbb; font-size: 0.8em;">({{ item.tipo }})</small> {# Muestra el tipo de usuario #}
-                            </span>
-                        </div> 
-                    {% endfor %}
-                {% else %}
-                    <p style="color:white">No hay otros usuarios registrados aún.</p>
-                {% endif %}
-            </nav>
-        </aside>
+        {% comment %}
+        {% endcomment %}
 
     <!-- Botón flotante -->
     <button id="create_post_btn" class="floating-button">

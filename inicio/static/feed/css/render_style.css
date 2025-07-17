@@ -1,0 +1,76 @@
+.card {
+        position: relative;
+        background-color: #30344c;
+        padding: 1em;
+        z-index: 5;
+        box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        max-width: 300px;
+        transition: 200ms ease-in-out;
+    }
+
+    .card__username { /* Renamed from .username */
+        color: #C6E1ED;
+        font-size: 0.85em;
+        font-weight: 600;
+    }
+
+    .card__body { /* Renamed from .body */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card__body .card__text { /* Renamed from .body .text */
+        margin: 0 10px 0 0;
+        white-space: pre-line;
+        color: #c0c3d7;
+        font-weight: 400;
+        line-height: 1.5;
+        margin-bottom: 4px;
+    }
+
+    .card__footer { /* Renamed from .footer */
+        position: relative;
+        width: 100%;
+        color: #9fa4aa;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: none;
+        margin-top: 10px;
+    }
+
+    .card__footer-action { /* New class to apply .footer div styles */
+        margin-right: 1rem;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .card__footer-action svg { /* New class to apply .footer svg styles */
+        margin-right: 5px;
+        height: 100%;
+        stroke: #9fa4aa;
+    }
+
+    .card__viewer-count { /* Renamed from .viewer span */
+        height: 20px;
+        width: 20px;
+        background-color: rgb(28, 117, 219);
+        margin-right: -6px;
+        border-radius: 50%;
+        border: 1px solid #fff;
+        display: grid;
+        align-items: center;
+        text-align: center;
+        font-weight: bold;
+        font-size: 8px;
+        color: #fff;
+        padding: 2px;
+    }
+
+    .card__viewer-count svg { /* Renamed from .viewer span svg */
+        stroke: #fff;
+    }

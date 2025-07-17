@@ -21,10 +21,10 @@
     <div class="main-container">
         <form method="post" class="login-form">
             {% csrf_token %}
-            {{ form.non_field_errors }} 
+
 
             <div class="form-heading">LOGIN</div>
-
+            <div style="color: black;">{{ form.non_field_errors }} </div>
             {# Iteramos sobre los campos del formulario para renderizar etiqueta y campo #}
             {% for field in form %}
                 <div class="input-group">
