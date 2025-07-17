@@ -7,7 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 import json
-from .models import Post, Etiqueta, Voluntario, Organizacion, Seguimiento, User, Comentario, Like
+from .models import Post, Etiqueta, Voluntario, Organizacion, Seguimiento, User, Comentario, Like, Notificacion
 from django.db.models import F, ExpressionWrapper, IntegerField
 
 @login_required # Asegura que solo usuarios logueados puedan acceder a esta vista
@@ -64,6 +64,17 @@ def feed_api_view(request):
         'siguiente_offset': offset + limite if hay_mas else None
     })
 
+def obtener_etiquetas_para_post(request):
+    #API para obtener todas las etiquetas disponibles en formato JSON.
+    #Esta vista es usada por JavaScript para rellenar los checkboxes del modal.
+    # Obtiene todas las etiquetas, solo los campos 'id' y 'nombre', y las ordena por nombre.
+
+    etiquetas = Etiqueta.objects.all().values('id', 'nombre').order_by('nombre')
+    
+    # Devuelve la lista de diccionarios como una respuesta JSON.
+    # 'safe=False' es necesario porque estamos devolviendo una lista de diccionarios, no un diccionario raíz.
+    return JsonResponse(list(etiquetas), safe=False)
+
 @login_required
 @require_POST
 def crear_post(request):
@@ -71,6 +82,7 @@ def crear_post(request):
     try:
         data = json.loads(request.body)
         contenido = data.get('contenido')
+        etiquetas_ids = data.get('etiquetas_ids', []) 
 
         if not contenido:
             return JsonResponse({'estado': 'error', 'mensaje': 'El contenido del post no puede estar vacío.'}, status=400)
@@ -79,6 +91,10 @@ def crear_post(request):
             contenido=contenido,
             autor=request.user
         )
+
+        if etiquetas_ids:
+            etiquetas_para_post = Etiqueta.objects.filter(id__in=etiquetas_ids)
+            post.etiquetas.set(etiquetas_para_post) # Asignar las etiquetas usando el método .set() del ManyToManyField
         
         return JsonResponse({'estado': 'exito', 'mensaje': 'Post creado exitosamente.', 'post_id': post.id})
 
@@ -90,7 +106,7 @@ def crear_post(request):
 @login_required
 @require_http_methods(["DELETE"])
 def eliminar_post(request, post_id):
-    #API para marcar un post como eliminado lógicamente.
+    #API para marcar un post como eliminado.
     post = get_object_or_404(Post, id=post_id)
 
     if post.autor != request.user:
@@ -236,9 +252,7 @@ def obtener_perfil_usuario(request, user_id):
 @login_required
 @require_POST
 def alternar_seguimiento_usuario(request):
-    """
-    API para seguir o dejar de seguir a un usuario.
-    """
+    #API para seguir o dejar de seguir a un usuario.
     try:
         data = json.loads(request.body)
         usuario_id_a_seguir = data.get('usuario_id')
@@ -257,12 +271,64 @@ def alternar_seguimiento_usuario(request):
             seguimiento.delete()
             return JsonResponse({'estado': 'exito', 'mensaje': f'Dejaste de seguir a {usuario_a_seguir.username}.'})
         else:
+            Notificacion.objects.create(
+                recipiente=usuario_a_seguir,  # El usuario que FUE seguido (el que recibe la notificación)
+                actor=request.user,          # El usuario que REALIZÓ la acción de seguir
+                notification_type='follow',  # El tipo de notificación
+                message=f"{request.user.username} te ha empezado a seguir.", # Mensaje personalizado
+                link=f"/usuarios/{request.user.id}/" # Enlace al perfil del seguidor (ajusta si tu URL de perfil es diferente)
+            )
             return JsonResponse({'estado': 'exito', 'mensaje': f'Ahora sigues a {usuario_a_seguir.username}.'})
 
     except json.JSONDecodeError:
         return JsonResponse({'estado': 'error', 'mensaje': 'Formato de JSON inválido.'}, status=400)
     except Exception as e:
         return JsonResponse({'estado': 'error', 'mensaje': f'Error al alternar seguimiento: {str(e)}'}, status=500)
+    
+@login_required
+def obtener_notificaciones(request):
+    notificaciones = Notificacion.objects.filter(recipiente=request.user).select_related('actor')
+
+    notificacion_list = []
+    for notificacion in notificaciones:
+        notificacion_list.append({
+            'id': notificacion.id,
+            'actor_username': notificacion.actor.username if notificacion.actor else 'Usuario desconocido',
+            'actor_id': notificacion.actor.id if notificacion.actor else None,
+            'notification_type': notificacion.notification_type,
+            'message': notificacion.message,
+            'link': notificacion.link,
+            'fecha_creacion': notificacion.fecha_creacion.isoformat(),
+            'leido': notificacion.leido
+        })
+    
+    return JsonResponse({'notificaciones': notificacion_list})
+
+@login_required 
+@require_POST 
+def marcar_notificacion_como_leida(request):
+    try:
+        data = json.loads(request.body)
+        id_notificacion = data.get('id_notificacion')
+        marcar_todo = data.get('marcar_todo', False)
+
+        if marcar_todo:
+            # Marca todas las notificaciones no leídas para el usuario actual como leídas
+            Notificacion.objects.filter(recipiente=request.user, is_read=False).update(is_read=True)
+            return JsonResponse({'estado': 'exito', 'mensaje': 'Todas las notificaciones han sido marcadas como leídas.'})
+        elif id_notificacion:
+            # Marca una notificación específica como leída
+            notificacion = get_object_or_404(Notificacion, id=id_notificacion, recipiente=request.user)
+            if not notificacion.is_read:
+                notificacion.is_read = True
+                notificacion.save()
+            return JsonResponse({'estado': 'exito', 'mensaje': f'Notificación {id_notificacion} marcada como leída.'})
+        else:
+            return JsonResponse({'estado': 'error', 'mensaje': 'ID de notificación no proporcionado o parámetro "marcar_todo" es falso.'}, status=400)
+    except json.JSONDecodeError:
+        return JsonResponse({'estado': 'error', 'mensaje': 'Formato de JSON inválido.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'estado': 'error', 'mensaje': f'Error al marcar notificación: {str(e)}'}, status=500)
 
 def pagina_inicio(request):
     return render(request, 'inicio.html')

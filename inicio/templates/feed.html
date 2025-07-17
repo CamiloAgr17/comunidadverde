@@ -64,7 +64,7 @@
                 </button> {# ID y función #}
                 
                 <!-- Boton Notificaciones -->
-                <button class="animated-button" id="btn_modal">
+                <button class="animated-button" id="open_notifications_modal_btn">
                     <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
@@ -72,6 +72,7 @@
                         </path>
                     </svg>
                      <span class="text"> Notificaciones </span> 
+                     <span id="unread_notifications_count" class="notification-badge" style="display: none;">0</span>
                      <span class="circle"></span>
                      <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -100,7 +101,7 @@
                 </button>
 
                 <!-- Boton Ajustes -->
-                <button class="animated-button" id="btn_modal">
+                <button class="animated-button" id="btn_modal_settings">
                     <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
@@ -204,27 +205,33 @@
     </button>
  </div>
 
-    <!-- Modal de Notificaciones -->
     <div id="modal_notificaciones" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-
-        <!-- aqui se deben pintar las notificaciones una vez esa logica este hecha-->
-        <!-- si no hay tiempo para hacer notificaciones pues se quita el boton de arriba-->
-        <h2>Notificaciones</h2>
-        <ul>
-            <li>Notificación 1</li>
-            <li>Notificación 2</li>
-            <li>Notificación 3</li>
-        </ul>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Notificaciones</h2>
+            <span class="close">&times;</span> </div>
+        <div class="modal-body">
+            <div id="notifications_list" class="notifications-list">
+                <p class="no-notifications-message" style="text-align: center; color: #555; display: none;">No hay notificaciones.</p>
+            </div>
+            <button id="mark_all_read_btn" class="animated-button" style="margin-top: 20px;">
+                <span class="text">Marcar todas como leídas</span>
+            </button>
         </div>
     </div>
+</div>
 
     <div id="create_post_modal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close create-post-close">&times;</span>
             <h2>Crear Nueva Publicación</h2>
             <textarea id="post_content_input" placeholder="¿Qué quieres compartir hoy?" rows="5" style="width: calc(100% - 22px); padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 1em;"></textarea>
+            <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Etiquetas:</label>
+                <div id="tags_checkbox_container" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <p>Cargando etiquetas...</p>
+                </div>
+            </div>
             <button id="submit_post_btn" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Publicar</button>
         </div>
     </div>
@@ -841,12 +848,31 @@
         fetchCurrentUserProfile();
         fetchPosts(currentOffset, limit);
         
+    // Elementos del modal de creación de post
+    const createPostModal = document.getElementById('create_post_modal');
+    const postContentInput = document.getElementById('post_content_input'); // <--- ¡Esta línea!
+    const submitPostBtn = document.getElementById('submit_post_btn');
+    const tagsCheckboxContainer = document.getElementById('tags_checkbox_container');
+    const createPostCloseBtn = document.querySelector('.create-post-close');
+
         // Deshabilitar botón de crear publicación si no está logueado
         const createPostBtn = document.getElementById('create_post_btn');
         if (!currentUserId) {
             createPostBtn.disabled = true;
             createPostBtn.textContent = 'Inicia sesión para publicar';
         }
+
+            if (createPostBtn && !createPostBtn.disabled) { // Solo si el botón está activo (usuario logueado)
+        createPostBtn.addEventListener('click', () => {
+            if (createPostModal) { // Asegúrate de que el modal HTML existe
+                createPostModal.style.display = 'block'; // Mostrar el modal
+                postContentInput.value = ''; // Limpiar el campo de texto
+                loadTagsForPostCreation(); // ¡Llamar a la función para cargar las etiquetas!
+            } else {
+                console.error("Error: El modal de creación de post (ID 'create_post_modal') no fue encontrado.");
+            }
+        });
+    }
 
         // Lógica del Scroll Infinito
         window.addEventListener('scroll', () => {
@@ -919,24 +945,208 @@
             }
         });
 
+        const openNotificationsBtn = document.getElementById('open_notifications_modal_btn');
+        const notificationsModal = document.getElementById('modal_notificaciones');
+        const closeNotificationsBtn = notificationsModal.querySelector('.close'); // Selector por clase 'close'
+        const unreadNotificationsCount = document.getElementById('unread_notifications_count');
+        const notificationsList = document.getElementById('notifications_list');
+        const noNotificationsMessage = notificationsList.querySelector('.no-notifications-message');
+        const markAllReadBtn = document.getElementById('mark_all_read_btn');
+
+        const csrftoken = getCookie('csrftoken');
+
+        function formatNotificationTime(isoString) {
+        const date = new Date(isoString);
+        const now = new Date();
+        const diffSeconds = Math.floor((now - date) / 1000);
+        const diffMinutes = Math.floor(diffSeconds / 60);
+        const diffHours = Math.floor(diffMinutes / 60);
+        const diffDays = Math.floor(diffHours / 24);
+
+        if (diffSeconds < 60) return `${diffSeconds} segundos atrás`;
+        if (diffMinutes < 60) return `${diffMinutes} minutos atrás`;
+        if (diffHours < 24) return `${diffHours} horas atrás`;
+        if (diffDays < 7) return `${diffDays} días atrás`;
+        return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+        // Función para actualizar el contador de notificaciones no leídas
+    async function updateUnreadNotificationsCount() {
+        try {
+            const response = await fetch('/notificaciones/'); // Tu URL para obtener notificaciones
+            const data = await response.json();
+            const unreadCount = data.notificaciones.filter(n => !n.leido).length;
+
+            if (unreadCount > 0) {
+                unreadNotificationsCount.textContent = unreadCount;
+                unreadNotificationsCount.style.display = 'inline-block'; // Mostrar el badge
+            } else {
+                unreadNotificationsCount.style.display = 'none'; // Ocultar si no hay no leídas
+            }
+        } catch (error) {
+            console.error('Error al actualizar el contador de notificaciones:', error);
+        }
+    }
+
+    // Función para cargar y mostrar las notificaciones en el modal
+    async function loadNotifications() {
+        try {
+            const response = await fetch('/notificaciones/'); // Tu URL para obtener notificaciones
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            
+            notificationsList.innerHTML = ''; // Limpiar la lista existente
+
+            if (data.notificaciones.length === 0) {
+                noNotificationsMessage.style.display = 'block'; // Mostrar mensaje de "no hay notificaciones"
+                markAllReadBtn.style.display = 'none'; // Ocultar botón de marcar todas
+            } else {
+                noNotificationsMessage.style.display = 'none'; // Ocultar mensaje
+                markAllReadBtn.style.display = 'block'; // Mostrar botón de marcar todas
+
+                data.notificaciones.forEach(notificacion => {
+                    const notificationItem = document.createElement('div');
+                    notificationItem.classList.add('notification-item');
+                    if (!notificacion.leido) {
+                        notificationItem.classList.add('unread'); // Añadir clase para estilos de no leídas
+                    }
+                    notificationItem.dataset.notificationId = notificacion.id; // Guardar el ID
+
+                    // Crear el mensaje de la notificación
+                    let messageHtml = '';
+                    if (notificacion.enlace) {
+                        messageHtml = `<a href="${notificacion.enlace}">${notificacion.message}</a>`;
+                    } else {
+                        messageHtml = notificacion.message;
+                    }
+
+                    notificationItem.innerHTML = `
+                        <div>${messageHtml}</div>
+                        <span class="notification-time">${formatNotificationTime(notificacion.fecha_creacion)}</span>
+                    `;
+                    
+                    notificationsList.appendChild(notificationItem);
+                });
+            }
+            // Después de cargar, actualiza el contador de no leídas
+            updateUnreadNotificationsCount();
+        } catch (error) {
+            console.error('Error al cargar notificaciones:', error);
+            notificationsList.innerHTML = '<p style="color: red;">Error al cargar las notificaciones.</p>';
+            noNotificationsMessage.style.display = 'none';
+        }
+    }
+
+     // Función para marcar una notificación específica como leída
+    async function markNotificationAsRead(notificationId) {
+        try {
+            const response = await fetch('/notificaciones/marcar_leida/', { // Tu URL para marcar leídas
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({ id_notificacion: notificationId })
+            });
+            const data = await response.json();
+            if (data.estado === 'exito') {
+                console.log(`Notificación ${notificationId} marcada como leída.`);
+                // Opcional: Actualizar el estado visual de la notificación sin recargar todo
+                const item = document.querySelector(`.notification-item[data-notification-id="${notificationId}"]`);
+                if (item) {
+                    item.classList.remove('unread');
+                }
+                updateUnreadNotificationsCount(); // Recalcular y actualizar el contador
+            } else {
+                console.error('Error al marcar notificación:', data.mensaje);
+            }
+        } catch (error) {
+            console.error('Error de red al marcar notificación:', error);
+        }
+    }
+
+     // Función para marcar todas las notificaciones como leídas
+    async function markAllNotificationsAsRead() {
+        try {
+            const response = await fetch('/notificaciones/marcar_leida/', { // Tu URL para marcar leídas
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({ marcar_todo: true })
+            });
+            const data = await response.json();
+            if (data.estado === 'exito') {
+                console.log('Todas las notificaciones marcadas como leídas.');
+                // Quitar la clase 'unread' de todos los elementos
+                document.querySelectorAll('.notification-item.unread').forEach(item => {
+                    item.classList.remove('unread');
+                });
+                updateUnreadNotificationsCount(); // Resetear el contador a 0
+                // Ocultar el botón de marcar todas si ya no hay no leídas
+                markAllReadBtn.style.display = 'none';
+            } else {
+                console.error('Error al marcar todas las notificaciones:', data.mensaje);
+            }
+        } catch (error) {
+            console.error('Error de red al marcar todas las notificaciones:', error);
+        }
+    }
+
+     // --- Event Listeners ---
+
+    // Abrir el modal de notificaciones
+    openNotificationsBtn.addEventListener('click', () => {
+        notificationsModal.style.display = 'block';
+        loadNotifications(); // Cargar las notificaciones cada vez que se abre el modal
+    });
+
+    // Cerrar el modal al hacer clic en la 'x'
+    closeNotificationsBtn.addEventListener('click', () => {
+        notificationsModal.style.display = 'none';
+    });
+
+    // Cerrar el modal si el usuario hace clic fuera del contenido del modal
+    window.addEventListener('click', (event) => {
+        if (event.target === notificationsModal) {
+            notificationsModal.style.display = 'none';
+        }
+    });
+
+    // Marcar notificación individual como leída al hacer clic en ella
+    notificationsList.addEventListener('click', (event) => {
+        const notificationItem = event.target.closest('.notification-item');
+        if (notificationItem && notificationItem.classList.contains('unread')) {
+            const notificationId = notificationItem.dataset.notificationId;
+            markNotificationAsRead(notificationId);
+        }
+    });
+
+    // Marcar todas como leídas al hacer clic en el botón
+    markAllReadBtn.addEventListener('click', markAllNotificationsAsRead);
+
+    // --- Carga inicial al cargar la página ---
+    // Carga el contador de notificaciones no leídas cuando la página se carga
+    updateUnreadNotificationsCount();
+
 
         // --- Lógica de Modales ---
         const notificationModal = document.getElementById("modal_notificaciones");
-        const btnOpenNotificationModal = document.getElementById("btn_modal");
+        const btnOpenNotificationModal = document.getElementById("open_notifications_modal_btn");
         const closeNotificationModal = notificationModal.querySelector(".close");
 
-        btnOpenNotificationModal.onclick = function() { notificationModal.style.display = "block"; }
-        closeNotificationModal.onclick = function() { notificationModal.style.display = "none"; }
-
-        const createPostModal = document.getElementById('create_post_modal');
         const closeCreatePostModal = document.querySelector('.create-post-close');
-        const submitPostBtn = document.getElementById('submit_post_btn');
         if (currentUserId) { 
+            createPostBtn.addEventListener('click', () => {
+                createPostModal.style.display = 'block';
+                postContentInput.value = ''; // Limpia el input al abrir el modal
+                loadTagsForPostCreation();   // Carga las etiquetas
+        });
             createPostBtn.onclick = () => { createPostModal.style.display = 'block'; }
-            submitPostBtn.onclick = () => {
-                const content = document.getElementById('post_content_input').value;
-                createPost(content);
-            }
+
         }
         closeCreatePostModal.onclick = () => { createPostModal.style.display = 'none'; }
 
@@ -956,14 +1166,90 @@
             if (event.target == postDetailModal) { postDetailModal.style.display = "none"; }
         }
         
-        /*
-        document.getElementById('detail_like_btn').addEventListener('click', function() {
-            if (!currentUserId) {
-                alert("Debes iniciar sesión para dar 'Me Gusta'.");
+             // --- Función para cargar y renderizar las etiquetas ---
+    async function loadTagsForPostCreation() {
+        try {
+            const response = await fetch('/obtener-etiquetas-para-post/'); 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const tags = await response.json();
+
+            tagsCheckboxContainer.innerHTML = ''; // Limpiar el mensaje "Cargando etiquetas..."
+
+            if (tags.length === 0) {
+                tagsCheckboxContainer.innerHTML = '<p>No hay etiquetas disponibles.</p>';
                 return;
             }
-            alert('Funcionalidad de "Me Gusta" aún no implementada.');
-        }); */
+
+            tags.forEach(tag => {
+                const checkboxDiv = document.createElement('div');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `tag_${tag.id}`;
+                checkbox.name = 'etiquetas';
+                checkbox.value = tag.id;
+
+                const label = document.createElement('label');
+                label.htmlFor = `tag_${tag.id}`;
+                label.textContent = tag.nombre;
+
+                checkboxDiv.appendChild(checkbox);
+                checkboxDiv.appendChild(label);
+                tagsCheckboxContainer.appendChild(checkboxDiv);
+            });
+
+        } catch (error) {
+            console.error('Error al cargar etiquetas:', error);
+            tagsCheckboxContainer.innerHTML = '<p style="color: red;">Error al cargar las etiquetas.</p>';
+        }
+    }
+
+    submitPostBtn.addEventListener('click', async () => {
+        const postContent = postContentInput.value.trim();
+        if (!postContent) {
+            alert('El contenido del post no puede estar vacío.');
+            return;
+        }
+
+        const selectedTagIds = [];
+        document.querySelectorAll('#tags_checkbox_container input[name="etiquetas"]:checked').forEach(checkbox => {
+            selectedTagIds.push(checkbox.value);
+        });
+
+        try {
+            const response = await fetch('/posts/crear/', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({
+                    contenido: postContent,
+                    etiquetas_ids: selectedTagIds 
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.estado === 'exito') {
+                alert('Post creado con éxito!');
+                createPostModal.style.display = 'none';
+                const postsContainer = document.getElementById('posts_container');
+            if (postsContainer) {
+                postsContainer.innerHTML = ''; // Limpia todos los posts existentes
+            }
+            currentOffset = 0; // Reinicia el offset a 0 para cargar desde el principio
+            hasMorePosts = true;
+            fetchPosts(currentOffset, limit);
+            } else {
+                alert('Error al crear el post: ' + data.mensaje);
+            }
+        } catch (error) {
+            console.error('Error al enviar el post:', error);
+            alert('Error de conexión al intentar crear el post.');
+        }
+    });
     });
 
 </script>

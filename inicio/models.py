@@ -109,8 +109,45 @@ class Seguimiento(models.Model):
 
     def __str__(self):
         return f"{self.seguidor.username} sigue a {self.seguido.username}"
+    
+class Notificacion(models.Model):
+    # El usuario que debe recibir la notificación (ej. el que fue seguido)
+    recipiente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notificaciones')
+    
+    # El usuario que realizó la acción que generó la notificación (ej. el que siguió)
+    actor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='actions_made', null=True, blank=True)
+    
+    # Tipo de notificación. 'follow' es el que usaremos ahora.
+    TIPO_NOTIFICACION = (
+        ('follow', 'Nuevo seguidor'),
+        # Para añadir más tipos aquí en el futuro (ej. 'like', 'comment')
+    )
+    notification_type = models.CharField(max_length=20, choices=TIPO_NOTIFICACION)
+    
+    # Mensaje opcional para la notificación (ej. "usuarioX te ha empezado a seguir")
+    message = models.TextField(blank=True, null=True)
+    
+    # Enlace asociado a la notificación (ej. al perfil del 'actor')
+    link = models.CharField(max_length=255, blank=True, null=True)
+    
+    # Fecha y hora en que se creó la notificación
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    # Indica si el usuario ha leído o visto esta notificación
+    leido = models.BooleanField(default=False)
 
-# Likes para os posts
+    class Meta:
+        # Ordena las notificaciones de la más nueva a la más antigua por defecto
+        ordering = ['-fecha_creacion'] 
+
+    class Meta:
+        verbose_name_plural = "Notificaciones"
+
+    def __str__(self):
+        actor_name = self.actor.username if self.actor else 'Usuario desconocido'
+        return f"Notificación para {self.recipiente.username} ({self.get_notification_type_display()} por {actor_name})"
+
+# Likes para los posts
 class Like(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes_dados')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes_recibidos')
