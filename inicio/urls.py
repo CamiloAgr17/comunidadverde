@@ -22,4 +22,6 @@ urlpatterns = [
     path('notificaciones/marcar_leida/', views.marcar_notificacion_como_leida, name='marcar_notificacion_como_leida'),
     path('api/like/', views.alternar_like_post, name='alternar_like_post'),
     path('posts/alternar-like/', views.alternar_like_post, name='alternar_like_post'),
+    path('obtener-etiquetas-para-post/', views.obtener_etiquetas_para_post, name='obtener_etiquetas_para_post'),
+
 ]

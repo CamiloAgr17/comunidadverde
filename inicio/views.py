@@ -9,6 +9,12 @@ from django.db.models import Count, Q
 import json
 from .models import Post, Etiqueta, Voluntario, Organizacion, Seguimiento, User, Comentario, Like, Notificacion
 from django.db.models import F, ExpressionWrapper, IntegerField
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_GET
+from django.http import JsonResponse
+from django.db.models import Case, When, IntegerField, Value
+from .models import Post, Organizacion, Etiqueta
+
 
 @login_required # Asegura que solo usuarios logueados puedan acceder a esta vista
 def feed_view(request):
@@ -26,7 +32,6 @@ def normalizar_telefono(telefono):
             numero = '507' + numero
         return numero
     return None
-
 @login_required
 @require_GET
 def feed_api_view(request):
@@ -35,22 +40,55 @@ def feed_api_view(request):
     limite = int(request.GET.get('limite', 10))
     offset = int(request.GET.get('offset', 0))
 
-    posts_queryset = Post.objects.filter(esta_eliminado=False).select_related('autor').prefetch_related('etiquetas').order_by('-fecha_creacion')
+    # Obtener etiquetas favoritas del perfil (Voluntario u Organizacion)
+    etiquetas_fav = []
+    try:
+        perfil = usuario_actual.voluntario
+        etiquetas_fav = perfil.etiquetas_favoritas.all()
+    except Exception:
+        try:
+            perfil = usuario_actual.organizacion
+            etiquetas_fav = perfil.etiquetas_favoritas.all()
+        except Exception:
+            etiquetas_fav = []
 
-    total_posts = posts_queryset.count()  # Mejor hacer count solo 1 vez
+    etiquetas_fav_ids = [e.id for e in etiquetas_fav]
 
+    # Obtener etiquetas de posts en los que el usuario ha comentado
+    comentarios = usuario_actual.comentarios_creados.select_related('post').prefetch_related('post__etiquetas')
+    etiquetas_comentarios_ids = set()
+    for c in comentarios:
+        etiquetas_comentarios_ids.update(e.id for e in c.post.etiquetas.all())
+
+    etiquetas_prioritarias_ids = set(etiquetas_fav_ids) | etiquetas_comentarios_ids
+
+    # Queryset base
+    posts_queryset = Post.objects.filter(esta_eliminado=False).select_related('autor').prefetch_related('etiquetas')
+
+    if etiquetas_prioritarias_ids:
+        condicion_prioridad = Case(
+            When(etiquetas__id__in=etiquetas_prioritarias_ids, then=Value(1)),
+            default=Value(0),
+            output_field=IntegerField(),
+        )
+        posts_queryset = posts_queryset.annotate(
+            prioridad=condicion_prioridad
+        ).order_by('-prioridad', '-fecha_creacion').distinct()
+    else:
+        posts_queryset = posts_queryset.order_by('-fecha_creacion')
+
+    total_posts = posts_queryset.count()
     posts_a_devolver = posts_queryset[offset:offset + limite]
 
     posts_data = []
     for post in posts_a_devolver:
         usuario_dio_like = post.likes_recibidos.filter(usuario=usuario_actual).exists()
 
-        # Verificar si el autor es una organización
         telefono_whatsapp = None
         es_organizacion = False
         try:
             organizacion = Organizacion.objects.get(user=post.autor)
-            telefono_whatsapp = normalizar_telefono(organizacion.telefono)
+            telefono_whatsapp = organizacion.telefono  # o llama a normalizar_telefono si tienes esa función
             es_organizacion = True
         except Organizacion.DoesNotExist:
             pass
@@ -77,12 +115,6 @@ def feed_api_view(request):
         'hay_mas': hay_mas,
         'siguiente_offset': offset + limite if hay_mas else None
     })
-
-
-def obtener_etiquetas_para_post(request):
-    etiquetas = Etiqueta.objects.all().values('id', 'nombre').order_by('nombre')
-    return JsonResponse(list(etiquetas), safe=False)
-
 @login_required
 @require_POST
 def crear_post(request):
@@ -502,3 +534,7 @@ def alternar_like_post(request):
             return JsonResponse({'estado': 'exito', 'liked': True})
     except Exception as e:
         return JsonResponse({'estado': 'error', 'mensaje': f'Error al alternar like: {str(e)}'}, status=500)
+    
+def obtener_etiquetas_para_post(request):
+    etiquetas = Etiqueta.objects.all().values('id', 'nombre').order_by('nombre')
+    return JsonResponse(list(etiquetas), safe=False)
