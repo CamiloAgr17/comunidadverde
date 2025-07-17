@@ -1,228 +1,185 @@
-/* En tu archivo: inicio/css/registro_voluntario_style.css */
-
-
+/* General Body and Page Container Styling */
 body {
     margin: 0;
     padding: 0;
     background: #277a9c;
-    background: linear-gradient(180deg,rgba(39, 122, 156, 1) 40%, rgba(29, 140, 74, 1) 75%); /* Asegura que el degradado cubra toda la altura de la ventana */
+    background: linear-gradient(180deg,rgba(39, 122, 156, 1) 20%, rgba(29, 140, 74, 1) 90%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Alinea el contenido al inicio, dejando espacio para el header */
-    color: rgb(0, 0, 0); /* Color de texto principal */
+    /* Aseguramos que el cuerpo ocupe al menos toda la altura del viewport */
+    min-height: 100vh; 
+    /* overflow: hidden;  <-- Descomentar solo si es estrictamente necesario y no logras ajustar los tamaños. Puede ocultar contenido si la ventana es muy pequeña. */
+    justify-content: flex-start; 
+    color: white; 
+    font-family: sans-serif; 
 }
 
-/* --- Contenedor principal de la página (similar a .main-container) --- */
-.volunteer-page-container {
+/* Contenedor principal del formulario */
+.main-container {
     flex-grow: 1;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; /* Centra el formulario verticalmente en el espacio disponible */
     width: 100%;
-    margin-top: 80px; /* Espacio para el header */
+    padding: 10px; /* Reducido el padding general del contenedor */
+    box-sizing: border-box;
+    /* Margin top para separar del header, ajusta según el tamaño de tu logo */
+    margin-top: 30px; /* Reducido */
+    margin-bottom: 20px; /* Añadido un margen inferior si el formulario es muy alto */
 }
 
-/* --- Caja del formulario (similar a .form) --- */
-.volunteer-form-box {
+/* Estilos del formulario */
+.login-form {
+    max-width: 400px;
+    width: 100%;
+    padding: 30px; /* Reducido el padding interno */
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: white;
-    width: 30em; /* Mismo ancho que el formulario de login */
-    height: auto; /* Ajustaremos la altura dinámicamente si es necesario, o usa un valor fijo grande */
-    min-height: 40em; /* Altura mínima similar al login */
-    border: 2px solid #24135a;
-    border-bottom-left-radius: 1.5em;
-    border-top-right-radius: 1.5em;
-    box-shadow:
-        -10px 0px 0px #24135a,
-        -10px 5px 5px rgb(0, 0, 0, 0.2);
-    overflow: hidden;
+    position: relative; 
+    z-index: 2; 
+}
+
+.form-heading {
+    text-align: center;
+    color: #333;
+    font-size: 1.8rem; /* Ligeramente reducido el tamaño de fuente */
+    font-weight: bold;
+    margin-bottom: 20px; /* Reducido el margen inferior */
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Grupo de input (para el label y el input) */
+.input-group {
     position: relative;
-    transition: all 0.25s ease;
-    padding: 0 1em;
-}
-
-/* --- Hover de la caja del formulario (similar a .form:hover) --- */
-.volunteer-form-box:hover {
-    width: 30.5em;
-    /* height: auto; /* Dejar en auto para que se adapte al contenido */
-}
-
-/* --- Área superior de color del formulario (similar a #background-color) --- */
-#volunteer-bg-color {
+    margin-bottom: 15px; /* **MUY IMPORTANTE: Reducido el espacio entre campos** */
     width: 100%;
-    height: 5em;
-    background-color: #6041bf;
-    position: absolute;
-    top: 0em;
-    z-index: 1;
-    transition: all 0.5s ease;
-    box-shadow: inset 5px 0px #24135a;
 }
 
-/* --- Área de título principal (similar a #login-area) --- */
-#volunteer-title-section {
-    width: 100%;
-    height: 5em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    position: relative;
-    overflow: hidden;
-    z-index: 2;
+/* Ajuste para los labels estáticos (NO flotantes) */
+.input-group .input-label-static {
+    display: block;
+    margin-bottom: 5px; /* Reducido el espacio entre label y input */
+    font-size: 0.9rem; /* Ligeramente reducido el tamaño de la fuente de la etiqueta */
+    color: #333;
+    text-align: left;
+    font-weight: 600;
+    padding-left: 5px;
 }
 
-#volunteer-title-section h2 { /* Título "Registro Voluntario" */
-    font-size: 2em;
-    font-weight: bold;
-    position: static;
-    z-index: 2;
-    margin: 0;
-    line-height: 1.2;
-    color: white;
-}
-
-/* --- Subtítulo (opcional, si quisieras uno como "Bienvenido de nuevo") --- */
-/* Puedes añadir un subtítulo si lo necesitas, o quitar esta sección */
-/* #volunteer-subtitle-text {
-    top: 65%;
-    font-size: 1.2em;
-    font-weight: bold;
-    position: absolute;
-    z-index: 1;
-    left: 1em;
-    line-height: 15;
-    color: #6041bf;
-} */
-
-/* --- Filtro blanco de la esquina (similar a #whitefilter) --- */
-#volunteer-corner-filter {
-    width: 4.5em;
-    height: 4.5em;
-    top: 2.5px;
-    right: 2.5px;
-    position: absolute;
-    z-index: 2;
-    border-top-right-radius: 1.25em;
-    box-shadow: 35px -35px 0px -1px white;
-}
-
-/* --- ESTILOS PARA LOS CAMPOS DEL FORMULARIO GENERADOS POR DJANGO --- */
-/* Django form.as_p envuelve cada campo en un <p> */
-.volunteer-form-box form p {
-    width: 100%;
-    max-width: 90%; /* Limita el ancho como en #email-area */
-    margin: 0.5em auto; /* Espacio entre campos */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Alinea etiquetas y campos a la izquierda */
-    position: relative; /* Para el z-index */
-    z-index: 1;
-}
-
-.volunteer-form-box form p label {
-    font-size: 1.2em; /* Tamaño de la etiqueta */
-    font-weight: bold;
-    color: #6041bf; /* Color de la etiqueta */
-    margin-bottom: 0.3em; /* Espacio entre etiqueta y input */
-}
-
-.volunteer-form-box form p input[type="text"],
-.volunteer-form-box form p input[type="email"],
-.volunteer-form-box form p input[type="password"],
-.volunteer-form-box form p input[type="date"], /* Para campos de fecha, si los hay */
-.volunteer-form-box form p input[type="number"] /* Para campos numéricos, si los hay */
-{
-    width: 100%;
-    border: 2px solid #6041bf;
-    border-radius: 0.5em;
-    height: 3.5em; /* Altura del input */
-    padding-left: 1em;
-    font-size: 1.2em;
-    font-weight: 100;
-    transition: all 0.5s ease;
+/* Estilo para los inputs */
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%; 
+    padding: 12px 15px; /* Reducido el padding interno de los inputs */
+    font-size: 1rem;
+    color: #333;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     outline: none;
-    box-shadow: 0px 5px 5px -3px rgb(0, 0, 0, 0.2);
-    color: #6041bf; /* Color del texto dentro del input */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
 }
 
-.volunteer-form-box form p input:focus { /* Efecto al enfocar el input */
-    border-color: #4b3294; /* Color más oscuro al enfocar */
-    box-shadow: 0px 0px 8px rgba(96, 65, 191, 0.6); /* Sombra de enfoque */
+/* Focus styles para inputs */
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    border-color: #58bc82;
+    box-shadow: 0 0 5px rgba(88, 188, 130, 0.3);
 }
 
-/* Estilo para los placeholders */
-.volunteer-form-box form p input::placeholder {
-    color: #6041bf;
-    font-weight: bold;
+/* Estilo para los errores de los campos */
+.input-group ul.errorlist {
+    color: #e74c3c;
+    font-size: 0.75rem; /* Ligeramente reducido */
+    margin-top: 3px; /* Reducido */
+    margin-bottom: 0;
+    list-style: none;
+    padding-left: 5px;
 }
 
-/* --- Estilo para el botón de envío (similar a #footer-area button) --- */
-.volunteer-submit-button { /* Clase para el botón de envío */
+/* Botón de submit */
+.submit {
     width: 100%;
-    max-width: 90%; /* Ancho similar a los campos */
-    margin: 1.5em auto; /* Margen superior para separarlo de los campos */
-    border: 2px solid #6041bf;
-    border-radius: 0.5em;
-    height: 3.5em;
-    font-size: 1.2em;
-    font-weight: bold;
-    transition: all 0.25s ease;
-    color: white;
-    background-color: #6041bf;
-    box-shadow: 0px 5px 5px -3px rgb(0, 0, 0, 0.2);
+    padding: 12px; /* Reducido el padding del botón */
+    background-color: #58bc82;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem; /* Ligeramente reducido */
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px; /* Reducido */
+    margin-bottom: 20px; /* Reducido */
 }
 
-.volunteer-submit-button:hover {
-    border: 2px solid white;
-    background-color: #4b3294;
-    height: 4em;
+.submit:hover {
+    background-color: #45a56b;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(88, 188, 130, 0.4);
 }
 
-.volunteer-submit-button:active {
-    color: #6041bf;
-    background-color: white;
-    width: 85%; /* Ligeramente más pequeño al clickear */
+/* Estilo para el enlace de registro/login */
+.signup-link {
+    text-align: center;
+    font-size: 0.85rem; /* Ligeramente reducido */
+    color: #333;
+    width: 100%;
+    margin-top: 0; /* Asegurar que no haya margen extra arriba */
 }
 
-/* --- Hover del fondo de color #volunteer-bg-color --- */
-/* Esto es más complejo para un formulario dinámico con {{ form.as_p }}.
-   Cada <p> es un "área". Necesitamos simular los hovers del login.
-   Podríamos usar :nth-of-type para apuntar a un <p> específico,
-   o simplificar el efecto para que solo el formulario completo tenga un hover.
-   Por simplicidad, vamos a simular el hover del fondo solo con el hover del submit button
-   y del form-box.
-
-   Si quieres un hover de fondo por cada campo, la estructura con {{ form.as_p }}
-   hará que sea más complicado usar los selectores de hermano (~) directamente,
-   ya que la posición de #volunteer-bg-color es absoluta y los <p> son hermanos de otras cosas.
-   Lo más sencillo es hacer que el hover se active al pasar el ratón por el formulario completo,
-   o que el botón de envío lo active.
-*/
-
-/* Opción 1: Hover del fondo al pasar el ratón por el formulario completo */
-.volunteer-form-box:hover #volunteer-bg-color {
-    /* Puedes elegir un efecto más simple si la complejidad de traducir los `transform: translateY` es mucha */
-    /* Por ejemplo, que el background-color simplemente se haga un poco más alto o cambie de color. */
-    height: 6em; /* Un poco más alto */
-    /* transform: translateY(0em); /* No cambia mucho de posición */
+.signup-link a {
+    color: #58bc82;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
 }
 
-/* Opción 2 (más similar al login): Simular el hover del submit button */
-/* Necesitarás que el botón de envío NO esté dentro de un <p> para usar el selector ~ */
-/* Si el botón está directo como hijo de .volunteer-form-box */
-/* .volunteer-form-box > .volunteer-submit-button:hover ~ #volunteer-bg-color {
-    height: 10em;
-    transform: translateY(calc(100% - 10em - 1.5em)); /* Ajusta esto basado en la altura de los campos */
+.signup-link a:hover {
+    color: #45a56b;
+}
 
-
-/* POR AHORA, para simplicidad, NO voy a incluir los complejos hovers de transform: translateY del background-color
-   para cada campo. Esos se basaban en alturas fijas y el orden de los divs.
-   Con {{ form.as_p }}, es más difícil.
-   Si el formulario de login no tiene scroll, y este sí, es más complejo.
-   Lo mejor es que el hover del fondo sea más general, o solo en el botón de submit.
-*/
+/* Media Queries para responsividad */
+@media (max-width: 480px) {
+    .login-form {
+        padding: 20px; /* Reducido más en pantallas pequeñas */
+        width: 90%;
+    }
+    .form-heading {
+        font-size: 1.6rem;
+        margin-bottom: 15px;
+    }
+    .input-group {
+        margin-bottom: 10px; /* Más reducción en móviles */
+    }
+    .input-group input,
+    .input-group select,
+    .input-group textarea {
+        padding: 10px 12px;
+    }
+    .input-group .input-label-static {
+        font-size: 0.85rem;
+    }
+    .submit {
+        padding: 10px;
+        font-size: 0.9rem;
+        margin-top: 10px;
+        margin-bottom: 15px;
+    }
+    .signup-link {
+        font-size: 0.8rem;
+    }
+    .main-container {
+        margin-top: 20px; /* Ajuste para móviles */
+        padding: 5px;
+    }
+}

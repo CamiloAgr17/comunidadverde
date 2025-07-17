@@ -10,8 +10,7 @@
     {# --- ENLACE A TUS CSS --- #}
     <link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
     <link rel="stylesheet" href="{% static 'inicio/css/register_v_style.css' %}">
-    
-    <link rel="stylesheet" href="{% static 'inicio/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'inicio/css/style.css' %}"> 
     <link href="https://fonts.googleapis.com/css2?family=Sansita+Swashed:wght@400;700&display=swap" rel="stylesheet">
 
     <script>
@@ -21,55 +20,55 @@
                     document.getElementById("id_latitud").value = pos.coords.latitude;
                     document.getElementById("id_longitud").value = pos.coords.longitude;
                 }, function(error) {
-                    alert("No se pudo obtener la ubicación.");
+                    alert("No se pudo obtener la ubicación. Por favor, asegúrate de permitir el acceso a la ubicación.");
                 });
             } else {
-                alert("Tu navegador no soporta geolocalización.");
+                alert("Tu navegador no soporta geolocalización. La ubicación no se podrá registrar automáticamente.");
             }
         }
         window.onload = obtenerUbicacion;
     </script>
 </head>
-<body>
-    {# --- ESTRUCTURA DEL HEADER (viene de style.css) --- #}
-    <header class="main-header">
+   <header class="main-header">
         <div class="header-content">
             <h1 class="site-title">
                 <img src="{% static 'images/logo.png' %}" alt="LOGO">
             </h1>
         </div>
     </header>
+<body>
+    <div class="main-container"> 
+        <form method="post" class="login-form"> 
+            {% csrf_token %}
+            {{ form.non_field_errors }} 
 
-    {# --- CONTENEDOR PRINCIPAL DE LA PÁGINA DE REGISTRO DE VOLUNTARIO --- #}
-    <div class="volunteer-page-container">
-        <div class="volunteer-form-box">
-            <div id="volunteer-bg-color"></div> {# Fondo morado superior #}
+            <div class="form-heading">REGISTRO VOLUNTARIO</div>
+            
+            {# Iteramos sobre los campos del formulario #}
+            {% for field in form %}
+                {# Ocultar campos de latitud y longitud #}
+                {% if field.name == 'latitud' or field.name == 'longitud' %}
+                    <div style="display: none;"> {# Estilo inline para ocultar el div completamente #}
+                        {{ field.label_tag }} {# Renderiza la etiqueta del campo #}
+                        {{ field }} {# Renderiza el input del campo #}
+                        {{ field.errors }} {# Muestra errores específicos de cada campo #}
+                    </div>
+                {% else %}
+                    {# AQUI VA EL BLOQUE DE CÓDIGO QUE PREGUNTASTE #}
+                    <div class="input-group">
+                        <label for="{{ field.id_for_label }}" class="input-label-static">{{ field.label }}</label>
+                        {{ field.as_widget }}
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            {% endfor %}
 
-            <div id="volunteer-title-section"> {# Área de título "Registro Voluntario" #}
-                <h2>Registro Voluntario</h2>
-                {# Si quieres un subtítulo aquí, descomenta y pon texto #}
-                {# <p id="volunteer-subtitle-text">Completa tus datos</p> #}
+            <button class="submit" type="submit">Registrarme</button>
+
+            <div class="signup-link">
+                ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia Sesión</a>
             </div>
-
-            <div id="volunteer-corner-filter"></div> {# Filtro blanco de la esquina #}
-
-            {# Formulario Django - Los campos generados por {{ form.as_p }} se estilizarán #}
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }} {# Esto generará los <label> y <input> dentro de <p> #}
-                <button type="submit" class="volunteer-submit-button">Registrarme</button>
-            </form>
-
-           
-            <div id="volunteer-footer-area">
-                <div id="volunteer-text-link-container">
-                    <p>¿Ya tienes cuenta?</p>
-                    <a href="{% url 'login' %}">Inicia Sesión</a>
-                </div>
-            </div>
-
-        </div> {# Fin de .volunteer-form-box #}
-    </div> {# Fin de .volunteer-page-container #}
-
+        </form>
+    </div>
 </body>
 </html>

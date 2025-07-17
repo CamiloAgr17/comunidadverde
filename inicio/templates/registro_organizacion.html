@@ -10,9 +10,10 @@
     {# --- ENLACE A TUS CSS --- #}
     <link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
     <link rel="stylesheet" href="{% static 'inicio/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'inicio/css/register_o_style.css' %}">
-    
-    {# Script para geolocalización, mantenido #}
+    <link rel="stylesheet" href="{% static 'inicio/css/register_o_style.css' %}"> {# Nuevo CSS para organización #}
+    <link href="https://fonts.googleapis.com/css2?family=Sansita+Swashed:wght@400;700&display=swap" rel="stylesheet">
+
+    {# Script para geolocalización #}
     <script>
         function obtenerUbicacion(latId, lngId) {
             if (navigator.geolocation) {
@@ -20,10 +21,10 @@
                     document.getElementById(latId).value = pos.coords.latitude;
                     document.getElementById(lngId).value = pos.coords.longitude;
                 }, function(error) {
-                    alert("No se pudo obtener la ubicación.");
+                    alert("No se pudo obtener la ubicación. Por favor, asegúrate de permitir el acceso a la ubicación.");
                 });
             } else {
-                alert("Tu navegador no soporta geolocalización.");
+                alert("Tu navegador no soporta geolocalización. La ubicación no se podrá registrar automáticamente.");
             }
         }
 
@@ -34,43 +35,50 @@
         };
     </script>
 </head>
-<body>
-    {# --- ESTRUCTURA DEL HEADER (viene de style.css) --- #}
     <header class="main-header">
         <div class="header-content">
-            <h1 class="site-title">Comunidad Verde</h1>
+            <h1 class="site-title">
+                <img src="{% static 'images/logo.png' %}" alt="LOGO">
+            </h1>
         </div>
     </header>
+<body>
+    {# Contenedor principal del formulario, usa las mismas clases que el registro de voluntario #}
+    <div class="main-container"> 
+        {# La clase "login-form" es crucial para aplicar los estilos consistentes #}
+        <form method="post" class="login-form"> 
+            {% csrf_token %}
+            {{ form.non_field_errors }} {# Muestra errores generales del formulario #}
 
-    {# --- CONTENEDOR PRINCIPAL DE LA PÁGINA DE REGISTRO DE ORGANIZACIÓN --- #}
-    <div class="organization-page-container">
-        <div class="organization-form-box">
-            <div id="organization-bg-color"></div> {# Fondo morado superior #}
+            {# El div "form-heading" para el título del formulario #}
+            <div class="form-heading">REGISTRO ORGANIZACIÓN</div>
 
-            <div id="organization-title-section"> {# Área de título "Registro de Organización" #}
-                <h2>Registro de Organización</h2>
-                {# <p id="organization-subtitle-text">Ingresa los datos de tu organización</p> #}
+            {# Iteramos sobre los campos del formulario #}
+            {% for field in form %}
+                {# Ocultar campos de latitud y longitud #}
+                {% if field.name == 'latitud' or field.name == 'longitud' %}
+                    <div style="display: none;"> {# Estilo inline para ocultar el div completamente #}
+                        {{ field.label_tag }} {# Renderiza la etiqueta del campo #}
+                        {{ field }} {# Renderiza el input del campo #}
+                        {{ field.errors }} {# Muestra errores específicos de cada campo #}
+                    </div>
+                {% else %}
+                    {# Para el resto de los campos, usamos la estructura input-group con el label estático #}
+                    <div class="input-group">
+                        <label for="{{ field.id_for_label }}" class="input-label-static">{{ field.label }}</label>
+                        {{ field.as_widget }}
+                        {{ field.errors }} {# Muestra errores específicos de cada campo #}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {# El botón de submit con la clase "submit" #}
+            <button class="submit" type="submit">Registrar</button>
+
+            <div class="signup-link">
+                ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia Sesión</a>
             </div>
-
-            <div id="organization-corner-filter"></div> {# Filtro blanco de la esquina #}
-
-            {# Formulario Django - Los campos generados por {{ form.as_p }} se estilizarán #}
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }} {# Esto generará los <label> y <input> dentro de <p> #}
-                <button type="submit" class="organization-submit-button">Registrar</button>
-            </form>
-
-            {# Opcional: Sección inferior con enlace "Ya tienes cuenta?" si aplica #}
-            <div id="organization-footer-area">
-                <div id="organization-text-link-container">
-                    <p>¿Ya tienes cuenta?</p>
-                    <a href="{% url 'login' %}">Inicia Sesión</a>
-                </div>
-            </div>
-
-        </div> {# Fin de .organization-form-box #}
-    </div> {# Fin de .organization-page-container #}
-
+        </form>
+    </div>
 </body>
 </html>

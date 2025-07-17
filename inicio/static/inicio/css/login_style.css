@@ -2,13 +2,13 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif; /* Fuente genérica, puedes especificar una si deseas */
+    background: #277a9c;
+    background: linear-gradient(180deg,rgba(39, 122, 156, 1) 20%, rgba(29, 140, 74, 1) 90%); /* Asegura que el degradado cubra toda la altura de la ventana */
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    background-color: #f0f2f5; /* Fondo gris muy claro para el body */
-    align-items: center; /* Centra el contenido horizontalmente */
-    justify-content: center; /* Centra el contenido verticalmente */
+    align-items: center;
+    justify-content: flex-start; /* Alinea el contenido al inicio, dejando espacio para el header */
+    color: white; /* Color de texto principal */
 }
 
 
