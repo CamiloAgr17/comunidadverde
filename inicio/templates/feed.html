@@ -1,1245 +1,159 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<title>Publicaciones</title>
+{% load static %} {% block content %}
 <link rel="stylesheet" href="{% static 'feed/css/style.css' %}">
-<link rel="stylesheet" href="{% static 'feed/css/compo.css' %}">
-<link rel="stylesheet" href="{% static 'feed/css/cards.css' %}">
-<link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
-</head>
-<body>
-{% load static %} {% block content %}<title>Publicaciones</title>
-<link rel="stylesheet" href="{% static 'feed/css/style.css' %}">
-<link rel="stylesheet" href="{% static 'feed/css/compo.css' %}">
-<link rel="stylesheet" href="{% static 'feed/css/cards.css' %}">
-<link rel="stylesheet" href="{% static 'inicio/css/header_style.css' %}">
-<!DOCTYPE html>
 
-<header class="main-header">
-        <div class="header-content">
-            <h1 class="site-title">
-                <img src="{% static 'images/logo.png' %}" alt="LOGO">
-            </h1>
-        </div>
-    </header>
-<body>
-    <div class="layout-container">
+<div class="layout-container">
 
 
     <!-- SIDEBAR CON EL PERFIL Y BOTONES DE NAVEGACIÓN -->
     <aside class="sidebar-left">
-    <div class="wave"></div>
-    <div class="wave"></div>
-    <div class="user-profile">
-        <h3 id="current_username" style="color: white;">Cargando...</h3>
-        <p id="user_type_description" style="color: white;">Cargando tipo...</p>
-        <div class="user-stats">
-            <div style="color: white;"><strong><span id="user_posts_count" style="color: white;">0</span></strong><br />Posts</div>
-            <div style="color: white;"><strong><span id="user_followers_count" style="color: white;">0</span></strong><br />Seguidores</div>
-            <div style="color: white;"><strong><span id="user_following_count" style="color: white;">0</span></strong><br />Seguidos</div>
+        <div class="user-profile">
+            <img src='https://picsum.photos/id/237/200' alt="User" class="user-avatar" />
+            <h3>Current User</h3>
+            <p>Biografía o Descripción del usuario</p>
+            <div class="user-stats">
+                <div><strong>10</strong><br />Posts</div>
+                <div><strong>150</strong><br />Seguidores</div>
+                <div><strong>58</strong><br />Seguidos</div>
+            </div>
+            <nav class="side-nav-buttons">
+                <button>
+                    <span>Perfil</span>
+                </button>
+                <button id="btn_modal">
+                    <span>Notificaciones</span>
+                </button>
+                <button>
+                    <span>Mapa</span>
+                </button>
+                <button>
+                    <span>Ajustes</span>
+                </button>
+            </nav>
         </div>
-        <h4 style="color: white;">Etiquetas Favoritas</h4>
-        <ul class="user-tags" id="user_favorite_tags_list" style="color: white;">
-            <li>Cargando...</li>
-        </ul>
-        <nav>
-            <button class="animated-button" id="view_current_profile_btn" style="display:none">
-                    <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                            >
-                        </path>
-                    </svg>
-                     <span class="text"> Mi Perfil </span> 
-                     <span class="circle"></span>
-                     <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                            >
-                        </path>
-                     </svg>
-                </button> {# ID y función #}
-
-            <button class="animated-button" id="open_notifications_modal_btn">
-                <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                    >
-                    </path>
-                </svg>
-                <span class="text"> Notificaciones </span> 
-                <span id="unread_notifications_count" class="notification-badge" style="display: none;">0</span>
-                <span class="circle"></span>
-                <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                    >
-                    </path>
-                </svg>
-            </button>
-
-            <button class="animated-button" onclick="window.location.href='{% url 'mapa' %}'">
-                <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                    >
-                    </path>
-                </svg>
-                <span class="text"> Mapas </span> 
-                <span class="circle"></span>
-                <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                    >
-                    </path>
-                </svg>
-            </button>
-
-            <button class="animated-button" id="btn_modal_settings" style="display:none">
-                    <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                            >
-                        </path>
-                    </svg>
-                     <span class="text"> Ajustes </span> 
-                     <span class="circle"></span>
-                     <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                            >
-                        </path>
-                     </svg>
-                </button>
-
-
-
-            <form action="{% url 'logout' %}" method="post" style="display: block; text-align: center;">
-                {% csrf_token %}
-                <button class="animated-button" type="submit">
-                <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                        >
-                    </path>
-                </svg>
-                <span class="text"> Cerrar Sesión </span> 
-                <span class="circle"></span>
-                <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
-                    >
-                    </path>
-                </svg>
-                </button>
-            </form>
-        </nav>
-    </div>
-</aside>
+    </aside>
 
     <!-- AQUI VAN LA LISTA DE POSTS ETC... -->
     <main class="feed-main">
-        <header class="feed-header">
-            <h3>Publicaciones</h3>
-        </header>
-        <div id="posts_container" class="posts-container">
-            <p>Cargando publicaciones...</p>
-        </div>
+        <!-- ESTOS BOTONES NO SE SI LOS QUITAN O Q -->
+        <!-- pero ahi tan porsiacaso o si les quieren dar otra función -->
+        {% comment %} <header class="feed-header">
+            <button class="tab">Mi Feed</button>
+            <button class="tab">Cerca de Mí</button> 
+        </header> {% endcomment %}
 
-        <div id="loading_indicator" style="text-align: center; padding: 20px; font-style: italic; color: #888; display: none;">
-            Cargando más publicaciones...
-        </div>
-
-        <div class="load-more-btn-container" style="text-align: center; margin-top: 20px;">
-            <button id="load_more_posts_btn" style="display: none; padding: 10px 20px;">Cargar Más</button>
-        </div>
+        <!-- placeholder, pero esta es la logica de mostrar los posts -->
+        <!-- cambien o ajusten a su necesidad -->
+        
+        {% if posts %}
+            {% for post in posts %}
+            <div class="post-card">
+                <div class="post-header">
+                    <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
+                    <strong>{{ post.autor.username }}</strong>
+                </div>
+                <p>{{ post.contenido }}</p>
+                {% if post.imagen %}
+                <img src="{{ post.imagen.url }}" class="post-image" />
+                {% endif %}
+                <small>{{ post.fecha_publicacion }}</small>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay publicaciones disponibles.</p>
+        {% endif %}
     </main>
 
 
-        <!-- SIDEBAR EN LA DERECHA -->
-        <!-- aqui va el buscador y noticias -->
-        <!-- tmb pueden poner tipo "posts más relevantes" -->
-        <!-- y te muestra como 2 posts con varios likes y así -->
-        {% comment %}
-        {% endcomment %}
+    <!-- SIDEBAR EN LA DERECHA -->
+    <!-- aqui va el buscador y noticias -->
+    <!-- tmb pueden poner tipo "posts más relevantes" -->
+    <!-- y te muestra como 2 posts con varios likes y así -->
+    <aside class="sidebar-right">
+        <!-- From Uiverse.io by satyamchaudharydev --> 
+        <form class="form">
+            <label for="search">
+                <input class="input" type="text" required="" placeholder="Buscar..." id="search">
+                <div class="fancy-bg"></div>
+                <div class="search">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" class="r-14j79pv r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-4wgw6l r-f727ji r-bnwqim r-1plcrui r-lrvibr">
+                        <g>
+                            <path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path>
+                        </g>
+                    </svg>
+                </div>
+                <button class="close-btn" type="reset">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </label>
+        </form>
+        <div class="info-box">
+            <h4 class="title">Noticia</h4>
+            <p class="description">Contenido de la noticia</p>
+        </div>
+        <div class="info-box">
+            <h4 class="title">Otra Noticia</h4>
+            <p class="description">Contenido</p>
+        </div>
+        <div class="info-box">
+            <h4 class="title">Información de Contacto</h4>
+            <p class="description">info@ejemplo.com</p>
+        </div>
+    </aside>
 
     <!-- Botón flotante -->
-    <button id="create_post_btn" class="floating-button">
-       <span>Crear una Publicación</span>
+    <button class="floating-button">
+        <span>
+            <svg
+            height="24"
+            width="24"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            >
+            <path d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" fill="currentColor"></path>
+            </svg>
+             Escribe un post
+        </span>
     </button>
- </div>
+</div>
 
-    <div id="modal_notificaciones" class="modal">
+<!-- Modal de Notificaciones -->
+<div id="modal_notificaciones" class="modal">
     <div class="modal-content">
-        <div class="modal-header">
-            <h2>Notificaciones</h2>
-            <span class="close">&times;</span> </div>
-        <div class="modal-body">
-            <div id="notifications_list" class="notifications-list">
-                <p class="no-notifications-message" style="text-align: center; color: #555; display: none;">No hay notificaciones.</p>
-            </div>
-            <button id="mark_all_read_btn" class="animated-button" style="margin-top: 20px;">
-                <span class="text">Marcar todas como leídas</span>
-            </button>
-        </div>
+        <span class="close">&times;</span>
+
+        <!-- aqui se deben pintar las notificaciones una vez esa logica este hecha-->
+        <!-- si no hay tiempo para hacer notificaciones pues se quita el boton de arriba-->
+        <h2>Notificaciones</h2>
+        <ul>
+            <li>Notificación 1</li>
+            <li>Notificación 2</li>
+            <li>Notificación 3</li>
+        </ul>
     </div>
 </div>
 
-    <div id="create_post_modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close create-post-close">&times;</span>
-            <h2>Crear Nueva Publicación</h2>
-            <textarea id="post_content_input" placeholder="¿Qué quieres compartir hoy?" rows="5" style="width: calc(100% - 22px); padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 1em;"></textarea>
-            <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Etiquetas:</label>
-                <div id="tags_checkbox_container" style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    <p>Cargando etiquetas...</p>
-                </div>
-            </div>
-            <button id="submit_post_btn" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Publicar</button>
-        </div>
-    </div>
-
-    <div id="post_detail_modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close post-detail-close">&times;</span>
-            <h2>Detalles de la Publicación</h2>
-            <div id="detailed_post_content">
-                </div>
-            <div class="post-actions" style="margin-top: 10px;">
-                <button id="detail_like_btn" style="display: none; background: none; border: none; color: #007bff; cursor: pointer; padding: 5px 10px; font-size: 0.9em;">Me Gusta</button>
-            </div>
-            <div class="comments-section" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
-                <h3>Comentarios</h3>
-                <div id="comments_list">
-                    </div>
-                <div class="add-comment" style="margin-top: 15px;">
-                    <textarea id="comment_content_input" placeholder="Escribe un comentario..." rows="2" style="width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1em;"></textarea>
-                    <button id="submit_comment_btn" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Comentar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="profile_modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close profile-close">&times;</span>
-            <h2>Perfil de Usuario</h2>
-            <div class="user-profile">
-                <img src="{% static 'img/user-placeholder.png' %}" alt="User" class="user-avatar" />
-                <h3 id="profile_username_modal">Cargando...</h3>
-                <p id="profile_type_modal">Cargando tipo...</p>
-                <div class="user-stats">
-                    <div class="stat-item"><strong><span id="profile_posts_count">0</span></strong><br />Posts</div>
-                    <div class="stat-item"><strong><span id="profile_followers_count">0</span></strong><br />Seguidores</div>
-                    <div class="stat-item"><strong><span id="profile_following_count">0</span></strong><br />Seguidos</div>
-                </div>
-                <h4>Etiquetas Favoritas</h4>
-                <ul class="user-tags" id="profile_favorite_tags_list">
-                    <li>Cargando...</li>
-                </ul>
-                <button id="toggle_follow_user_btn" style="margin-top: 15px; width: 100%; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;"></button>
-            </div>
-        </div>
-    </div>
-</body>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    // Variables globales para la carga infinita
-    let currentOffset = 0;
-    const limit = 10; // Número de posts a cargar por vez
-    let hasMorePosts = true;
-    let isLoading = false; // Bandera para evitar múltiples cargas simultáneas
+    var modal = document.getElementById("modal_notificaciones");
+    var btn = document.getElementById("btn_modal");
+    var span = document.getElementsByClassName("close")[0];
 
-   let currentUserId = "{{ request.user.id|default_if_none:'' }}";
-
-if (currentUserId) {
-    currentUserId = parseInt(currentUserId);
-} else {
-    currentUserId = null;
-}
-
-
-    // --- Funciones de Utilidad ---
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
+    btn.onclick = function() {
+        modal.style.display = "block";
     }
 
-    function showLoadingIndicator() {
-        document.getElementById('loading_indicator').style.display = 'block';
+    span.onclick = function() {
+        modal.style.display = "none";
     }
 
-    function hideLoadingIndicator() {
-        document.getElementById('loading_indicator').style.display = 'none';
-    }
-
-    function showLoadMoreButton() {
-        document.getElementById('load_more_posts_btn').style.display = 'block';
-    }
-
-    function hideLoadMoreButton() {
-        document.getElementById('load_more_posts_btn').style.display = 'none';
-    }
-function renderPost(post) {
-    let postHtml = `
-        <div class="post-card" data-post-id="${post.id}">
-            <div class="post-header" style="display: flex; align-items: center; justify-content: space-between;">
-                <strong>
-                    <a href="#" class="view-profile-link" data-user-id="${post.autor_id}">${post.autor}</a>
-                </strong>`;
-
-    if (post.autor_id === currentUserId && !post.esta_eliminado) {
-        postHtml += `
-                <div class="post-options">
-                    <button class="options-btn">...</button>
-                    <div class="options-menu" style="display: none;">
-                        <button class="delete-post-btn" data-post-id="${post.id}">Eliminar</button>
-                    </div>
-                </div>`;
-    }
-
-    postHtml += `</div>`; // cierre post-header
-
-    if (post.esta_eliminado) {
-        postHtml += `<p style="font-style: italic; color: #888;">Este post ha sido eliminado.</p>`;
-    } else {
-        postHtml += `<p>${post.contenido}</p>`;
-
-        if (post.etiquetas && post.etiquetas.length > 0) {
-            postHtml += `<div class="post-tags" style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;">`;
-            post.etiquetas.forEach(etiqueta => {
-                postHtml += `<span class="tag" style="background-color: #eee; color: #555; padding: 2px 6px; border-radius: 4px; font-size: 0.8em;">${etiqueta}</span>`;
-            });
-            postHtml += `</div>`;
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
         }
     }
-
-    postHtml += `
-            <div class="post-meta" style="margin-top: 6px;">
-                <small>${new Date(post.fecha_creacion).toLocaleString()}</small>
-            </div>
-            <div class="post-actions" style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
-                <button class="like-btn ${post.usuario_dio_like ? 'liked' : ''}" data-post-id="${post.id}" style="display: flex; align-items: center; gap: 5px;">
-                    ❤️ <span class="like-count">${post.conteo_likes}</span>
-                </button>
-                
-                ${post.conteo_comentarios > 0 ? `
-                <button class="comment-btn" data-post-id="${post.id}" style="display: flex; align-items: center; gap: 5px;">
-                    💬 <span>${post.conteo_comentarios}</span>
-                </button>` : ''}
-                
-                ${post.telefono_whatsapp ? `
-                <a href="https://wa.me/${post.telefono_whatsapp}" target="_blank" 
-                   style="display: flex; align-items: center; gap: 5px; text-decoration: none; color: #25D366; font-weight: 500;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/220/220236.png" alt="WhatsApp" width="20" height="20" />
-                    <span>Contactar</span>
-                </a>` : ''}
-            </div>
-        </div>`;
-    
-    return postHtml;
-}
-
-    function renderComment(comment) {
-        const canDelete = comment.autor_id === currentUserId; 
-        return `
-            <div class="comment-card" data-comment-id="${comment.id}">
-                <div class="comment-header">
-                    <img src="{% static 'img/user-icon.png' %}" class="avatar-xsmall" />
-                    <strong><a href="#" class="view-profile-link" data-user-id="${comment.autor_id}">${comment.autor}</a></strong>
-                    <small>${new Date(comment.fecha_creacion).toLocaleString()}</small>
-                </div>
-                <p>${comment.contenido}</p>
-                ${canDelete ? `<button class="delete-comment-btn" data-comment-id="${comment.id}">Eliminar</button>` : ''}
-            </div>
-        `;
-    }
-
-    // --- Funciones de Peticiones a la API ---
-
-    async function fetchCurrentUserProfile() {
-        // Solo intenta cargar el perfil si currentUserId no es null
-        if (!currentUserId) {
-            document.getElementById('current_username').textContent = 'No logueado';
-            document.getElementById('user_type_description').textContent = '';
-            document.getElementById('user_posts_count').textContent = 'N/A';
-            document.getElementById('user_followers_count').textContent = 'N/A';
-            document.getElementById('user_following_count').textContent = 'N/A';
-            document.getElementById('user_favorite_tags_list').innerHTML = '<li>Inicia sesión para ver.</li>';
-            document.getElementById('view_current_profile_btn').style.display = 'none'; // O deshabilitar
-            return;
-        }
-
-        try {
-            const response = await fetch(`/usuarios/${currentUserId}/`); 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            
-            document.getElementById('current_username').textContent = data.username;
-            document.getElementById('user_posts_count').textContent = data.posts;
-            document.getElementById('user_followers_count').textContent = data.seguidores_ids.length;
-            document.getElementById('user_following_count').textContent = data.seguidos_ids.length;
-            document.getElementById('user_type_description').textContent = data.es_voluntario ? 'Voluntario' : (data.es_organizacion ? 'Organización' : 'Usuario');
-
-            const favoriteTagsList = document.getElementById('user_favorite_tags_list');
-            favoriteTagsList.innerHTML = '';
-            if (data.etiquetas_favoritas.length > 0) {
-                data.etiquetas_favoritas.forEach(tag => {
-                    const li = document.createElement('li');
-                    li.textContent = tag;
-                    favoriteTagsList.appendChild(li);
-                });
-            } else {
-                favoriteTagsList.innerHTML = '<li>Ninguna etiqueta favorita.</li>';
-            }
-
-        } catch (error) {
-            console.error("Error al obtener el perfil del usuario actual:", error);
-            document.getElementById('current_username').textContent = 'Error al cargar perfil';
-        }
-    }
-
-    async function fetchPosts(offset, limit) {
-        if (isLoading || !hasMorePosts) return;
-        isLoading = true;
-        showLoadingIndicator();
-        hideLoadMoreButton();
-
-        try {
-            const params = new URLSearchParams({
-                offset: offset,
-                limite: limit
-            });
-            const response = await fetch(`/feed-data/?${params.toString()}`); 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-
-            const postsContainer = document.getElementById('posts_container');
-            if (postsContainer) { // Solo si el contenedor existe
-        postsContainer.addEventListener('click', (event) => {
-            // --- Lógica para el clic en el nombre de usuario (enlace de perfil) ---
-            // Intenta encontrar el enlace de perfil que fue clickeado (o su padre si el clic fue en un texto interno)
-            const profileLink = event.target.closest('.view-profile-link');
-            
-            if (profileLink) { // Si encontramos un enlace de perfil
-                event.preventDefault(); // Evita que la página salte
-                const userId = parseInt(profileLink.dataset.userId); // Obtenemos el ID y lo convertimos a número
-                fetchUserProfile(userId); // Llamamos a la función para mostrar el perfil
-                return; // Importante: Salimos de la función para no procesar otros clics
-            }
-
-
-
-            // --- Lógica para el botón de opciones del post (los "...") ---
-            const optionsButton = event.target.closest('.options-btn');
-            if (optionsButton) { // Si encontramos un botón de opciones
-                event.preventDefault();
-                event.stopPropagation();
-                const optionsMenu = optionsButton.nextElementSibling; // Asume que el menú es el siguiente hermano
-                if (optionsMenu && optionsMenu.classList.contains('options-menu')) {
-                event.preventDefault(); 
-                
-                const optionsMenu = optionsButton.nextElementSibling; 
-                if (optionsMenu && optionsMenu.classList.contains('options-menu')) {
-                    // Cierra otros menús abiertos antes de abrir este
-                    document.querySelectorAll('.options-menu').forEach(menu => {
-                        if (menu !== optionsMenu) { 
-                            menu.style.display = 'none';
-                        }
-                    });
-                     // Alternar la visibilidad del menú actual
-                    optionsMenu.style.display = optionsMenu.style.display === 'block' ? 'none' : 'block';
-                }
-                
-                    document.querySelectorAll('.options-menu').forEach(menu => {
-                        if (menu !== optionsMenu) { // No cierres el menú actual
-                            menu.style.display = 'none';
-                        }
-                    });
-                    optionsMenu.style.display = optionsMenu.style.display === 'block' ? 'none' : 'block';
-                }
-                return;
-            }
-            // Si el clic no fue en ninguno de los elementos anteriores, no se hace nada más en este listener
-        }); // Fin del postsContainer.addEventListener
-    } else {
-        console.error("El contenedor 'posts_container' no fue encontrado al cargar el DOM.");
-    }
-            
-
-            if (offset === 0) { 
-                postsContainer.innerHTML = '';
-            }
-            
-            if (data.posts.length === 0 && offset === 0) {
-                postsContainer.innerHTML = '<p>No se encontraron publicaciones.</p>';
-            } else {
-                data.posts.forEach(post => {
-                    postsContainer.insertAdjacentHTML('beforeend', renderPost(post));
-                });
-            }
-
-            currentOffset = data.siguiente_offset || 0;
-            hasMorePosts = data.hay_mas;
-
-            if (hasMorePosts) {
-                showLoadMoreButton();
-            } else {
-                hideLoadMoreButton();
-            }
-
-        } catch (error) {
-            console.error("Error al obtener publicaciones:", error);
-            document.getElementById('posts_container').innerHTML = '<p style="color: red;">Error al cargar publicaciones.</p>';
-        } finally {
-            isLoading = false;
-            hideLoadingIndicator();
-        }
-    }
-
-    async function createPost(content) {
-        if (!content.trim()) {
-            alert("El contenido de la publicación no puede estar vacío.");
-            return;
-        }
-        try {
-            const response = await fetch('/posts/crear/', { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ contenido: content })
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            alert(data.mensaje);
-            document.getElementById('post_content_input').value = '';
-            document.getElementById('create_post_modal').style.display = 'none';
-            currentOffset = 0; 
-            hasMorePosts = true; 
-            fetchPosts(currentOffset, limit);
-            fetchCurrentUserProfile(); 
-        } catch (error) {
-            console.error("Error al crear publicación:", error);
-            alert("Error al crear la publicación.");
-        }
-    }
-
-    async function deletePost(postId) {
-        if (!currentUserId) {
-            alert("Debes iniciar sesión para eliminar publicaciones.");
-            return;
-        }
-        if (!confirm("¿Estás seguro de que quieres eliminar esta publicación?")) {
-            return;
-        }
-        try {
-            const response = await fetch(`/posts/${postId}/eliminar/`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            alert(data.mensaje);
-            currentOffset = 0; 
-            hasMorePosts = true;
-            fetchPosts(currentOffset, limit);
-            fetchCurrentUserProfile();
-            document.getElementById('post_detail_modal').style.display = 'none';
-        } catch (error) {
-            console.error("Error al eliminar publicación:", error);
-            alert("Error al eliminar la publicación.");
-        }
-    }
-
-    async function fetchPostAndComments(postId) {
-        try {
-            const response = await fetch(`/posts/${postId}/comentarios/`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            
-            const postDetailContent = document.getElementById('detailed_post_content');
-            const commentsList = document.getElementById('comments_list');
-            const deletePostBtn = document.getElementById('detail_delete_post_btn');
-            const detailLikeBtn = document.getElementById('detail_like_btn');
-            const submitCommentBtn = document.getElementById('submit_comment_btn');
-            const commentContentInput = document.getElementById('comment_content_input');
-
-            postDetailContent.innerHTML = '';
-            commentsList.innerHTML = '';
-            commentContentInput.value = '';
-            detailLikeBtn.style.display = 'none';
-            deletePostBtn.style.display = 'none';
-            submitCommentBtn.onclick = null;
-            
-            const postInfo = data.post_info;
-            let postHtml = `
-                <div class="detailed-post-card" data-post-id="${postInfo.id}">
-                    <div class="post-header">
-                        <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
-                        <strong><a href="#" class="view-profile-link" data-user-id="${postInfo.autor_id}">${postInfo.autor}</a></strong>
-                        <small>${new Date(postInfo.fecha_creacion).toLocaleString()}</small>
-                    </div>`;
-
-            if (postInfo.esta_eliminado) {
-                postHtml += `<p style="font-style: italic; color: #888;">${postInfo.contenido}</p>`;
-                commentContentInput.disabled = true;
-                submitCommentBtn.disabled = true;
-            } else {
-                postHtml += `<p>${postInfo.contenido}</p>`;
-                // Solo muestra botones de interacción si el usuario está logueado
-                if (currentUserId) { 
-                    detailLikeBtn.style.display = 'inline-block';
-                }
-                if (currentUserId) { // Solo permite comentar si está logueado
-                    commentContentInput.disabled = false;
-                    submitCommentBtn.disabled = false;
-                    submitCommentBtn.onclick = () => createComment(postInfo.id, commentContentInput.value);
-                } else {
-                    commentContentInput.disabled = true;
-                    submitCommentBtn.disabled = true;
-                    commentContentInput.placeholder = "Inicia sesión para comentar...";
-                }
-            }
-            postDetailContent.innerHTML = postHtml;
-
-            if (data.comentarios.length > 0) {
-                data.comentarios.forEach(comment => {
-                    commentsList.insertAdjacentHTML('beforeend', renderComment(comment));
-                });
-            } else {
-                commentsList.innerHTML = '<p>Sé el primer usuario en comentar.</p>';
-            }
-
-            // Solo adjunta event listeners para eliminar comentarios si está logueado
-            if (currentUserId) {
-                commentsList.querySelectorAll('.delete-comment-btn').forEach(btn => {
-                    btn.onclick = (event) => deleteComment(event.target.dataset.commentId);
-                });
-            }
-            document.getElementById('post_detail_modal').style.display = 'block';
-
-        } catch (error) {
-            console.error("Error al obtener detalles del post y comentarios:", error);
-            alert("Error al cargar los detalles de la publicación.");
-        }
-    }
-
-    async function createComment(postId, content) {
-        if (!currentUserId) {
-            alert("Debes iniciar sesión para crear comentarios.");
-            return;
-        }
-        if (!content.trim()) {
-            alert("El comentario no puede estar vacío.");
-            return;
-        }
-        try {
-            const response = await fetch('/comentarios/crear/', { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ post_id: postId, contenido: content })
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            alert(data.mensaje);
-            document.getElementById('comment_content_input').value = '';
-            fetchPostAndComments(postId);
-            currentOffset = 0; 
-            hasMorePosts = true;
-            fetchPosts(currentOffset, limit); 
-            fetchCurrentUserProfile();
-        } catch (error) {
-            console.error("Error al crear comentario:", error);
-            alert("Error al crear el comentario.");
-        }
-    }
-
-    async function deleteComment(commentId) {
-        if (!currentUserId) {
-            alert("Debes iniciar sesión para eliminar comentarios.");
-            return;
-        }
-        if (!confirm("¿Estás seguro de que quieres eliminar este comentario?")) {
-            return;
-        }
-        try {
-            const response = await fetch(`/comentarios/${commentId}/eliminar/`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            alert(data.mensaje);
-            const currentPostId = document.getElementById('detailed_post_content').dataset.postId;
-            if (currentPostId) {
-                fetchPostAndComments(currentPostId);
-                currentOffset = 0; 
-                hasMorePosts = true;
-                fetchPosts(currentOffset, limit); 
-                fetchCurrentUserProfile();
-            }
-        } catch (error) {
-            console.error("Error al eliminar comentario:", error);
-            alert("Error al eliminar el comentario.");
-        }
-    }
-
-    async function fetchUserProfile(userId) {
-        try {
-            const response = await fetch(`/usuarios/${userId}/`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-
-            document.getElementById('profile_username_modal').textContent = data.username;
-            document.getElementById('profile_type_modal').textContent = data.es_voluntario ? 'Voluntario' : (data.es_organizacion ? 'Organización' : 'Usuario');
-            document.getElementById('profile_posts_count').textContent = data.conteo_actividad_total;
-            document.getElementById('profile_followers_count').textContent = data.seguidores_ids.length;
-            document.getElementById('profile_following_count').textContent = data.seguidos_ids.length;
-
-            const profileFavoriteTagsList = document.getElementById('profile_favorite_tags_list');
-            profileFavoriteTagsList.innerHTML = '';
-            if (data.etiquetas_favoritas.length > 0) {
-                data.etiquetas_favoritas.forEach(tag => {
-                    const li = document.createElement('li');
-                    li.textContent = tag;
-                    profileFavoriteTagsList.appendChild(li);
-                });
-            } else {
-                profileFavoriteTagsList.innerHTML = '<li>Ninguna etiqueta favorita.</li>';
-            }
-
-            const toggleFollowBtn = document.getElementById('toggle_follow_user_btn');
-            if (userId === currentUserId) {
-                toggleFollowBtn.style.display = 'none';
-            } else {
-                toggleFollowBtn.style.display = 'block';
-                toggleFollowBtn.textContent = data.esta_siguiendo ? 'Dejar de Seguir' : 'Seguir';
-                // Solo adjunta el evento si el usuario actual está logueado
-                if (currentUserId) {
-                    toggleFollowBtn.onclick = () => toggleFollowUser(userId);
-                } else {
-                    toggleFollowBtn.disabled = true;
-                    toggleFollowBtn.textContent = 'Inicia sesión para seguir';
-                }
-            }
-
-            document.getElementById('profile_modal').style.display = 'block';
-
-        } catch (error) {
-            console.error("Error al obtener el perfil de usuario:", error);
-            alert("Error al cargar el perfil del usuario.");
-        }
-    }
-
-    async function toggleFollowUser(userIdToFollow) {
-        if (!currentUserId) {
-            alert("Debes iniciar sesión para seguir a otros usuarios.");
-            return;
-        }
-        try {
-            const response = await fetch('/usuarios/alternar-seguimiento/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ usuario_id: userIdToFollow })
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            alert(data.mensaje);
-            fetchUserProfile(userIdToFollow);
-            fetchCurrentUserProfile();
-        } catch (error) {
-            console.error("Error al alternar seguimiento de usuario:", error);
-            alert("Error al cambiar el estado de seguimiento del usuario.");
-        }
-    }
-
-    //Like y dislike de publicaciones
-    async function toggleLike(postId, likeButton) {
-        if (!currentUserId) {
-            alert("Debes iniciar sesión para dar 'Me Gusta'.");
-            return;
-        }
-        try {
-            const response = await fetch('/posts/alternar-like/', { // This URL needs to be defined in your urls.py
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ post_id: postId })
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            
-            const likeCountSpan = likeButton.querySelector('.like-count');
-            if (data.liked) {
-                likeButton.classList.add('liked');
-                likeCountSpan.textContent = parseInt(likeCountSpan.textContent) + 1;
-            } else {
-                likeButton.classList.remove('liked');
-                likeCountSpan.textContent = parseInt(likeCountSpan.textContent) - 1;
-            }
-        } catch (error) {
-            console.error("Error al alternar like:", error);
-            alert("Error al procesar tu 'Me Gusta'.");
-        }
-    }
-
-
-    // --- Inicialización y Event Listeners ---
-    document.addEventListener('DOMContentLoaded', () => {
-        fetchCurrentUserProfile();
-        fetchPosts(currentOffset, limit);
-        
-    // Elementos del modal de creación de post
-    const createPostModal = document.getElementById('create_post_modal');
-    const postContentInput = document.getElementById('post_content_input'); // <--- ¡Esta línea!
-    const submitPostBtn = document.getElementById('submit_post_btn');
-    const tagsCheckboxContainer = document.getElementById('tags_checkbox_container');
-    const createPostCloseBtn = document.querySelector('.create-post-close');
-
-        // Deshabilitar botón de crear publicación si no está logueado
-        const createPostBtn = document.getElementById('create_post_btn');
-        if (!currentUserId) {
-            createPostBtn.disabled = true;
-            createPostBtn.textContent = 'Inicia sesión para publicar';
-        }
-
-            if (createPostBtn && !createPostBtn.disabled) { // Solo si el botón está activo (usuario logueado)
-        createPostBtn.addEventListener('click', () => {
-            if (createPostModal) { // Asegúrate de que el modal HTML existe
-                createPostModal.style.display = 'block'; // Mostrar el modal
-                postContentInput.value = ''; // Limpiar el campo de texto
-                loadTagsForPostCreation(); // ¡Llamar a la función para cargar las etiquetas!
-            } else {
-                console.error("Error: El modal de creación de post (ID 'create_post_modal') no fue encontrado.");
-            }
-        });
-    }
-
-        // Lógica del Scroll Infinito
-        window.addEventListener('scroll', () => {
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500 && hasMorePosts && !isLoading) {
-                fetchPosts(currentOffset, limit);
-            }
-        });
-
-        // Event listener para el botón "Cargar más"
-        document.getElementById('load_more_posts_btn').addEventListener('click', () => {
-            fetchPosts(currentOffset, limit);
-        });
-        
-        // Event delegation para botones de posts (Comentarios, Eliminar, Ver Perfil, Opciones)
-        document.getElementById('posts_container').addEventListener('click', (event) => {
-            if (event.target.classList.contains('comment-btn')) {
-                const postId = event.target.dataset.postId;
-                fetchPostAndComments(postId);
-            } else if (event.target.classList.contains('delete-post-btn')) {
-                const postId = event.target.dataset.postId;
-                // Cerrar el menú de opciones después de hacer clic en eliminar
-                event.target.closest('.options-menu').style.display = 'none';
-                deletePost(postId);
-            } else if (event.target.classList.contains('view-profile-link')) {
-                event.preventDefault();
-                const userId = parseInt(event.target.dataset.userId);
-                fetchUserProfile(userId);
-            } else if (event.target.classList.contains('options-btn')) {
-                //Lógica para mostrar/ocultar el menú de opciones
-                event.stopPropagation(); // Evita que el click se propague y cierre otros menús
-                const menu = event.target.nextElementSibling;
-                // Cierra otros menús abiertos
-                document.querySelectorAll('.options-menu').forEach(openMenu => {
-                    if (openMenu !== menu) {
-                        openMenu.style.display = 'none';
-                    }
-                });
-                menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-            } else if (event.target.closest('.like-btn')) {
-                const likeButton = event.target.closest('.like-btn');
-                const postId = likeButton.dataset.postId;
-                toggleLike(postId, likeButton);
-            }
-        });
-
-        // Cerrar menús de opciones si se hace clic fuera de ellos
-        document.addEventListener('click', (event) => {
-        // Obtenemos todos los menús de opciones actualmente visibles
-        const openMenus = document.querySelectorAll('.options-menu[style*="display: block"]');
-
-        openMenus.forEach(menu => {
-            const optionsButton = menu.previousElementSibling; // El botón de los 3 puntos asociado
-            
-            // Si el clic NO fue en el botón de opciones que abrió este menú
-            // Y el clic NO fue DENTRO del menú
-            // Entonces cierra el menú
-            if (optionsButton && !optionsButton.contains(event.target) && !menu.contains(event.target)) {
-                menu.style.display = 'none';
-                console.log("Menú cerrado por clic fuera.");
-            }
-        });
-    });
-
-        // Botón para ver el perfil del usuario actual (en el sidebar izquierdo)
-        document.getElementById('view_current_profile_btn').addEventListener('click', () => {
-            if (currentUserId) { 
-                fetchUserProfile(currentUserId);
-            } else {
-                alert("Debes iniciar sesión para ver tu perfil.");
-            }
-        });
-
-        const openNotificationsBtn = document.getElementById('open_notifications_modal_btn');
-        const notificationsModal = document.getElementById('modal_notificaciones');
-        const closeNotificationsBtn = notificationsModal.querySelector('.close'); // Selector por clase 'close'
-        const unreadNotificationsCount = document.getElementById('unread_notifications_count');
-        const notificationsList = document.getElementById('notifications_list');
-        const noNotificationsMessage = notificationsList.querySelector('.no-notifications-message');
-        const markAllReadBtn = document.getElementById('mark_all_read_btn');
-
-        const csrftoken = getCookie('csrftoken');
-
-        function formatNotificationTime(isoString) {
-        const date = new Date(isoString);
-        const now = new Date();
-        const diffSeconds = Math.floor((now - date) / 1000);
-        const diffMinutes = Math.floor(diffSeconds / 60);
-        const diffHours = Math.floor(diffMinutes / 60);
-        const diffDays = Math.floor(diffHours / 24);
-
-        if (diffSeconds < 60) return `${diffSeconds} segundos atrás`;
-        if (diffMinutes < 60) return `${diffMinutes} minutos atrás`;
-        if (diffHours < 24) return `${diffHours} horas atrás`;
-        if (diffDays < 7) return `${diffDays} días atrás`;
-        return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    }
-
-        // Función para actualizar el contador de notificaciones no leídas
-    async function updateUnreadNotificationsCount() {
-        try {
-            const response = await fetch('/notificaciones/'); // Tu URL para obtener notificaciones
-            const data = await response.json();
-            const unreadCount = data.notificaciones.filter(n => !n.leido).length;
-
-            if (unreadCount > 0) {
-                unreadNotificationsCount.textContent = unreadCount;
-                unreadNotificationsCount.style.display = 'inline-block'; // Mostrar el badge
-            } else {
-                unreadNotificationsCount.style.display = 'none'; // Ocultar si no hay no leídas
-            }
-        } catch (error) {
-            console.error('Error al actualizar el contador de notificaciones:', error);
-        }
-    }
-
-    // Función para cargar y mostrar las notificaciones en el modal
-    async function loadNotifications() {
-        try {
-            const response = await fetch('/notificaciones/'); // Tu URL para obtener notificaciones
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            
-            notificationsList.innerHTML = ''; // Limpiar la lista existente
-
-            if (data.notificaciones.length === 0) {
-                noNotificationsMessage.style.display = 'block'; // Mostrar mensaje de "no hay notificaciones"
-                markAllReadBtn.style.display = 'none'; // Ocultar botón de marcar todas
-            } else {
-                noNotificationsMessage.style.display = 'none'; // Ocultar mensaje
-                markAllReadBtn.style.display = 'block'; // Mostrar botón de marcar todas
-
-                data.notificaciones.forEach(notificacion => {
-                    const notificationItem = document.createElement('div');
-                    notificationItem.classList.add('notification-item');
-                    if (!notificacion.leido) {
-                        notificationItem.classList.add('unread'); // Añadir clase para estilos de no leídas
-                    }
-                    notificationItem.dataset.notificationId = notificacion.id; // Guardar el ID
-
-                    // Crear el mensaje de la notificación
-                    let messageHtml = '';
-                    if (notificacion.enlace) {
-                        messageHtml = `<a href="${notificacion.enlace}">${notificacion.message}</a>`;
-                    } else {
-                        messageHtml = notificacion.message;
-                    }
-
-                    notificationItem.innerHTML = `
-                        <div>${messageHtml}</div>
-                        <span class="notification-time">${formatNotificationTime(notificacion.fecha_creacion)}</span>
-                    `;
-                    
-                    notificationsList.appendChild(notificationItem);
-                });
-            }
-            // Después de cargar, actualiza el contador de no leídas
-            updateUnreadNotificationsCount();
-        } catch (error) {
-            console.error('Error al cargar notificaciones:', error);
-            notificationsList.innerHTML = '<p style="color: red;">Error al cargar las notificaciones.</p>';
-            noNotificationsMessage.style.display = 'none';
-        }
-    }
-
-     // Función para marcar una notificación específica como leída
-    async function markNotificationAsRead(notificationId) {
-        try {
-            const response = await fetch('/notificaciones/marcar_leida/', { // Tu URL para marcar leídas
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                },
-                body: JSON.stringify({ id_notificacion: notificationId })
-            });
-            const data = await response.json();
-            if (data.estado === 'exito') {
-                console.log(`Notificación ${notificationId} marcada como leída.`);
-                // Opcional: Actualizar el estado visual de la notificación sin recargar todo
-                const item = document.querySelector(`.notification-item[data-notification-id="${notificationId}"]`);
-                if (item) {
-                    item.classList.remove('unread');
-                }
-                updateUnreadNotificationsCount(); // Recalcular y actualizar el contador
-            } else {
-                console.error('Error al marcar notificación:', data.mensaje);
-            }
-        } catch (error) {
-            console.error('Error de red al marcar notificación:', error);
-        }
-    }
-
-     // Función para marcar todas las notificaciones como leídas
-    async function markAllNotificationsAsRead() {
-        try {
-            const response = await fetch('/notificaciones/marcar_leida/', { // Tu URL para marcar leídas
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                },
-                body: JSON.stringify({ marcar_todo: true })
-            });
-            const data = await response.json();
-            if (data.estado === 'exito') {
-                console.log('Todas las notificaciones marcadas como leídas.');
-                // Quitar la clase 'unread' de todos los elementos
-                document.querySelectorAll('.notification-item.unread').forEach(item => {
-                    item.classList.remove('unread');
-                });
-                updateUnreadNotificationsCount(); // Resetear el contador a 0
-                // Ocultar el botón de marcar todas si ya no hay no leídas
-                markAllReadBtn.style.display = 'none';
-            } else {
-                console.error('Error al marcar todas las notificaciones:', data.mensaje);
-            }
-        } catch (error) {
-            console.error('Error de red al marcar todas las notificaciones:', error);
-        }
-    }
-
-     // --- Event Listeners ---
-
-    // Abrir el modal de notificaciones
-    openNotificationsBtn.addEventListener('click', () => {
-        notificationsModal.style.display = 'block';
-        loadNotifications(); // Cargar las notificaciones cada vez que se abre el modal
-    });
-
-    // Cerrar el modal al hacer clic en la 'x'
-    closeNotificationsBtn.addEventListener('click', () => {
-        notificationsModal.style.display = 'none';
-    });
-
-    // Cerrar el modal si el usuario hace clic fuera del contenido del modal
-    window.addEventListener('click', (event) => {
-        if (event.target === notificationsModal) {
-            notificationsModal.style.display = 'none';
-        }
-    });
-
-    // Marcar notificación individual como leída al hacer clic en ella
-    notificationsList.addEventListener('click', (event) => {
-        const notificationItem = event.target.closest('.notification-item');
-        if (notificationItem && notificationItem.classList.contains('unread')) {
-            const notificationId = notificationItem.dataset.notificationId;
-            markNotificationAsRead(notificationId);
-        }
-    });
-
-    // Marcar todas como leídas al hacer clic en el botón
-    markAllReadBtn.addEventListener('click', markAllNotificationsAsRead);
-
-    // --- Carga inicial al cargar la página ---
-    // Carga el contador de notificaciones no leídas cuando la página se carga
-    updateUnreadNotificationsCount();
-
-
-        // --- Lógica de Modales ---
-        const notificationModal = document.getElementById("modal_notificaciones");
-        const btnOpenNotificationModal = document.getElementById("open_notifications_modal_btn");
-        const closeNotificationModal = notificationModal.querySelector(".close");
-
-        const closeCreatePostModal = document.querySelector('.create-post-close');
-        if (currentUserId) { 
-            createPostBtn.addEventListener('click', () => {
-                createPostModal.style.display = 'block';
-                postContentInput.value = ''; // Limpia el input al abrir el modal
-                loadTagsForPostCreation();   // Carga las etiquetas
-        });
-            createPostBtn.onclick = () => { createPostModal.style.display = 'block'; }
-
-        }
-        closeCreatePostModal.onclick = () => { createPostModal.style.display = 'none'; }
-
-        const profileModal = document.getElementById('profile_modal');
-        const closeProfileModal = document.querySelector('.profile-close');
-        closeProfileModal.onclick = () => { profileModal.style.display = 'none'; }
-
-        const postDetailModal = document.getElementById('post_detail_modal');
-        const closePostDetailModal = document.querySelector('.post-detail-close');
-        closePostDetailModal.onclick = () => { postDetailModal.style.display = 'none'; }
-
-        // Manejar clics fuera de los modales para cerrarlos
-        window.onclick = function(event) {
-            if (event.target == notificationModal) { notificationModal.style.display = "none"; }
-            if (event.target == createPostModal) { createPostModal.style.display = "none"; }
-            if (event.target == profileModal) { profileModal.style.display = "none"; }
-            if (event.target == postDetailModal) { postDetailModal.style.display = "none"; }
-        }
-        
-             // --- Función para cargar y renderizar las etiquetas ---
-    async function loadTagsForPostCreation() {
-        try {
-            const response = await fetch('/obtener-etiquetas-para-post/'); 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const tags = await response.json();
-
-            tagsCheckboxContainer.innerHTML = ''; // Limpiar el mensaje "Cargando etiquetas..."
-
-            if (tags.length === 0) {
-                tagsCheckboxContainer.innerHTML = '<p>No hay etiquetas disponibles.</p>';
-                return;
-            }
-
-            tags.forEach(tag => {
-                const checkboxDiv = document.createElement('div');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = `tag_${tag.id}`;
-                checkbox.name = 'etiquetas';
-                checkbox.value = tag.id;
-
-                const label = document.createElement('label');
-                label.htmlFor = `tag_${tag.id}`;
-                label.textContent = tag.nombre;
-
-                checkboxDiv.appendChild(checkbox);
-                checkboxDiv.appendChild(label);
-                tagsCheckboxContainer.appendChild(checkboxDiv);
-            });
-
-        } catch (error) {
-            console.error('Error al cargar etiquetas:', error);
-            tagsCheckboxContainer.innerHTML = '<p style="color: red;">Error al cargar las etiquetas.</p>';
-        }
-    }
-
-    submitPostBtn.addEventListener('click', async () => {
-        const postContent = postContentInput.value.trim();
-        if (!postContent) {
-            alert('El contenido del post no puede estar vacío.');
-            return;
-        }
-
-        const selectedTagIds = [];
-        document.querySelectorAll('#tags_checkbox_container input[name="etiquetas"]:checked').forEach(checkbox => {
-            selectedTagIds.push(checkbox.value);
-        });
-
-        try {
-            const response = await fetch('/posts/crear/', { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                },
-                body: JSON.stringify({
-                    contenido: postContent,
-                    etiquetas_ids: selectedTagIds 
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.estado === 'exito') {
-                alert('Post creado con éxito!');
-                createPostModal.style.display = 'none';
-                const postsContainer = document.getElementById('posts_container');
-            if (postsContainer) {
-                postsContainer.innerHTML = ''; // Limpia todos los posts existentes
-            }
-            currentOffset = 0; // Reinicia el offset a 0 para cargar desde el principio
-            hasMorePosts = true;
-            fetchPosts(currentOffset, limit);
-            } else {
-                alert('Error al crear el post: ' + data.mensaje);
-            }
-        } catch (error) {
-            console.error('Error al enviar el post:', error);
-            alert('Error de conexión al intentar crear el post.');
-        }
-    });
-    });
 
 </script>
 
