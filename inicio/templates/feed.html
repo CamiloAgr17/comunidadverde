@@ -102,8 +102,8 @@
         </div>
     </aside>
 
-    <!-- Botón flotante -->
-    <button class="floating-button">
+    <!-- Botón flotante crear post -->
+    <button id="modalPostBtn" class="floating-button">
         <span>
             <svg
             height="24"
@@ -117,6 +117,19 @@
              Escribe un post
         </span>
     </button>
+</div>
+
+<!-- Modal para crear post -->
+<div id="postModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Crear Post</h2>
+        <form method="POST" action="{% url 'crear_post' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Publicar</button>
+        </form>
+    </div>
 </div>
 
 <!-- Modal de Notificaciones -->
@@ -137,6 +150,7 @@
 
 
 <script>
+    // SCRIPT PARA EL MODAL DE NOTIFICACIONES
     var modal = document.getElementById("modal_notificaciones");
     var btn = document.getElementById("btn_modal");
     var span = document.getElementsByClassName("close")[0];
@@ -155,6 +169,20 @@
         }
     }
 
+    // SCRIPT PARA EL MODAL DEL POST
+    document.getElementById('modalPostBtn').onclick = () => {
+        document.getElementById('postModal').style.display = 'block';
+    };
+
+    document.querySelector('.close').onclick = () => {
+        document.getElementById('postModal').style.display = 'none';
+    };
+
+    window.onclick = (event) => {
+        if (event.target == document.getElementById('postModal')) {
+            document.getElementById('postModal').style.display = 'none';
+        }
+    };
 </script>
 
 

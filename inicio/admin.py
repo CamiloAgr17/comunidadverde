@@ -1,6 +1,6 @@
 
 from django.contrib import admin
-from .models import Organizacion, Voluntario, Etiqueta, Post, Comentario, Seguimiento,Etiqueta
+from .models import *
 
 @admin.register(Etiqueta)
 class EtiquetaAdmin(admin.ModelAdmin):
@@ -8,15 +8,20 @@ class EtiquetaAdmin(admin.ModelAdmin):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('contenido', 'autor', 'fecha_creacion', 'conteo_likes', 'conteo_comentarios', 'esta_eliminado')
-    list_filter = ('fecha_creacion', 'autor', 'etiquetas')
+    list_display = ('content', 'author', 'fecha_creacion', 'conteo_likes', 'conteo_comentarios')
+    list_filter = ('fecha_creacion', 'author')
 
-@admin.register(Comentario)
-class ComentarioAdmin(admin.ModelAdmin):
-    list_display = ('post', 'autor', 'contenido', 'fecha_creacion')
-    list_filter = ('fecha_creacion', 'autor', 'post')
-    search_fields = ('contenido', 'autor__username')
-    raw_id_fields = ('post', 'autor')
+    def conteo_likes(self, obj):
+        return obj.likes.count()
+
+    def conteo_comentarios(self, obj):
+        return obj.comments.count()
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('post', 'author', 'content', 'fecha_creacion')
+    list_filter = ('fecha_creacion', 'author')
+    raw_id_fields = ('post', 'author')
 
 @admin.register(Voluntario)
 class VoluntarioAdmin(admin.ModelAdmin):
