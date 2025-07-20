@@ -44,23 +44,25 @@
         <!-- placeholder, pero esta es la logica de mostrar los posts -->
         <!-- cambien o ajusten a su necesidad -->
         
-        {% if posts %}
-            {% for post in posts %}
-            <div class="post-card">
-                <div class="post-header">
-                    <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
-                    <strong>{{ post.autor.username }}</strong>
-                </div>
-                <p>{{ post.contenido }}</p>
-                {% if post.imagen %}
-                <img src="{{ post.imagen.url }}" class="post-image" />
-                {% endif %}
-                <small>{{ post.fecha_publicacion }}</small>
-            </div>
-            {% endfor %}
-        {% else %}
-            <p>No hay publicaciones disponibles.</p>
-        {% endif %}
+        <div class="posts-container"> {# <--- WRAP YOUR POSTS IN THIS CONTAINER #}
+            {% if posts %}
+                {% for post in posts %}
+                    <div class="post-card">
+                        <div class="post-header">
+                            <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
+                            <strong>{{ post.author.username }}</strong> {# Corrected to post.author.username #}
+                        </div>
+                        <p>{{ post.content }}</p> {# Corrected to post.content #}
+                        {% if post.imagen %}
+                        <img src="{{ post.imagen.url }}" class="post-image" />
+                        {% endif %}
+                        <small>{{ post.fecha_creacion }}</small> {# Corrected to post.fecha_creacion #}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-posts-message">No hay publicaciones disponibles.</p>
+            {% endif %}
+        </div>
     </main>
 
 

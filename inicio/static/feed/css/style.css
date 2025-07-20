@@ -450,3 +450,92 @@ select.form-control[multiple] {
 .submit-button:hover {
   background-color: #57c785;
 }
+
+/** ESTILO DE LAS CARDS EN LA LISTA DE POSTS **/
+
+.posts-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column; 
+    gap: 20px; 
+}
+
+.post-card {
+    background-color: #d9eddf; 
+    border-radius: 8px;
+    box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    margin-bottom: 0; 
+    overflow: hidden; 
+}
+
+.post-header {
+    display: flex; 
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+
+.avatar-small {
+    width: 40px; 
+    height: 40px;
+    border-radius: 50%; 
+    object-fit: cover; 
+    margin-right: 10px; 
+    border: 1px solid #eee; 
+}
+
+
+.post-header strong {
+    font-size: 1.1em;
+    color: #2f4858;
+}
+
+.post-card p {
+    font-size: 1em;
+    line-height: 1.5;
+    color: #2f4858;
+    margin-bottom: 15px; 
+    white-space: pre-wrap; 
+    word-wrap: break-word; 
+}
+
+.post-image {
+    max-width: 100%; 
+    height: auto; 
+    display: block; 
+    border-radius: 4px; 
+    margin-top: 10px; 
+    margin-bottom: 15px; 
+}
+
+.post-card small {
+    font-size: 0.85em;
+    color: #888;
+    display: block; 
+    text-align: right; 
+    margin-top: 10px; 
+}
+
+.no-posts-message {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Optional: Add some responsive adjustments */
+@media (max-width: 650px) {
+    body {
+        padding: 10px;
+    }
+    .posts-container {
+        max-width: 100%; /* Allow full width on smaller screens */
+        padding: 0 10px; /* Add some padding on the sides */
+    }
+    .post-card {
+        padding: 15px;
+    }
+}
