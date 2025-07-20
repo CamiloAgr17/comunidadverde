@@ -120,14 +120,18 @@
 </div>
 
 <!-- Modal para crear post -->
-<div id="postModal" class="modal" style="display: none;">
+<div id="postModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Crear Post</h2>
         <form method="POST" action="{% url 'crear_post' %}">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Publicar</button>
+            <button type="submit" class="submit-button">
+                <span>
+                    Publicar
+                </span>
+            </button> 
         </form>
     </div>
 </div>

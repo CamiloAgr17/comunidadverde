@@ -75,7 +75,7 @@ class Seguimiento(models.Model):
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField(max_length=280)
+    content = models.TextField(max_length=280, blank=False, null=False)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     etiquetas = models.ManyToManyField(Etiqueta, blank=True, related_name='posts')
     esta_eliminado = models.BooleanField(default=False)

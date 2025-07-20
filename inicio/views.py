@@ -128,39 +128,14 @@ def seleccionar_etiquetas(request):
 
 @login_required
 def feed(request):
-    # Ya no recuperamos posts populares ni solo organizaciones.
-    # Ahora recuperamos a todos los usuarios activos.
-    # Usamos .select_related() para precargar los perfiles de Organizacion y Voluntario
-    # Esto es crucial para el rendimiento y evitar muchas consultas a la DB en el template.
-    todos_los_usuarios_activos = User.objects.filter(is_active=True).order_by('username').select_related('organizacion', 'voluntario')
-    
-    # Preparamos una lista para los usuarios con su tipo de perfil
-    usuarios_con_tipo = []
-    for usuario in todos_los_usuarios_activos:
-        # Excluimos al usuario actual de la lista de "Otros Usuarios" si no quieres que se vea a sí mismo
-        if usuario == request.user:
-            continue
+    posts = Post.objects.all().order_by('-fecha_creacion')
+    form = PostForm() 
+    context = {
+        'posts': posts,
+        'form': form,
+    }
+    return render(request, 'feed.html', context)
 
-        tipo_perfil = "Normal" # Por defecto, si no es ni organizacion ni voluntario
-        
-        # Verificar si es una organización
-        if hasattr(usuario, 'organizacion') and usuario.organizacion is not None:
-            tipo_perfil = "Organización"
-        # Verificar si es un voluntario (si no fue ya una organización)
-        elif hasattr(usuario, 'voluntario') and usuario.voluntario is not None:
-            tipo_perfil = "Voluntario"
-        
-        usuarios_con_tipo.append({
-            'user_obj': usuario,
-            'tipo': tipo_perfil
-        })
-
-    return render(request, 'feed.html', {
-        'usuarios_con_tipo': usuarios_con_tipo, # Nueva variable de contexto para el sidebar
-        'request': request
-    })
-
-    
 def obtener_etiquetas_para_post(request):
     etiquetas = Etiqueta.objects.all().values('id', 'nombre').order_by('nombre')
     return JsonResponse(list(etiquetas), safe=False)
@@ -170,12 +145,24 @@ def obtener_etiquetas_para_post(request):
 @login_required
 def crear_post(request):
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST) 
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            return redirect('feed')  # Redirige al feed después de crear el post
+            # Guardar las etiquetas seleccionadas
+            form.save_m2m() 
+            return redirect('feed')
+        else:
+            # Si el formulario no es válido, renderiza de nuevo con errores
+            posts = Post.objects.all().order_by('-fecha_creacion')
+            context = {
+                'posts': posts,
+                'form': form, 
+            }
+            return render(request, 'feed.html', context)
     else:
+        # Si no es un POST, simplemente muestra el formulario vacío
         form = PostForm()
-    return render(request, 'crear_post.html', {'form': form})
+        posts = Post.objects.all().order_by('-fecha_creacion')
+        return render(request, 'feed.html', {'form': form, 'posts': posts})

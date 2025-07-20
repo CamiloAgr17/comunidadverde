@@ -382,3 +382,71 @@ input:-webkit-autofill:active {
     text-decoration: none;
     cursor: pointer;
 }
+
+/** CSS para la creacion del post **/
+
+.modal-content {
+  border: 2px solid #2f4858;
+  border-radius: 5px;
+  background: #2f4858;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+}
+
+#postModal .modal-content form p label {
+    display: none;
+}
+
+.modal-textarea {
+  border-radius: 8px;
+  height: 100px;
+  width: 100%;
+  resize: none;
+  outline: 0;
+  padding: 8px 14px;
+  border: 1px solid #d9eddf;
+  background: #2f4858;
+  color: white;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding and border are included in the width */
+    margin-top: 5px; /* Add some space above the input/select */
+    margin-bottom: 10px; /* Add some space below the input/select */
+    font-size: 16px;
+}
+
+select.form-control[multiple] {
+    height: auto;  
+    overflow-y: auto; /* Add scrollbar if content exceeds min-height */
+}
+
+
+.submit-button {
+    position:static;
+    border: 2px solid #2f4858;
+    background-color: #007b87;
+    border-radius: 0.9em;
+    cursor: pointer;
+    padding: 0.8em 1.2em 0.8em 1em;
+    transition: all ease-in-out 0.2s;
+    font-size: 16px;
+}
+
+.submit-button span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: 600;
+}
+
+.submit-button:hover {
+  background-color: #57c785;
+}

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Voluntario, Organizacion, Post, Comment
+from .models import *
 from django.contrib.auth.forms import AuthenticationForm
 from mapa.models import CentroReciclaje
 
@@ -67,14 +67,75 @@ class RegistroOrganizacionForm(UserCreationForm):
         return user
     
 
-## FORMULARIO PARA EL POST
+## FORMULARIO PARA EL POST V1
+# class PostForm(forms.ModelForm):
+#     class Meta:
+#         model = Post
+#         fields = ['etiquetas', 'content']
+#         widgets = {
+#             'etiquetas': forms.SelectMultiple(attrs={ 
+#                 'class': 'form-control', 
+#                 'placeholder': 'Selecciona etiquetas', 
+#                 'size': '5' 
+#             }),
+
+#             'content': forms.Textarea(attrs={
+#                 'rows': 3, 
+#                 'placeholder': 'Escribe tu publicación aquí...',
+#                 'class': 'modal-textarea'
+#                 })
+#         }
+#         labels = {
+#             'etiquetas': 'Etiquetas',
+#             'content': ' '
+#         }
+
+## FORMULARIO PARA EL POST V2
 class PostForm(forms.ModelForm):
+    # Override the 'etiquetas' field to customize its queryset and widget
+    etiquetas = forms.ModelMultipleChoiceField(
+        queryset=Etiqueta.objects.all(), # Always start with all tags
+        required=False, # Make it not strictly required if tags are optional
+        widget=forms.SelectMultiple(attrs={
+            'class': 'form-control',
+            'size': '1'
+        })
+        # REMOVE 'empty_label' from here, it causes the TypeError for SelectMultiple
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # === Add this logic to dynamically set options if no tags exist ===
+        if not self.fields['etiquetas'].queryset.exists():
+            # If no tags exist, we want a single non-selectable option
+            self.fields['etiquetas'].choices = [('', 'No hay etiquetas disponibles en este momento')]
+            self.fields['etiquetas'].widget.attrs['disabled'] = 'disabled' # Make the select box disabled
+            # You might also want to set required=False explicitly here if not already,
+            # to ensure the form can be submitted without selecting tags when none exist.
+            self.fields['etiquetas'].required = False
+
     class Meta:
         model = Post
-        fields = ['content']
+        fields = ['etiquetas', 'content']
+
         widgets = {
+            # 'etiquetas': No longer needed here as we define it directly above
             'content': forms.Textarea(attrs={
-                'rows': 3, 
-                'placeholder': 'Escribe tu publicación aquí...'
-                })
+                'rows': 3,
+                'placeholder': 'Escribe tu publicación aquí...',
+                'class': 'modal-textarea',
+            })
         }
+        labels = {
+            'etiquetas': 'Etiquetas',
+            'content': ''
+        }
+
+    # Optional: If you want to force selection if there *are* tags
+    # def clean_etiquetas(self):
+    #     etiquetas = self.cleaned_data.get('etiquetas')
+    #     # Only apply this validation if the queryset originally had tags
+    #     if Etiqueta.objects.exists() and not etiquetas:
+    #         raise forms.ValidationError("Debes seleccionar al menos una etiqueta si hay disponibles.")
+    #     return etiquetas
