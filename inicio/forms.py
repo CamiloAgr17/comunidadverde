@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Voluntario, Organizacion
+from .models import Voluntario, Organizacion, Post, Comment
 from django.contrib.auth.forms import AuthenticationForm
 from mapa.models import CentroReciclaje
 
@@ -65,3 +65,16 @@ class RegistroOrganizacionForm(UserCreationForm):
                     materiales="Organización"
                 )
         return user
+    
+
+## FORMULARIO PARA EL POST
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'rows': 3, 
+                'placeholder': 'Escribe tu publicación aquí...'
+                })
+        }
