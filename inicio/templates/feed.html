@@ -60,16 +60,15 @@
 
                         <small>{{ post.fecha_creacion }}</small>
 
-                        <div class="like-section">
-                            <form action="{% url 'toggle_like' post.id %}" method="POST" style="display:inline">
-                                {% csrf_token %}
+                        <div class="like-section" data-post-id="{{ post.id }}">
+                            <button class="like-button" id="like-btn-{{ post.id }}">
                                 {% if post.id in user_likes %}
-                                    <button type="submit" class="liked-button">❤️ Quitar Like</button>
+                                    ❤️ Quitar Like
                                 {% else %}
-                                    <button type="submit" class="like-button">🤍 Me gusta</button>
+                                    🤍 Me gusta
                                 {% endif %}
-                            </form>
-                            <span class="like-count"> {{post.total_likes}} likes </span>
+                            </button>
+                            <span class="like-count" id="like-count-{{ post.id }}">{{ post.total_likes }} likes</span>
                         </div>
                     </div>
                 {% endfor %}
@@ -203,6 +202,54 @@
             document.getElementById('postModal').style.display = 'none';
         }
     };
+
+    // SCRIPT PARA LIKES 
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.like-button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const postSection = button.closest('.like-section');
+            const postId = postSection.getAttribute('data-post-id');
+            const likeCountSpan = document.getElementById('like-count-' + postId);
+
+            fetch("{% url 'toggle_like_ajax' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'post_id=' + postId
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.liked) {
+                    button.textContent = '❤️ Quitar Like';
+                } else {
+                    button.textContent = '🤍 Me gusta';
+                }
+
+                likeCountSpan.textContent = `${data.total_likes} likes`;
+            });
+        });
+    });
+});
 </script>
 
 

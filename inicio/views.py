@@ -149,12 +149,25 @@ def crear_post(request):
         return render(request, 'feed.html', {'form': form, 'posts': posts})
 
 ## LIKES
+@require_POST
 @login_required
-def toggle_like(request, post_id):
+def toggle_like_ajax(request):  # ✅ SIN post_id aquí
+    post_id = request.POST.get('post_id')
+
+    if not post_id:
+        return JsonResponse({'error': 'Falta post_id'}, status=400)
+
     post = get_object_or_404(Post, id=post_id)
+
     like, created = Like.objects.get_or_create(post=post, usuario=request.user)
 
     if not created:
         like.delete()
+        liked = False
+    else:
+        liked = True
 
-    return redirect(request.META.get('HTTP_REFERER', 'feed'))
+    return JsonResponse({
+        'liked': liked,
+        'total_likes': post.total_likes()
+    })

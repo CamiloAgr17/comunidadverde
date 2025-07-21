@@ -17,5 +17,7 @@ urlpatterns = [
     ## RUTA PARA CREAR POSTS
     path('post/crear/', views.crear_post, name='crear_post'),
     ## RUTA LIKES
-    path('like/<int:post_id>/', views.toggle_like, name='toggle_like'),
+    #path('like/<int:post_id>/', views.toggle_like, name='toggle_like'),
+
+    path('like-toggle/', views.toggle_like_ajax, name='toggle_like_ajax'),
 ]
