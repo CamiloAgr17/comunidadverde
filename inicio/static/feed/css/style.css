@@ -556,3 +556,43 @@ select.form-control[multiple] {
   .like-count {
     color: #2f4858 !important;
   }
+
+/** ESTILO PARA COMENTARIOS **/
+.comment-textarea {
+  border-radius: 8px;
+  height: 100px;
+  width: 100%;
+  resize: none;
+  outline: 0;
+  padding: 8px 14px;
+  border: 1px solid #2f4858;
+  background: #d9eddf;
+  color: #2f4858;
+}
+
+.comments-section {
+  color: #2f4858
+}
+
+.comment-button {
+    position:static;
+    border: 2px solid #2f4858;
+    background-color: #007b87;
+    border-radius: 0.9em;
+    cursor: pointer;
+    padding: 0.8em 1.2em 0.8em 1em;
+    transition: all ease-in-out 0.2s;
+    font-size: 12px;
+}
+
+.comment-button span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: 600;
+}
+
+.comment-button:hover {
+  background-color: #57c785;
+}

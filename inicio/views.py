@@ -107,9 +107,36 @@ def seleccionar_etiquetas(request):
 
 @login_required
 def feed(request):
-    posts = Post.objects.all().order_by('-fecha_creacion')
+    posts = Post.objects.all().order_by('-fecha_creacion').prefetch_related('comments', 'likes')
     user_likes = Like.objects.filter(usuario=request.user).values_list('post_id', flat=True)
     form = PostForm() 
+
+    comment_forms_errors = {}
+
+    if request.method == 'POST':
+        # Intentar procesar el formulario de comentario
+        if 'post_id' in request.POST:
+            post_id = request.POST.get('post_id')
+            post_to_comment = get_object_or_404(Post, id=post_id)
+            comment_form_instance = CommentForm(request.POST)
+
+            if comment_form_instance.is_valid():
+                comment = comment_form_instance.save(commit=False)
+                comment.post = post_to_comment
+                comment.author = request.user
+                comment.save()
+                return redirect('feed') 
+            else:
+                # Si el formulario de comentario no es válido, guardamos la instancia
+                # con los errores para pasarla al template
+                comment_forms_errors[int(post_id)] = comment_form_instance
+        # Puedes añadir aquí la lógica para tu PostForm si lo manejas en la misma vista
+        
+    # Asignar un formulario de comentario a cada post,
+    # usando el formulario con errores si existe para ese post
+    for post in posts:
+        post.comment_form = comment_forms_errors.get(post.id, CommentForm())
+
     context = {
         'posts': posts,
         'form': form,

@@ -48,6 +48,7 @@
             {% if posts %}
                 {% for post in posts %}
                     <div class="post-card">
+                        {% comment %} POST GENERAL {% endcomment %}
                         <div class="post-header">
                             <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
                             <strong>{{ post.author.username }}</strong> 
@@ -60,6 +61,7 @@
 
                         <small>{{ post.fecha_creacion }}</small>
 
+                        {% comment %} SECCION DE LIKES {% endcomment %}
                         <div class="like-section" data-post-id="{{ post.id }}">
                             <button class="like-button" id="like-btn-{{ post.id }}">
                                 {% if post.id in user_likes %}
@@ -70,6 +72,52 @@
                             </button>
                             <span class="like-count" id="like-count-{{ post.id }}">{{ post.total_likes }} likes</span>
                         </div>
+
+                        {% comment %} SECCION DE COMENTARIOS {% endcomment %}
+                        <div class="comments-section">
+                            <h4>Comentarios ({{ post.total_comments }})</h4>
+                            {% if post.comments.all %}
+                                <div class="comment-list">
+                                    {% for comment in post.comments.all|slice:":3" %} 
+                                        {% if not comment.esta_eliminado %}
+                                            <div class="comment-item">
+                                                <strong>{{ comment.author.username }}</strong>: {{ comment.content }}
+                                                <small>{{ comment.fecha_creacion }}</small>
+                                            </div>
+                                        {% endif %}
+                                    {% empty %}
+                                        <p>No hay comentarios aún.</p>
+                                    {% endfor %}
+                                    {% if post.comments.count > 3 %}
+                                        <p><a href="{% url 'post_detail' post.id %}">Ver todos los comentarios</a></p> 
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <p>No hay comentarios aún.</p>
+                            {% endif %}
+
+                            <form method="post" action="{% url 'feed' %}" class="comment-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="post_id" value="{{ post.id }}">
+                                {# Accede directamente a post.comment_form #}
+                                {{ post.comment_form }} 
+                                <button type="submit" class="comment-button"><span>Comentar</span></button>
+                                {# Opcional: mostrar errores del formulario de comentario #}
+                                {% if post.comment_form.errors %}
+                                    <ul class="errorlist">
+                                        {% for field in post.comment_form %}
+                                            {% for error in field.errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        {% endfor %}
+                                        {% for error in post.comment_form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </form>
+                        </div>
+
                     </div>
                 {% endfor %}
             {% else %}
