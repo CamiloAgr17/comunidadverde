@@ -44,19 +44,33 @@
         <!-- placeholder, pero esta es la logica de mostrar los posts -->
         <!-- cambien o ajusten a su necesidad -->
         
-        <div class="posts-container"> {# <--- WRAP YOUR POSTS IN THIS CONTAINER #}
+        <div class="posts-container"> 
             {% if posts %}
                 {% for post in posts %}
                     <div class="post-card">
                         <div class="post-header">
                             <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
-                            <strong>{{ post.author.username }}</strong> {# Corrected to post.author.username #}
+                            <strong>{{ post.author.username }}</strong> 
                         </div>
-                        <p>{{ post.content }}</p> {# Corrected to post.content #}
+                        <p>{{ post.content }}</p>
+
                         {% if post.imagen %}
                         <img src="{{ post.imagen.url }}" class="post-image" />
                         {% endif %}
-                        <small>{{ post.fecha_creacion }}</small> {# Corrected to post.fecha_creacion #}
+
+                        <small>{{ post.fecha_creacion }}</small>
+
+                        <div class="like-section">
+                            <form action="{% url 'toggle_like' post.id %}" method="POST" style="display:inline">
+                                {% csrf_token %}
+                                {% if post.id in user_likes %}
+                                    <button type="submit" class="liked-button">❤️ Quitar Like</button>
+                                {% else %}
+                                    <button type="submit" class="like-button">🤍 Me gusta</button>
+                                {% endif %}
+                            </form>
+                            <span class="like-count"> {{post.total_likes}} likes </span>
+                        </div>
                     </div>
                 {% endfor %}
             {% else %}

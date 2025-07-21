@@ -539,3 +539,20 @@ select.form-control[multiple] {
         padding: 15px;
     }
 }
+
+/** estilo de likes **/
+  .like-button,
+  .liked-button {
+      background: none;
+      border: none;
+      font-size: 1em;
+      cursor: pointer;
+  }
+
+  .liked-button {
+      color: red;
+  }
+
+  .like-count {
+    color: #2f4858 !important;
+  }

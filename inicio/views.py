@@ -105,34 +105,15 @@ def seleccionar_etiquetas(request):
         'tipo': tipo
     })
 
-
-# @login_required
-# def feed(request):
-#     #aqui hay que poner que agarre los posts, pero no han hecho lo de los posts
-#     #asiq ta vacio
-
-#     posts_populares = (
-#         Post.objects.filter(esta_eliminado=False)
-#         .annotate(popularidad=ExpressionWrapper(
-#             F('conteo_likes') + F('conteo_comentarios') * 2, 
-#             output_field=IntegerField()
-#         ))
-#         .order_by('-popularidad', '-fecha_creacion')[:3] 
-#     )
-
-
-#     return render(request, 'feed.html',{
-#         'posts_populares': posts_populares,
-#         'request': request
-#     })
-
 @login_required
 def feed(request):
     posts = Post.objects.all().order_by('-fecha_creacion')
+    user_likes = Like.objects.filter(usuario=request.user).values_list('post_id', flat=True)
     form = PostForm() 
     context = {
         'posts': posts,
         'form': form,
+        'user_likes': set(user_likes),
     }
     return render(request, 'feed.html', context)
 
@@ -166,3 +147,14 @@ def crear_post(request):
         form = PostForm()
         posts = Post.objects.all().order_by('-fecha_creacion')
         return render(request, 'feed.html', {'form': form, 'posts': posts})
+
+## LIKES
+@login_required
+def toggle_like(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    like, created = Like.objects.get_or_create(post=post, usuario=request.user)
+
+    if not created:
+        like.delete()
+
+    return redirect(request.META.get('HTTP_REFERER', 'feed'))

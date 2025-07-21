@@ -16,4 +16,6 @@ urlpatterns = [
     path('feed/', views.feed, name='feed'),
     ## RUTA PARA CREAR POSTS
     path('post/crear/', views.crear_post, name='crear_post'),
+    ## RUTA LIKES
+    path('like/<int:post_id>/', views.toggle_like, name='toggle_like'),
 ]
