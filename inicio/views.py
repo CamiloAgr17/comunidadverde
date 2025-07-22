@@ -111,6 +111,12 @@ def feed(request):
     user_likes = Like.objects.filter(usuario=request.user).values_list('post_id', flat=True)
     form = PostForm() 
 
+    # posts populares
+    popular_posts = Post.objects.annotate(
+        total_likes=Count('likes'),
+        total_comments=Count('comments')
+    ).order_by('-total_likes', '-total_comments')[:3]
+
     comment_forms_errors = {}
 
     if request.method == 'POST':
@@ -127,13 +133,8 @@ def feed(request):
                 comment.save()
                 return redirect('feed') 
             else:
-                # Si el formulario de comentario no es válido, guardamos la instancia
-                # con los errores para pasarla al template
                 comment_forms_errors[int(post_id)] = comment_form_instance
-        # Puedes añadir aquí la lógica para tu PostForm si lo manejas en la misma vista
-        
-    # Asignar un formulario de comentario a cada post,
-    # usando el formulario con errores si existe para ese post
+
     for post in posts:
         post.comment_form = comment_forms_errors.get(post.id, CommentForm())
 
@@ -141,6 +142,7 @@ def feed(request):
         'posts': posts,
         'form': form,
         'user_likes': set(user_likes),
+        'popular_posts': popular_posts,
     }
     return render(request, 'feed.html', context)
 

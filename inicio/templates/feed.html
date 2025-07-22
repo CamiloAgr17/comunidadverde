@@ -132,7 +132,7 @@
     <!-- tmb pueden poner tipo "posts más relevantes" -->
     <!-- y te muestra como 2 posts con varios likes y así -->
     <aside class="sidebar-right">
-        <!-- From Uiverse.io by satyamchaudharydev --> 
+        {% comment %} BUSCADOR {% endcomment %}
         <form class="form">
             <label for="search">
                 <input class="input" type="text" required="" placeholder="Buscar..." id="search">
@@ -151,17 +151,27 @@
                 </button>
             </label>
         </form>
-        <div class="info-box">
-            <h4 class="title">Noticia</h4>
-            <p class="description">Contenido de la noticia</p>
-        </div>
-        <div class="info-box">
-            <h4 class="title">Otra Noticia</h4>
-            <p class="description">Contenido</p>
-        </div>
-        <div class="info-box">
-            <h4 class="title">Información de Contacto</h4>
-            <p class="description">info@ejemplo.com</p>
+        {% comment %} POSTS POPULARES {% endcomment %}
+        <div class="popular-posts-section"> {# Puedes envolverlo en un div para estilos generales #}
+            <h3>Posts Populares</h3>
+            {% if popular_posts %}
+                {% for post in popular_posts %}
+                    <div class="info-box">
+                        <h4 class="title">{{ post.author.username }}: {{ post.content|truncatechars:50 }}</h4> {# Muestra autor y un extracto del contenido #}
+                        <p class="description">
+                            Likes: {{ post.total_likes }} | Comentarios: {{ post.total_comments }}
+                            <br>
+                            <small>Publicado: {{ post.fecha_creacion|date:"M d, Y" }}</small>
+                        </p>
+                        {# Opcional: añadir un enlace al detalle del post si lo tienes #}
+                        {% comment %} <a href="{% url 'post_detail' post.id %}" class="view-post-link">Ver Post</a> {% endcomment %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="info-box">
+                    <p class="description">No hay posts populares para mostrar aún.</p>
+                </div>
+            {% endif %}
         </div>
     </aside>
 
