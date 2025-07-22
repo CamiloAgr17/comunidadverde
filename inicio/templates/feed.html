@@ -8,12 +8,12 @@
     <aside class="sidebar-left">
         <div class="user-profile">
             <img src='https://picsum.photos/id/237/200' alt="User" class="user-avatar" />
-            <h3>Current User</h3>
+            <h3>{{ user.username }}</h3>
             <p>Biografía o Descripción del usuario</p>
             <div class="user-stats">
-                <div><strong>10</strong><br />Posts</div>
-                <div><strong>150</strong><br />Seguidores</div>
-                <div><strong>58</strong><br />Seguidos</div>
+                <div><strong>{{ posts_no_eliminados }}</strong><br />Posts</div>
+                <div><strong>{{ user_followers_count }}</strong><br />Seguidores</div>
+                <div><strong>{{ user_following_count }}</strong><br />Seguidos</div>
             </div>
             <nav class="side-nav-buttons">
                 <button>
@@ -51,7 +51,9 @@
                         {% comment %} POST GENERAL {% endcomment %}
                         <div class="post-header">
                             <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
+                            <a href="#" class="profile-link" data-user-id="{{ post.author.id }}">
                             <strong>{{ post.author.username }}</strong> 
+                            </a>
                         </div>
                         <p>{{ post.content }}</p>
 
@@ -225,41 +227,41 @@
     </div>
 </div>
 
+<!-- Modal de vista de perfil -->
+<div id="profileModal" class="modal">  <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="profileModalUsername"></h2>
+        <p>Posts: <span id="profileModalPostCount"></span></p>
+        <p>Seguidores: <span id="profileModalFollowersCount"></span></p>
+        <p>Seguidos: <span id="profileModalFollowingCount"></span></p>
+
+        <button id="followToggleButton" class="action-button"></button>
+    </div>
+</div>
+
 
 <script>
-    // SCRIPT PARA EL MODAL DE NOTIFICACIONES
-    var modal = document.getElementById("modal_notificaciones");
-    var btn = document.getElementById("btn_modal");
-    var span = document.getElementsByClassName("close")[0];
+// SCRIPT PARA EL MODAL DE NOTIFICACIONES
+var modal = document.getElementById("modal_notificaciones");
+var btn = document.getElementById("btn_modal");
+var span = modal.querySelector(".close");
 
-    btn.onclick = function() {
-        modal.style.display = "block";
-    }
+btn.onclick = function() {
+    modal.style.display = "block";
+}
 
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
+span.onclick = function() {
+    modal.style.display = "none";
+}
 
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
+// SCRIPT PARA EL MODAL DEL POST
+document.getElementById('modalPostBtn').onclick = () => {
+    document.getElementById('postModal').style.display = 'block';
+};
 
-    // SCRIPT PARA EL MODAL DEL POST
-    document.getElementById('modalPostBtn').onclick = () => {
-        document.getElementById('postModal').style.display = 'block';
-    };
-
-    document.querySelector('.close').onclick = () => {
-        document.getElementById('postModal').style.display = 'none';
-    };
-
-    window.onclick = (event) => {
-        if (event.target == document.getElementById('postModal')) {
-            document.getElementById('postModal').style.display = 'none';
-        }
-    };
+document.querySelector('.close').onclick = () => {
+    document.getElementById('postModal').style.display = 'none';
+};
 
     // SCRIPT PARA LIKES 
 function getCookie(name) {
@@ -307,6 +309,127 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+//SCRIPT PARA MUESTRA DE PERFIL DE USUARIO
+var profileModal = document.getElementById('profileModal');
+var profileModalClose = profileModal.querySelector('.close');
+var followToggleButton = document.getElementById('followToggleButton');
+var currentProfileUserId = null; // Para guardar el ID del usuario del perfil que se está viendo
+
+    // Abrir el modal de perfil cuando se hace clic en un nombre de usuario
+document.querySelectorAll('.profile-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault(); // Evita que el enlace recargue la página
+        currentProfileUserId = this.dataset.userId; // Obtiene el ID del usuario del data-attribute
+
+        // Llama a una función para cargar los datos del usuario
+        loadUserProfileData(currentProfileUserId);
+
+        profileModal.style.display = 'block';
+    });
+});
+
+profileModalClose.onclick = function() {
+    profileModal.style.display = 'none';
+};
+
+// Función para Cargar Datos del Usuario en el Modal de Perfil
+function loadUserProfileData(userId) {
+    document.getElementById('profileModalUsername').textContent = 'Cargando...';
+    document.getElementById('profileModalPostCount').textContent = '...';
+    document.getElementById('profileModalFollowersCount').textContent = '...';
+    document.getElementById('profileModalFollowingCount').textContent = '...';
+    if (followToggleButton) {
+        followToggleButton.textContent = '...';
+        followToggleButton.style.display = 'block'; // Asegurarse de que esté visible para el estado de carga
+        followToggleButton.disabled = true; // Deshabilitar mientras carga para evitar clics dobles
+    }
+    fetch(`/profile-data/${userId}/`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('profileModalUsername').textContent = data.username;
+            document.getElementById('profileModalPostCount').textContent = data.post_count;
+            document.getElementById('profileModalFollowersCount').textContent = data.followers_count;
+            document.getElementById('profileModalFollowingCount').textContent = data.following_count;
+            if (followToggleButton) {
+                followToggleButton.disabled = false; // Habilitar el botón una vez cargado
+            if (data.is_following) {
+                followToggleButton.textContent = 'Dejar de Seguir';
+                followToggleButton.classList.remove('follow-button');
+                followToggleButton.classList.add('unfollow-button');
+            } else {
+                followToggleButton.textContent = 'Seguir';
+                followToggleButton.classList.remove('unfollow-button');
+                followToggleButton.classList.add('follow-button');
+            }
+
+            if (userId == {{ user.id }}) {
+                followToggleButton.style.display = 'none';
+            } else {
+                followToggleButton.style.display = 'block';
+            }
+        }
+        })
+        .catch(error => console.error('Error al cargar datos del perfil:', error));
+}
+
+    //Cerrar ventanas flotantes pulsando fuera
+window.onclick = function(event) {
+    if (event.target == document.getElementById('modal_notificaciones')) {
+        document.getElementById('modal_notificaciones').style.display = 'none';
+    }
+    if (event.target == document.getElementById('postModal')) {
+        document.getElementById('postModal').style.display = 'none';
+    }
+    if (event.target == profileModal) {
+        profileModal.style.display = 'none';
+    }
+};
+
+// Lógica del Botón Seguir/Dejar de Seguir
+if (followToggleButton) {
+    followToggleButton.addEventListener('click', function() {
+        if (!currentProfileUserId) return;
+
+        fetch(`/toggle-follow/${currentProfileUserId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                if (data.is_following) {
+                    followToggleButton.textContent = 'Dejar de Seguir';
+                    followToggleButton.classList.remove('follow-button');
+                    followToggleButton.classList.add('unfollow-button');
+                } else {
+                    followToggleButton.textContent = 'Seguir';
+                    followToggleButton.classList.remove('unfollow-button');
+                    followToggleButton.classList.add('follow-button');
+                }
+                document.getElementById('profileModalFollowersCount').textContent = data.followers_count;
+            } else {
+                console.error('Error en la operación de seguir/dejar de seguir:', data.message);
+                alert('Hubo un error al procesar tu solicitud: ' + data.message);
+            }
+        })
+        .catch(error => console.error('Error de red al seguir/dejar de seguir:', error));
+    });
+}
+    
 });
 </script>
 

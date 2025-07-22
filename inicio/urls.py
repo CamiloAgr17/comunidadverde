@@ -20,4 +20,10 @@ urlpatterns = [
     #path('like/<int:post_id>/', views.toggle_like, name='toggle_like'),
 
     path('like-toggle/', views.toggle_like_ajax, name='toggle_like_ajax'),
+
+    ## Obtener datos para perfil
+    path('profile-data/<int:user_id>/', views.get_user_profile_data, name='get_user_profile_data'),
+
+    ## Follow / Unfollow
+    path('toggle-follow/<int:user_id>/', views.toggle_follow, name='toggle_follow'),
 ]

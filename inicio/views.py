@@ -117,6 +117,18 @@ def feed(request):
         total_comments=Count('comments')
     ).order_by('-total_likes', '-total_comments')[:3]
 
+    # posts no eliminados del usuario
+    posts_no_eliminados = Post.objects.filter(
+        author=request.user,
+        esta_eliminado=False
+    ).count()
+
+    # seguidores
+    user_followers_count = Seguimiento.objects.filter(seguido=request.user).count()
+
+    # seguidos
+    user_following_count = Seguimiento.objects.filter(seguidor=request.user).count()
+
     comment_forms_errors = {}
 
     if request.method == 'POST':
@@ -143,6 +155,9 @@ def feed(request):
         'form': form,
         'user_likes': set(user_likes),
         'popular_posts': popular_posts,
+        'posts_no_eliminados': posts_no_eliminados,
+        'user_followers_count': user_followers_count,
+        'user_following_count': user_following_count,
     }
     return render(request, 'feed.html', context)
 
@@ -200,3 +215,73 @@ def toggle_like_ajax(request):  # ✅ SIN post_id aquí
         'liked': liked,
         'total_likes': post.total_likes()
     })
+
+##Obtener INFO de usuario
+@login_required
+def get_user_profile_data(request, user_id):
+    user_to_view = get_object_or_404(User, id=user_id)
+
+    # Contar posts no eliminados del usuario
+    post_count = Post.objects.filter(author=user_to_view, esta_eliminado=False).count()
+
+    # Contar seguidores y seguidos
+    followers_count = Seguimiento.objects.filter(seguido=user_to_view).count()
+    following_count = Seguimiento.objects.filter(seguidor=user_to_view).count()
+
+    # Verificar si el usuario logueado sigue al usuario que se está viendo
+    is_following = False
+    if request.user.is_authenticated:
+        is_following = Seguimiento.objects.filter(
+            seguidor=request.user,
+            seguido=user_to_view
+        ).exists()
+
+    data = {
+        'username': user_to_view.username,
+        'post_count': post_count,
+        'followers_count': followers_count,
+        'following_count': following_count,
+        'is_following': is_following,
+    }
+    return JsonResponse(data)
+
+## Follow o Unfollow
+@login_required
+def toggle_follow(request, user_id):
+    if request.method == 'POST':
+        user_to_follow = get_object_or_404(User, id=user_id)
+        current_user = request.user
+
+        # No se puede seguir a uno mismo
+        if current_user == user_to_follow:
+            return JsonResponse({'status': 'error', 'message': 'No puedes seguirte a ti mismo.'}, status=400)
+
+        # Verificar si ya se siguen
+        follow_exists = Seguimiento.objects.filter(
+            seguidor=current_user,
+            seguido=user_to_follow
+        )
+
+        is_following = False
+        if follow_exists.exists():
+            # Si ya se siguen, borrar el seguimiento (dejar de seguir)
+            follow_exists.delete()
+            is_following = False
+            message = f'Has dejado de seguir a {user_to_follow.username}'
+        else:
+            # Si no se siguen, crear el seguimiento (seguir)
+            Seguimiento.objects.create(seguidor=current_user, seguido=user_to_follow)
+            is_following = True
+            message = f'Ahora sigues a {user_to_follow.username}'
+        
+        # Recalcular seguidores del usuario que se sigue para actualizar el modal
+        followers_count = Seguimiento.objects.filter(seguido=user_to_follow).count()
+
+
+        return JsonResponse({
+            'status': 'success',
+            'is_following': is_following,
+            'followers_count': followers_count,
+            'message': message
+        })
+    return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)
