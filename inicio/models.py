@@ -114,3 +114,35 @@ class Like(models.Model):
 
     def __str__(self):
         return f'{self.usuario.username} likes Post {self.post.id}'
+    
+## MODELO NOTIFICACIONES
+class Notification(models.Model):
+    # El usuario que recibe la notificación (el que fue seguido)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    # El usuario que causó la notificación (el que siguió)
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
+    NOTIFICATION_TYPES = (
+        ('follow', 'Seguimiento'),
+        ('like', 'Me Gusta'),
+        ('comment', 'Comentario'),
+    )
+    notification_type = models.CharField(
+        max_length=20,
+        choices=NOTIFICATION_TYPES,
+        default='follow' # Puedes establecer un valor por defecto si lo deseas
+    )
+
+    # Relación de la notificación con algún post
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, null=True, blank=True)
+    # Mensaje de la notificación (ej. "UsuarioX te ha seguido")
+    message = models.CharField(max_length=255)
+    # Fecha y hora de creación de la notificación
+    created_at = models.DateTimeField(auto_now_add=True)
+    # Si la notificación ha sido leída por el usuario
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-created_at'] # Ordenar las notificaciones de las más nuevas a las más antiguas
+
+    def __str__(self):
+        return f"Notificación para {self.user.username} de {self.from_user.username}: {self.message}"

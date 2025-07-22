@@ -7,7 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 import json
-from .models import Post, Etiqueta, Voluntario, Organizacion, Seguimiento, User, Comment, Like
+from .models import Post, Etiqueta, Voluntario, Organizacion, Seguimiento, User, Comment, Like, Notification
 from django.db.models import F, ExpressionWrapper, IntegerField
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET
@@ -273,6 +273,13 @@ def toggle_follow(request, user_id):
             Seguimiento.objects.create(seguidor=current_user, seguido=user_to_follow)
             is_following = True
             message = f'Ahora sigues a {user_to_follow.username}'
+
+            Notification.objects.create(
+                user=user_to_follow,     # El usuario que recibe la notificación (el que fue seguido)
+                from_user=current_user,  # El usuario que causó la notificación (el que siguió)
+                notification_type='follow', # El tipo de notificación que definiste en tus choices
+                message=f"{current_user.username} te ha seguido." # Mensaje a mostrar
+            )
         
         # Recalcular seguidores del usuario que se sigue para actualizar el modal
         followers_count = Seguimiento.objects.filter(seguido=user_to_follow).count()
@@ -285,3 +292,69 @@ def toggle_follow(request, user_id):
             'message': message
         })
     return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)
+
+@login_required
+def get_notifications(request):
+    """
+    Obtiene las notificaciones del usuario logueado.
+    """
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+    
+    # Opcional: Paginación si esperas muchas notificaciones
+    # paginator = Paginator(notifications, 20) # Muestra 20 notificaciones por página
+    # page_number = request.GET.get('page')
+    # page_obj = paginator.get_page(page_number)
+
+    notifications_data = []
+    for notification in notifications: # O for notification in page_obj
+        notification_info = {
+            'id': notification.id,
+            'message': notification.message,
+            'from_user_username': notification.from_user.username,
+            'notification_type': notification.notification_type,
+            'created_at': notification.created_at.isoformat(), # Formato ISO para JS
+            'is_read': notification.is_read,
+            'post_id': notification.post.id if notification.post else None, # Enviar ID del post si existe
+        }
+        notifications_data.append(notification_info)
+    
+    unread_count = Notification.objects.filter(user=request.user, is_read=False).count()
+
+    return JsonResponse({
+        'notifications': notifications_data,
+        'unread_count': unread_count # Envía el conteo de no leídas también
+    })
+
+@login_required
+def mark_notification_read(request, notification_id):
+    """
+    Marca una notificación específica como leída.
+    """
+    if request.method == 'POST':
+        try:
+            notification = Notification.objects.get(id=notification_id, user=request.user)
+            notification.is_read = True
+            notification.save()
+            unread_count = Notification.objects.filter(user=request.user, is_read=False).count()
+            return JsonResponse({'status': 'success', 'unread_count': unread_count})
+        except Notification.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Notificación no encontrada'}, status=404)
+    return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)
+
+@login_required
+def mark_all_notifications_read(request):
+    """
+    Marca todas las notificaciones de un usuario como leídas.
+    """
+    if request.method == 'POST':
+        Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+        return JsonResponse({'status': 'success', 'unread_count': 0})
+    return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)
+
+@login_required
+def get_unread_notifications_count(request):
+    """
+    Devuelve solo el conteo de notificaciones no leídas para el badge.
+    """
+    unread_count = Notification.objects.filter(user=request.user, is_read=False).count()
+    return JsonResponse({'unread_count': unread_count})

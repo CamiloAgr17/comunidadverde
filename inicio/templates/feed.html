@@ -21,6 +21,7 @@
                 </button>
                 <button id="btn_modal">
                     <span>Notificaciones</span>
+                    <span id="notificationCount" class="badge">0</span>
                 </button>
                 <button>
                     <span>Mapa</span>
@@ -214,16 +215,15 @@
 <!-- Modal de Notificaciones -->
 <div id="modal_notificaciones" class="modal">
     <div class="modal-content">
-        <span class="close">&times;</span>
+        <span class="close" id="closeNotificationsModal">&times;</span>
 
         <!-- aqui se deben pintar las notificaciones una vez esa logica este hecha-->
         <!-- si no hay tiempo para hacer notificaciones pues se quita el boton de arriba-->
         <h2>Notificaciones</h2>
-        <ul>
-            <li>Notificación 1</li>
-            <li>Notificación 2</li>
-            <li>Notificación 3</li>
-        </ul>
+        <div id="notificationsList" class="notifications-list">
+            <p>No tienes notificaciones nuevas.</p> </div>
+        <button id="markAllAsReadBtn" class="action-button">Marcar todas como leídas</button>
+    </div>
     </div>
 </div>
 
@@ -241,19 +241,6 @@
 
 
 <script>
-// SCRIPT PARA EL MODAL DE NOTIFICACIONES
-var modal = document.getElementById("modal_notificaciones");
-var btn = document.getElementById("btn_modal");
-var span = modal.querySelector(".close");
-
-btn.onclick = function() {
-    modal.style.display = "block";
-}
-
-span.onclick = function() {
-    modal.style.display = "none";
-}
-
 // SCRIPT PARA EL MODAL DEL POST
 document.getElementById('modalPostBtn').onclick = () => {
     document.getElementById('postModal').style.display = 'block';
@@ -309,6 +296,210 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+// SCRIPT PARA EL MODAL DE NOTIFICACIONES
+var modalNotificaciones = document.getElementById("modal_notificaciones");
+var btnNotificaciones = document.getElementById("btn_modal");
+var spanCerrarNotificaciones = document.getElementById("closeNotificationsModal"); 
+// var span = btnNotificaciones.querySelector(".close");
+var notificationCountSpan = document.getElementById('notificationCount');
+var notificationsList = document.getElementById('notificationsList');
+var markAllAsReadBtn = document.getElementById('markAllAsReadBtn');
+
+if (btnNotificaciones) {
+        btnNotificaciones.onclick = function() {
+            if (modalNotificaciones) {
+                modalNotificaciones.style.display = "block";
+                loadUserNotifications(); // ¡Cargar notificaciones al abrir el modal!
+            }
+        };
+    }
+
+if (spanCerrarNotificaciones) { // Verifica si el elemento existe antes de intentar asignarle un onclick
+    spanCerrarNotificaciones.onclick = function() {
+        if (modalNotificaciones) { // Asegúrate de que modalNotificaciones sea la variable correcta para tu modal
+            modalNotificaciones.style.display = "none";
+        }
+    };
+} else {
+    console.error("Error: El botón de cierre del modal de notificaciones (spanCerrarNotificaciones) no se encontró. Revisa tu HTML.");
+}
+
+// GESTIÓN DE NOTIFICACIONES
+
+    // Función para obtener y mostrar las notificaciones
+    function loadUserNotifications() {
+        if (!notificationsList) return;
+
+        notificationsList.innerHTML = '<p>Cargando notificaciones...</p>'; // Mensaje de carga
+
+        if (markAllAsReadBtn) {
+            markAllAsReadBtn.style.display = 'none'; // Ocultar el botón al inicio de la carga
+        }
+
+        fetch('/get-notifications/')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                notificationsList.innerHTML = ''; // Limpiar el mensaje de carga
+
+                if (data.notifications && data.notifications.length > 0) {
+                    data.notifications.forEach(notif => {
+                        const notifElement = document.createElement('div');
+                        notifElement.classList.add('notification-item'); // Clase para estilos CSS
+                        if (!notif.is_read) {
+                            notifElement.classList.add('unread'); // Para destacar no leídas
+                        }
+                        notifElement.dataset.notificationId = notif.id; // Guarda el ID para acciones futuras
+
+                        let messageHtml = notif.message;
+                        if (notif.post_id) {
+                            // Si la notificación está ligada a un post, haz el mensaje clickeable
+                            messageHtml += ` <a href="/posts/${notif.post_id}/" target="_blank">(Ver post)</a>`;
+                        }
+
+                        notifElement.innerHTML = `
+                            <p>${messageHtml}</p>
+                            <small>${new Date(notif.created_at).toLocaleString()}</small>
+                            ${!notif.is_read ? '<button class="mark-as-read-btn action-button">Marcar como leída</button>' : ''}
+                        `;
+                        notificationsList.appendChild(notifElement);
+                    });
+
+                    // Asigna event listeners a los botones "Marcar como leída"
+                    document.querySelectorAll('.mark-as-read-btn').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const notificationId = this.closest('.notification-item').dataset.notificationId;
+                            markNotificationAsRead(notificationId);
+                        });
+                    });
+
+                // Mostrar el botón si hay notificaciones no leídas
+                if (markAllAsReadBtn && data.unread_count > 0) {
+                    markAllAsReadBtn.style.display = 'block';
+                }
+
+                } else {
+                    notificationsList.innerHTML = '<p>No tienes notificaciones.</p>';
+                    if (markAllAsReadBtn) {
+                    markAllAsReadBtn.style.display = 'none'; // Ocultar botón si no hay notificaciones
+                    }
+                }
+                updateNotificationCount(data.unread_count); // Actualiza el badge de la campana
+            })
+            .catch(error => {
+                console.error('Error al cargar notificaciones:', error);
+                notificationsList.innerHTML = '<p>Error al cargar notificaciones.</p>';
+            });
+    }
+
+    // Función para actualizar el contador en el badge de la campana
+    function updateNotificationCount(count) {
+        if (notificationCountSpan) {
+            notificationCountSpan.textContent = count;
+            if (count > 0) {
+                notificationCountSpan.style.display = 'inline-block'; // Muestra el badge
+            } else {
+                notificationCountSpan.style.display = 'none'; // Oculta el badge si es 0
+            }
+        }
+         if (markAllAsReadBtn) {
+        if (count > 0) {
+            markAllAsReadBtn.style.display = 'block';
+        } else {
+            markAllAsReadBtn.style.display = 'none';
+        }
+    }
+    }
+
+    // Función para marcar una notificación individual como leída
+    function markNotificationAsRead(notificationId) {
+        fetch(`/mark-notification-read/${notificationId}/`, { // Esta URL la crearás en Django
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({}) // Cuerpo vacío
+        })
+        .then(response => {
+            if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                // Actualiza el UI sin recargar todo
+                const notificationItem = document.querySelector(`.notification-item[data-notification-id="${notificationId}"]`);
+                if (notificationItem) {
+                    notificationItem.classList.remove('unread'); // Quita el estilo de no leído
+                    const markBtn = notificationItem.querySelector('.mark-as-read-btn');
+                    if (markBtn) markBtn.remove(); // Elimina el botón "Marcar como leída"
+                }
+                updateNotificationCount(data.unread_count); // Actualiza el contador de la campana
+            } else {
+                console.error('Error al marcar notificación:', data.message);
+            }
+        })
+        .catch(error => console.error('Error de red al marcar notificación:', error));
+    }
+
+    // Lógica para marcar TODAS las notificaciones como leídas
+    if (markAllAsReadBtn) {
+        markAllAsReadBtn.addEventListener('click', function() {
+            fetch('/mark-all-notifications-read/', { // Esta URL la crearás en Django
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => {
+                if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    // Actualiza el UI para mostrar todas como leídas
+                    document.querySelectorAll('.notification-item').forEach(item => {
+                        item.classList.remove('unread');
+                        const markBtn = item.querySelector('.mark-as-read-btn');
+                        if (markBtn) markBtn.remove();
+                    });
+                    notificationsList.innerHTML = '<p>No tienes notificaciones sin leer.</p>'; // Mensaje actualizado
+                    updateNotificationCount(0); // Pone el contador a 0
+                    
+                    if (markAllAsReadBtn) {
+                        markAllAsReadBtn.style.display = 'none'; // Ocultar el botón después de marcar todas como leídas
+                    }
+                } else {
+                    console.error('Error al marcar todas como leídas:', data.message);
+                }
+            })
+            .catch(error => console.error('Error de red al marcar todas:', error));
+        });
+    }
+
+     // --- Cargar el contador de notificaciones no leídas al cargar la página ---
+    // Esto asegura que el badge de la campana tenga el número correcto al inicio.
+    function getUnreadNotificationCount() {
+        fetch('/get-unread-notifications-count/') // Esta URL la crearás en Django
+            .then(response => {
+                if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
+                return response.json();
+            })
+            .then(data => {
+                updateNotificationCount(data.unread_count);
+            })
+            .catch(error => console.error('Error al obtener el conteo de no leídas:', error));
+    }
+
+    // Llama a esta función al inicio para cargar el contador del badge
+    getUnreadNotificationCount();
 
 //SCRIPT PARA MUESTRA DE PERFIL DE USUARIO
 var profileModal = document.getElementById('profileModal');
@@ -378,7 +569,7 @@ function loadUserProfileData(userId) {
         .catch(error => console.error('Error al cargar datos del perfil:', error));
 }
 
-    //Cerrar ventanas flotantes pulsando fuera
+    //CERRAR VENTANAS FLOTANTES PULSANDO FUERA
 window.onclick = function(event) {
     if (event.target == document.getElementById('modal_notificaciones')) {
         document.getElementById('modal_notificaciones').style.display = 'none';
@@ -389,6 +580,9 @@ window.onclick = function(event) {
     if (event.target == profileModal) {
         profileModal.style.display = 'none';
     }
+    if (modalNotificaciones && event.target == modalNotificaciones) {
+            modalNotificaciones.style.display = 'none';
+        }
 };
 
 // Lógica del Botón Seguir/Dejar de Seguir
