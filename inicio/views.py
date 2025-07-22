@@ -150,6 +150,22 @@ def feed(request):
     for post in posts:
         post.comment_form = comment_forms_errors.get(post.id, CommentForm())
 
+    user_favorite_tags_names = [] # Inicializar lista vacía
+    try:
+        # Intenta acceder al perfil de Voluntario
+        user_profile = request.user.voluntario
+        if user_profile.etiquetas_favoritas.exists():
+            user_favorite_tags_names = [tag.nombre for tag in user_profile.etiquetas_favoritas.all()]
+    except Voluntario.DoesNotExist:
+        try:
+            # Si no es Voluntario, intenta acceder al perfil de Organizacion
+            user_profile = request.user.organizacion
+            if user_profile.etiquetas_favoritas.exists():
+                user_favorite_tags_names = [tag.nombre for tag in user_profile.etiquetas_favoritas.all()]
+        except Organizacion.DoesNotExist:
+            # Si el usuario no es ni Voluntario ni Organizacion, la lista queda vacía
+            pass # user_favorite_tags_names ya está vacía
+
     context = {
         'posts': posts,
         'form': form,
@@ -158,6 +174,7 @@ def feed(request):
         'posts_no_eliminados': posts_no_eliminados,
         'user_followers_count': user_followers_count,
         'user_following_count': user_following_count,
+        'user_favorite_tags': user_favorite_tags_names,
     }
     return render(request, 'feed.html', context)
 

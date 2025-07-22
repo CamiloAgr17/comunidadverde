@@ -9,7 +9,18 @@
         <div class="user-profile">
             <img src='https://picsum.photos/id/237/200' alt="User" class="user-avatar" />
             <h3>{{ user.username }}</h3>
-            <p>Biografía o Descripción del usuario</p>
+            <div class="favorite_tags">
+            {% if user_favorite_tags %}
+                <ul>
+                <p>Tus Etiquetas:</p>
+                {% for tag_name in user_favorite_tags %}
+                    <li>{{ tag_name }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+            <p>Aún no sigues ninguna etiqueta.</p>
+            {% endif %}
+            </div>
             <div class="user-stats">
                 <div><strong>{{ posts_no_eliminados }}</strong><br />Posts</div>
                 <div><strong>{{ user_followers_count }}</strong><br />Seguidores</div>
