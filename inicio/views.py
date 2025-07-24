@@ -7,6 +7,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 import json
+from itertools import chain
+
 from .models import Post, Etiqueta, Voluntario, Organizacion, Seguimiento, User, Comment, Like, Notification
 from django.db.models import F, ExpressionWrapper, IntegerField
 from django.contrib.auth.decorators import login_required
@@ -112,65 +114,71 @@ def seleccionar_etiquetas(request):
     })
 
 @login_required
+
 def feed(request):
-    posts = Post.objects.all().order_by('-fecha_creacion').prefetch_related('comments', 'likes')
     user_likes = Like.objects.filter(usuario=request.user).values_list('post_id', flat=True)
     form = PostForm() 
 
-    # posts populares
+    # Obtener etiquetas favoritas del usuario
+    favorite_tag_ids = []
+    user_favorite_tags_names = []  # Nombres para mostrar en el template
+    try:
+        if hasattr(request.user, 'voluntario'):
+            etiquetas = request.user.voluntario.etiquetas_favoritas.all()
+        elif hasattr(request.user, 'organizacion'):
+            etiquetas = request.user.organizacion.etiquetas_favoritas.all()
+        else:
+            etiquetas = []
+
+        favorite_tag_ids = etiquetas.values_list('id', flat=True)
+        user_favorite_tags_names = [tag.nombre for tag in etiquetas]
+    except:
+        etiquetas = []
+
+    # Posts que coinciden con etiquetas favoritas
+    posts_with_fav_tags = Post.objects.filter(
+        etiquetas__id__in=favorite_tag_ids
+    ).distinct().order_by('-fecha_creacion').prefetch_related('comments', 'likes')
+
+    # Posts que no coinciden con etiquetas favoritas
+    posts_without_fav_tags = Post.objects.exclude(
+        id__in=posts_with_fav_tags.values_list('id', flat=True)
+    ).order_by('-fecha_creacion').prefetch_related('comments', 'likes')
+
+    # Combinar ambos
+    from itertools import chain
+    posts = list(chain(posts_with_fav_tags, posts_without_fav_tags))
+
+    # Top 3 posts populares
     popular_posts = Post.objects.annotate(
         total_likes=Count('likes'),
         total_comments=Count('comments')
     ).order_by('-total_likes', '-total_comments')[:3]
 
-    # posts no eliminados del usuario
-    posts_no_eliminados = Post.objects.filter(
-        author=request.user,
-        esta_eliminado=False
-    ).count()
-
-    # seguidores
+    # Estadísticas del usuario
+    posts_no_eliminados = Post.objects.filter(author=request.user, esta_eliminado=False).count()
     user_followers_count = Seguimiento.objects.filter(seguido=request.user).count()
-
-    # seguidos
     user_following_count = Seguimiento.objects.filter(seguidor=request.user).count()
 
     comment_forms_errors = {}
 
-    if request.method == 'POST':
-        # Intentar procesar el formulario de comentario
-        if 'post_id' in request.POST:
-            post_id = request.POST.get('post_id')
-            post_to_comment = get_object_or_404(Post, id=post_id)
-            comment_form_instance = CommentForm(request.POST)
+    if request.method == 'POST' and 'post_id' in request.POST:
+        post_id = request.POST.get('post_id')
+        post_to_comment = get_object_or_404(Post, id=post_id)
+        comment_form_instance = CommentForm(request.POST)
 
-            if comment_form_instance.is_valid():
-                comment = comment_form_instance.save(commit=False)
-                comment.post = post_to_comment
-                comment.author = request.user
-                comment.save()
-                return redirect('feed') 
-            else:
-                comment_forms_errors[int(post_id)] = comment_form_instance
+        if comment_form_instance.is_valid():
+            comment = comment_form_instance.save(commit=False)
+            comment.post = post_to_comment
+            comment.author = request.user
+            comment.save()
+            return redirect('feed')
+        else:
+            comment_forms_errors[int(post_id)] = comment_form_instance
 
+    # Asociar formularios a cada post
     for post in posts:
         post.comment_form = comment_forms_errors.get(post.id, CommentForm())
-
-    user_favorite_tags_names = [] # Inicializar lista vacía
-    try:
-        # Intenta acceder al perfil de Voluntario
-        user_profile = request.user.voluntario
-        if user_profile.etiquetas_favoritas.exists():
-            user_favorite_tags_names = [tag.nombre for tag in user_profile.etiquetas_favoritas.all()]
-    except Voluntario.DoesNotExist:
-        try:
-            # Si no es Voluntario, intenta acceder al perfil de Organizacion
-            user_profile = request.user.organizacion
-            if user_profile.etiquetas_favoritas.exists():
-                user_favorite_tags_names = [tag.nombre for tag in user_profile.etiquetas_favoritas.all()]
-        except Organizacion.DoesNotExist:
-            # Si el usuario no es ni Voluntario ni Organizacion, la lista queda vacía
-            pass # user_favorite_tags_names ya está vacía
 
     context = {
         'posts': posts,

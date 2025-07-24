@@ -74,14 +74,27 @@
             {% if posts %}
             {% for post in posts %}
             <div class="post-card">
+
                 {% comment %} POST GENERAL {% endcomment %}
                 <div class="post-header">
-
                     <a href="#" class="profile-link" data-user-id="{{ post.author.id }}">
                         <strong>{{ post.author.username }}</strong>
                     </a>
                 </div>
+
                 <p>{{ post.content }}</p>
+
+                {% comment %} ETIQUETAS DEL POST {% endcomment %}
+                {% comment %} muestra los tags {% endcomment %}
+                {% if post.etiquetas.all %}
+                <div class="post-tags">
+                    {% for tag in post.etiquetas.all %}
+                    <span style="color: rgb(0, 0, 0); padding: 3px 8px; border-radius: 5px; margin-right: 5px;">
+                        #{{ tag.nombre }}
+                    </span>
+                    {% endfor %}
+                </div>
+                {% endif %}
 
                 {% if post.imagen %}
                 <img src="{{ post.imagen.url }}" class="post-image" />
@@ -104,6 +117,7 @@
                 {% comment %} SECCION DE COMENTARIOS {% endcomment %}
                 <div class="comments-section">
                     <h4>Comentarios ({{ post.total_comments }})</h4>
+
                     {% if post.comments.all %}
                     <div class="comment-list">
                         {% for comment in post.comments.all|slice:":3" %}
@@ -117,7 +131,7 @@
                         <p>No hay comentarios aún.</p>
                         {% endfor %}
                         {% if post.comments.count > 3 %}
-                        Ver todos los comentarios</a></p>
+                        <p><a href="#">Ver todos los comentarios</a></p>
                         {% endif %}
                     </div>
                     {% else %}
@@ -127,10 +141,11 @@
                     <form method="post" action="{% url 'feed' %}" class="comment-form">
                         {% csrf_token %}
                         <input type="hidden" name="post_id" value="{{ post.id }}">
-                        {# Accede directamente a post.comment_form #}
                         {{ post.comment_form }}
-                        <button type="submit" class="comment-button"><span>Comentar</span></button>
-                        {# Opcional: mostrar errores del formulario de comentario #}
+                        <button type="submit" class="comment-button" style="margin-top: 10px;">
+                            <span>Comentar</span>
+                        </button>
+
                         {% if post.comment_form.errors %}
                         <ul class="errorlist">
                             {% for field in post.comment_form %}
@@ -152,6 +167,7 @@
             <p class="no-posts-message">No hay publicaciones disponibles.</p>
             {% endif %}
         </div>
+
     </main>
 
 
@@ -185,13 +201,12 @@
             </label>
         </form>
         {% comment %} POSTS POPULARES {% endcomment %}
-        <div class="popular-posts-section"> {# Puedes envolverlo en un div para estilos generales #}
+        <div class="popular-posts-section">
             <h3>Posts Populares</h3>
             {% if popular_posts %}
             {% for post in popular_posts %}
             <div class="info-box">
-                <h4 class="title">{{ post.author.username }}: {{ post.content|truncatechars:50 }}</h4> {# Muestra autor
-                y un extracto del contenido #}
+                <h4 class="title">{{ post.author.username }}: {{ post.content|truncatechars:50 }}</h4>
                 <p class="description">
                     Likes: {{ post.total_likes }} | Comentarios: {{ post.total_comments }}
                     <br>
