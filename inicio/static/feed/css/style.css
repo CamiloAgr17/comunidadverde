@@ -2,6 +2,8 @@ body {
   background: #216173;
   background: linear-gradient(180deg, rgba(33, 97, 115, 1) 0%, rgba(0, 149, 144, 1) 50%, rgba(87, 199, 133, 1) 100%);
   font-family: sans-serif;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: #fff;
   min-height: 100vh;
 }
