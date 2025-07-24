@@ -4,7 +4,7 @@
         
   /* Header */
 .main-header {
-    background-color: transparent; /* Un verde visible */
+    background-color: transparent;
     color: black;
     width: 100%;
     position: absolute;
@@ -20,9 +20,9 @@
     width: 100%;
     max-width: 400px;
     display: flex;
-    justify-content: space-between;
+    justify-content:space-between;
     align-items: center;
-    pointer-events: all;
+    pointer-events: none;
 }
 
 .header-content img {
@@ -32,37 +32,35 @@
   pointer-events:all;
 }
 
-.header-content .buscador {
+.buscador {
   display: flex;
-  position: relative;
   align-items: center;
+  justify-content: space-between;
   text-align: center;
   pointer-events: all;
-  padding-left: 2em; /* mantén si quieres espacio al inicio */
-  width: 100%;
+  margin-left: 20px;
 }
 
 .buscador__input {
   font-family: inherit;
-  font-size: inherit;
-  background-color: white;
+  font-size: 1.5rem;
+  background-color: #ffffff;
   border: none;
   color: #000000;
-  width: 25em;
   padding: 0.7rem 1rem;
   border-radius: 30px;
-  transition: all ease-in-out 0.5s;
-  margin-right: 0; /* eliminar margen negativo */
+  width: 400px;
+  transition: all ease-in-out .5s;
+  margin-right: -2rem;
 }
 
-.buscador__input:hover,
-.buscador__input:focus {
+.buscador__input:hover, .buscador__input:focus {
   box-shadow: 0 0 1em #00000013;
 }
 
 .buscador__input:focus {
   outline: none;
-  background-color: white;
+  background-color: #ffffff;
 }
 
 .buscador__input::-webkit-input-placeholder {
@@ -71,19 +69,14 @@
 }
 
 .buscador__input:focus + .buscador__button {
-  background-color: white;
+  background-color: #ffffff;
 }
 
 .buscador__button {
   border: none;
-  border-radius: 50%;
-  background: white;
-  cursor: pointer;
-  padding: 0.3em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  background-color: transparent;
+  margin-top: .1em;
+  z-index: 1001;
 }
 
 .buscador__button:hover {
@@ -93,7 +86,7 @@
 .buscador__icon {
   height: 1.3em;
   width: 1.3em;
-  fill: #b4b4b4;
+  fill: #000000;
 }
 
 @media (max-width: 600px) {
@@ -118,10 +111,9 @@
 .sugerencias-lista {
   position: absolute;
   top: 100%;
-  left: 0;
   background: white;
   border: 1px solid #ccc;
-  width: 100%;
+  width: 425px;
   margin-top: 2px;
   padding: 0;
   list-style: none;
@@ -141,8 +133,89 @@
   background-color: white;
 }
 
+/* Style BOTON ORG CERCANAS */
+.org_b {
+  padding-left: 1rem;
+}
 
+.button {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: bold;
+  width: 250px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 30px;
+  color: rgb(38, 47, 74);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition-duration: .2s;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.116);
+  padding-left: 8px;
+  transition-duration: .5s;
+  pointer-events: all;
+}
 
+.svgIcon {
+  height: 25px;
+  transition-duration: 1.5s;
+}
+
+.bell path {
+  fill: rgb(255, 255, 255);
+}
+
+.button:hover {
+  background-color: rgb(161, 255, 20);
+  transition-duration: .5s;
+  color: rgb(0, 0, 0);
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.116);
+  border-width: 2rem;
+}
+
+.button:active {
+  transform: scale(0.97);
+  transition-duration: .2s;
+}
+
+.button:hover .svgIcon {
+  transform: rotate(250deg);
+  transition-duration: 1.5s;
+}
+
+.popup-cercanas {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  z-index: 1005;
+
+  /* Nuevo comportamiento para fade in/out */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  pointer-events: all;
+}
+
+/* Clase activa para mostrarlo */
+.popup-cercanas.mostrar {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* STYLE GENERAL PARA MAPA */
         #map{
           position: relative;
           width: 100%;

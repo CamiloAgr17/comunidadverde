@@ -30,6 +30,12 @@
                     </svg>
                  </button>
             </div>
+            <div class="org_b">
+                <button id="btn-cercanas" class="button">
+                    <svg class="svgIcon" viewBox="0 0 512 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"></path></svg>
+                        Organizaciones cercanas a mí
+                </button>
+            </div>
         </div>
     </header>
 
@@ -120,23 +126,27 @@
             });
             map.addControl(geolocate);
 
+            let centradoInicial = false;
+
             map.on('load', () => {
-                geolocate.trigger(); // Intenta activarlo
+                geolocate.trigger();
 
                 geolocate.on('geolocate', (event) => {
-                    const { longitude, latitude } = event.coords;
+                    if (!centradoInicial) {
+                        centradoInicial = true;
 
-                    console.log("Ubicación detectada:", latitude, longitude);
+                        const { longitude, latitude } = event.coords;
 
-                    map.flyTo({
-                        center: [longitude, latitude],
-                        zoom: 14,
-                        essential: true
-                    });
+                        map.flyTo({
+                            center: [longitude, latitude],
+                            zoom: 14,
+                            essential: true
+                        });
 
-                    new maplibregl.Marker({ color: 'blue' })  // marcador azul
-                        .setLngLat([longitude, latitude])
-                        .addTo(map);
+                        new maplibregl.Marker({ color: '#262f4a' })
+                            .setLngLat([longitude, latitude])
+                            .addTo(map);
+                    }
                 });
             });
 
@@ -234,6 +244,133 @@
                 }
             });
 
+        </script>
+
+        <div id="popup-cercanas" class="popup-cercanas">
+            <h3 style="margin-top: 0;">Top 3 organizaciones cercanas</h3>
+            <ul id="lista-cercanas" style="list-style: none; padding: 0; margin: 15px 0;"></ul>
+            <button id="cerrar-popup" >
+                Cerrar
+            </button>
+         </div>
+
+        <!-- SCRIPT PARA ORG CERCANAS -->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                function calcularDistancia(lat1, lon1, lat2, lon2) {
+                    const R = 6371;
+                    const dLat = (lat2 - lat1) * Math.PI / 180;
+                    const dLon = (lon2 - lon1) * Math.PI / 180;
+                    const a = Math.sin(dLat / 2) ** 2 +
+                        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                        Math.sin(dLon / 2) ** 2;
+                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    return R * c;
+                }
+
+                function mostrarPopup() {
+                    const popup = document.getElementById('popup-cercanas');
+                    popup.style.display = "block";
+                    popup.offsetHeight; // fuerza reflow
+                    popup.style.opacity = "1";
+                    popup.classList.add("popup-visible");
+                }
+
+                const btnCercanas = document.getElementById('btn-cercanas');
+
+                btnCercanas.addEventListener('click', () => {
+                    console.log("Organizaciones:", organizaciones);
+
+                    if (!navigator.geolocation) {
+                        alert('Tu navegador no soporta geolocalización.');
+                        return;
+                    }
+
+                    navigator.geolocation.getCurrentPosition(pos => {
+                        const latUsuario = pos.coords.latitude;
+                        const lonUsuario = pos.coords.longitude;
+
+                        const top3 = [...organizaciones].map(org => {
+                            const distancia = calcularDistancia(latUsuario, lonUsuario, org.latitud, org.longitud);
+                            return { ...org, distancia };
+                        }).sort((a, b) => a.distancia - b.distancia).slice(0, 3);
+
+                        const lista = document.getElementById('lista-cercanas');
+                        const popup = document.getElementById('popup-cercanas');
+                        lista.innerHTML = ''; // limpiar
+
+                        top3.forEach((org, i) => {
+                            const li = document.createElement('li');
+                            const btn = document.createElement('button');
+                            btn.textContent = `${i + 1}. ${org.nombre} (${org.distancia.toFixed(2)} km)`;
+                            btn.style.cssText = `
+                                background-color: #e7e7e7;
+                                border: none;
+                                border-radius: 5px;
+                                padding: 8px;
+                                margin-bottom: 8px;
+                                width: 100%;
+                                text-align: left;
+                                cursor: pointer;
+                            `;
+
+                            btn.addEventListener('click', () => {
+                                // Cerrar popups previos
+                                const popups = document.querySelectorAll('.maplibregl-popup');
+                                popups.forEach(p => p.remove());
+
+                                // Hacer flyTo con animación suave
+                                map.flyTo({
+                                    center: [org.longitud, org.latitud],
+                                    zoom: 14,
+                                    essential: true
+                                });
+
+                                // Asegurarse de que el flyTo termine antes de mostrar el popup
+                                setTimeout(() => {
+                                    new maplibregl.Popup()
+                                        .setLngLat([org.longitud, org.latitud])
+                                        .setHTML(`<strong>${org.nombre}</strong><br>Distancia aprox: ${org.distancia.toFixed(2)} km`)
+                                        .addTo(map);
+                                }, 1000); // espera 1 segundo antes de mostrar el popup
+
+                                inputBuscador.value = org.nombre;
+                                popup.style.display = 'none';
+                            });
+
+                            li.appendChild(btn);
+                            lista.appendChild(li);
+                        });
+
+                        mostrarPopup();
+                    }, err => {
+                        alert('Error al obtener tu ubicación.');
+                        console.error(err);
+                    });
+                });
+
+                // Cerrar con botón
+                document.getElementById('cerrar-popup').addEventListener('click', () => {
+                    document.getElementById('popup-cercanas').style.display = 'none';
+                });
+
+                // Cerrar si se hace clic fuera
+                document.addEventListener('click', (event) => {
+                    const popup = document.getElementById('popup-cercanas');
+                    const btnCercanas = document.getElementById('btn-cercanas');
+                    const cerrarPopup = document.getElementById('cerrar-popup');
+
+                    if (!popup.contains(event.target) && event.target !== btnCercanas && event.target !== cerrarPopup) {
+                        popup.style.display = 'none';
+                    }
+
+                    const listaSugerencias = document.getElementById('lista-sugerencias');
+                    const buscador = document.querySelector('.buscador');
+                    if (buscador && listaSugerencias && !buscador.contains(event.target)) {
+                        listaSugerencias.style.display = 'none';
+                    }
+                });
+            });
         </script>
     </body>
 </html>

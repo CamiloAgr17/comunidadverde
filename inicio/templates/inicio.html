@@ -12,32 +12,31 @@
     
     <link rel="stylesheet" href="{% static 'inicio/css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Sansita+Swashed:wght@400;700&display=swap" rel="stylesheet">
-    {# Si tienes un style.css general para body, etc., también lo pondrías aquí #}
 </head>
-<body> {# El body DEBE contener el header y el main #}
+    <body>
 
-    <header class="main-header">
-        <div class="header-content">
-            
-        </div>
-    </header>
+        <header class="main-header">
+            <div class="header-content">
+                
+            </div>
+        </header>
 
-    <main class="body_inicio">
-        <h1>
-            <img src="{% static 'images/logo.png' %}" alt="LOGO">
-        </h1>
-        <div class="button-group">
-                {# Formulario para "Iniciar Sesión" #}
-                <form action="{% url 'login' %}" method="get" class="button-form">
-                    <button type="submit" class="button"><p class="sub-titulo">Iniciar Sesión</p></button>
-                </form>
+        <main class="body_inicio">
+            <h1>
+                <img src="{% static 'images/logo.png' %}" alt="LOGO">
+            </h1>
+            <div class="button-group">
+                    {# Formulario para "Iniciar Sesión" #}
+                    <form action="{% url 'login' %}" method="get" class="button-form">
+                        <button type="submit" class="button"><p class="sub-titulo">Iniciar Sesión</p></button>
+                    </form>
 
-                {# Formulario para "Registrar" #}
-                <form action="{% url 'registro' %}" method="get" class="button-form">
-                    <button type="submit" class="button"><p class="sub-titulo">Registrar</p></button>
-                </form>
-        </div>
-    </main>
+                    {# Formulario para "Registrar" #}
+                    <form action="{% url 'registro' %}" method="get" class="button-form">
+                        <button type="submit" class="button"><p class="sub-titulo">Registrar</p></button>
+                    </form>
+            </div>
+        </main>
 
-</body>
+    </body>
 </html>
