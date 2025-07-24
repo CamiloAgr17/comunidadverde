@@ -37,9 +37,7 @@
                 <button>
                     <span>Mapa</span>
                 </button>
-                <button>
-                    <span>Ajustes</span>
-                </button>
+               
             </nav>
         </div>
     </aside>
@@ -62,7 +60,7 @@
                     <div class="post-card">
                         {% comment %} POST GENERAL {% endcomment %}
                         <div class="post-header">
-                            <img src="{% static 'img/user-icon.png' %}" class="avatar-small" />
+
                             <a href="#" class="profile-link" data-user-id="{{ post.author.id }}">
                             <strong>{{ post.author.username }}</strong> 
                             </a>
@@ -103,7 +101,7 @@
                                         <p>No hay comentarios aún.</p>
                                     {% endfor %}
                                     {% if post.comments.count > 3 %}
-                                        <p><a href="{% url 'post_detail' post.id %}">Ver todos los comentarios</a></p> 
+                                        Ver todos los comentarios</a></p> 
                                     {% endif %}
                                 </div>
                             {% else %}
@@ -570,7 +568,7 @@ function loadUserProfileData(userId) {
                 followToggleButton.classList.add('follow-button');
             }
 
-            if (userId == {{ user.id }}) {
+            if (userId == "{{ user.id }}") {
                 followToggleButton.style.display = 'none';
             } else {
                 followToggleButton.style.display = 'block';
