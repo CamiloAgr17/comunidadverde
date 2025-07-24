@@ -33,9 +33,6 @@
                 </div>
             </div>
             <nav class="side-nav-buttons">
-                <button>
-                    <span>Perfil</span>
-                </button>
                 <button id="btn_modal">
                     <span>Notificaciones</span>
                     <span id="notificationCount" class="badge">0</span>
@@ -233,19 +230,16 @@
         </span>
     </button>
 </div>
-
 <!-- Modal para crear post -->
 <div id="postModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Crear Post</h2>
-        <form method="POST" action="{% url 'crear_post' %}">
+        <form method="POST" action="{% url 'crear_post' %}" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="submit-button">
-                <span>
-                    Publicar
-                </span>
+                <span>Publicar</span>
             </button>
         </form>
     </div>

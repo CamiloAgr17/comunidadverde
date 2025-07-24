@@ -201,7 +201,7 @@ def obtener_etiquetas_para_post(request):
 @login_required
 def crear_post(request):
     if request.method == 'POST':
-        form = PostForm(request.POST) 
+        form = PostForm(request.POST, request.FILES)  # Asegúrate de incluir request.FILES para manejar imágenes
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user

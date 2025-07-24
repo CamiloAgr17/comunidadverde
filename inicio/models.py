@@ -79,7 +79,7 @@ class Post(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     etiquetas = models.ManyToManyField(Etiqueta, blank=True, related_name='posts')
     esta_eliminado = models.BooleanField(default=False)
-
+    imagen = models.ImageField(upload_to='posts/', blank=True, null=True)
     def total_likes(self):
         return self.likes.count()
 

@@ -117,7 +117,7 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ['etiquetas', 'content']
+        fields = ['etiquetas', 'content', 'imagen']
 
         widgets = {
             # 'etiquetas': No longer needed here as we define it directly above
