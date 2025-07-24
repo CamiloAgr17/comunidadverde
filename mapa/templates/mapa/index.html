@@ -83,7 +83,6 @@
                 essential: true,
                 });
 
-                // Opcional: cerrar la lista y limpiar el input
                 listaSugerencias.style.display = 'none';
                 listaSugerencias.innerHTML = '';
                 inputBuscador.value = nombre;
@@ -139,15 +138,6 @@
                         .addTo(map);
                 });
             });
-
-            // Cambio de estilo
-            // document.getElementById('styleSelector').addEventListener('change', function (e) {
-            //     const estiloSeleccionado = e.target.value;
-            //     map.setStyle(estilos[estiloSeleccionado]);
-            // });
-
-            // Marcadores desde Django
-            
 
             class ViewToggleControl {
                 onAdd(map) {
