@@ -10,21 +10,27 @@
             <img src='https://picsum.photos/id/237/200' alt="User" class="user-avatar" />
             <h3>{{ user.username }}</h3>
             <div class="favorite_tags">
-            {% if user_favorite_tags %}
+                {% if user_favorite_tags %}
                 <ul>
-                <p>Tus Etiquetas:</p>
-                {% for tag_name in user_favorite_tags %}
+                    <p>Tus Etiquetas:</p>
+                    {% for tag_name in user_favorite_tags %}
                     <li>{{ tag_name }}</li>
-                {% endfor %}
+                    {% endfor %}
                 </ul>
-            {% else %}
-            <p>Aún no sigues ninguna etiqueta.</p>
-            {% endif %}
+                {% else %}
+                <p>Aún no sigues ninguna etiqueta.</p>
+                {% endif %}
             </div>
             <div class="user-stats">
-                <div><strong>{{ posts_no_eliminados }}</strong><br />Posts</div>
-                <div><strong>{{ user_followers_count }}</strong><br />Seguidores</div>
-                <div><strong>{{ user_following_count }}</strong><br />Seguidos</div>
+                <div style="display:inline-block; margin: 0 5px; text-align:center;">
+                    <strong>{{ posts_no_eliminados }}</strong><br />Posts
+                </div>
+                <div style="display:inline-block; margin: 0 5px; text-align:center;">
+                    <strong>{{ user_followers_count }}</strong><br />Seguidores
+                </div>
+                <div style="display:inline-block; margin: 0 5px; text-align:center;">
+                    <strong>{{ user_following_count }}</strong><br />Seguidos
+                </div>
             </div>
             <nav class="side-nav-buttons">
                 <button>
@@ -34,10 +40,20 @@
                     <span>Notificaciones</span>
                     <span id="notificationCount" class="badge">0</span>
                 </button>
-                <button>
-                    <span>Mapa</span>
-                </button>
-               
+                <a href="{% url 'mapa' %}">
+                    <button>
+                        <span>mapa</span>
+                    </button>
+                </a>
+
+                <a href="{% url 'pagina_inicio' %}">
+                    <button>
+                        <span>cerrar sesión</span>
+                    </button>
+                </a>
+
+
+
             </nav>
         </div>
     </aside>
@@ -48,92 +64,92 @@
         <!-- pero ahi tan porsiacaso o si les quieren dar otra función -->
         {% comment %} <header class="feed-header">
             <button class="tab">Mi Feed</button>
-            <button class="tab">Cerca de Mí</button> 
+            <button class="tab">Cerca de Mí</button>
         </header> {% endcomment %}
 
         <!-- placeholder, pero esta es la logica de mostrar los posts -->
         <!-- cambien o ajusten a su necesidad -->
-        
-        <div class="posts-container"> 
+
+        <div class="posts-container">
             {% if posts %}
-                {% for post in posts %}
-                    <div class="post-card">
-                        {% comment %} POST GENERAL {% endcomment %}
-                        <div class="post-header">
+            {% for post in posts %}
+            <div class="post-card">
+                {% comment %} POST GENERAL {% endcomment %}
+                <div class="post-header">
 
-                            <a href="#" class="profile-link" data-user-id="{{ post.author.id }}">
-                            <strong>{{ post.author.username }}</strong> 
-                            </a>
-                        </div>
-                        <p>{{ post.content }}</p>
+                    <a href="#" class="profile-link" data-user-id="{{ post.author.id }}">
+                        <strong>{{ post.author.username }}</strong>
+                    </a>
+                </div>
+                <p>{{ post.content }}</p>
 
-                        {% if post.imagen %}
-                        <img src="{{ post.imagen.url }}" class="post-image" />
+                {% if post.imagen %}
+                <img src="{{ post.imagen.url }}" class="post-image" />
+                {% endif %}
+
+                <small>{{ post.fecha_creacion }}</small>
+
+                {% comment %} SECCION DE LIKES {% endcomment %}
+                <div class="like-section" data-post-id="{{ post.id }}">
+                    <button class="like-button" id="like-btn-{{ post.id }}">
+                        {% if post.id in user_likes %}
+                        ❤️ Quitar Like
+                        {% else %}
+                        🤍 Me gusta
                         {% endif %}
+                    </button>
+                    <span class="like-count" id="like-count-{{ post.id }}">{{ post.total_likes }} likes</span>
+                </div>
 
-                        <small>{{ post.fecha_creacion }}</small>
-
-                        {% comment %} SECCION DE LIKES {% endcomment %}
-                        <div class="like-section" data-post-id="{{ post.id }}">
-                            <button class="like-button" id="like-btn-{{ post.id }}">
-                                {% if post.id in user_likes %}
-                                    ❤️ Quitar Like
-                                {% else %}
-                                    🤍 Me gusta
-                                {% endif %}
-                            </button>
-                            <span class="like-count" id="like-count-{{ post.id }}">{{ post.total_likes }} likes</span>
+                {% comment %} SECCION DE COMENTARIOS {% endcomment %}
+                <div class="comments-section">
+                    <h4>Comentarios ({{ post.total_comments }})</h4>
+                    {% if post.comments.all %}
+                    <div class="comment-list">
+                        {% for comment in post.comments.all|slice:":3" %}
+                        {% if not comment.esta_eliminado %}
+                        <div class="comment-item">
+                            <strong>{{ comment.author.username }}</strong>: {{ comment.content }}
+                            <small>{{ comment.fecha_creacion }}</small>
                         </div>
-
-                        {% comment %} SECCION DE COMENTARIOS {% endcomment %}
-                        <div class="comments-section">
-                            <h4>Comentarios ({{ post.total_comments }})</h4>
-                            {% if post.comments.all %}
-                                <div class="comment-list">
-                                    {% for comment in post.comments.all|slice:":3" %} 
-                                        {% if not comment.esta_eliminado %}
-                                            <div class="comment-item">
-                                                <strong>{{ comment.author.username }}</strong>: {{ comment.content }}
-                                                <small>{{ comment.fecha_creacion }}</small>
-                                            </div>
-                                        {% endif %}
-                                    {% empty %}
-                                        <p>No hay comentarios aún.</p>
-                                    {% endfor %}
-                                    {% if post.comments.count > 3 %}
-                                        Ver todos los comentarios</a></p> 
-                                    {% endif %}
-                                </div>
-                            {% else %}
-                                <p>No hay comentarios aún.</p>
-                            {% endif %}
-
-                            <form method="post" action="{% url 'feed' %}" class="comment-form">
-                                {% csrf_token %}
-                                <input type="hidden" name="post_id" value="{{ post.id }}">
-                                {# Accede directamente a post.comment_form #}
-                                {{ post.comment_form }} 
-                                <button type="submit" class="comment-button"><span>Comentar</span></button>
-                                {# Opcional: mostrar errores del formulario de comentario #}
-                                {% if post.comment_form.errors %}
-                                    <ul class="errorlist">
-                                        {% for field in post.comment_form %}
-                                            {% for error in field.errors %}
-                                                <li>{{ error }}</li>
-                                            {% endfor %}
-                                        {% endfor %}
-                                        {% for error in post.comment_form.non_field_errors %}
-                                            <li>{{ error }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                {% endif %}
-                            </form>
-                        </div>
-
+                        {% endif %}
+                        {% empty %}
+                        <p>No hay comentarios aún.</p>
+                        {% endfor %}
+                        {% if post.comments.count > 3 %}
+                        Ver todos los comentarios</a></p>
+                        {% endif %}
                     </div>
-                {% endfor %}
+                    {% else %}
+                    <p>No hay comentarios aún.</p>
+                    {% endif %}
+
+                    <form method="post" action="{% url 'feed' %}" class="comment-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        {# Accede directamente a post.comment_form #}
+                        {{ post.comment_form }}
+                        <button type="submit" class="comment-button"><span>Comentar</span></button>
+                        {# Opcional: mostrar errores del formulario de comentario #}
+                        {% if post.comment_form.errors %}
+                        <ul class="errorlist">
+                            {% for field in post.comment_form %}
+                            {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                            {% endfor %}
+                            {% for error in post.comment_form.non_field_errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </form>
+                </div>
+
+            </div>
+            {% endfor %}
             {% else %}
-                <p class="no-posts-message">No hay publicaciones disponibles.</p>
+            <p class="no-posts-message">No hay publicaciones disponibles.</p>
             {% endif %}
         </div>
     </main>
@@ -150,15 +166,20 @@
                 <input class="input" type="text" required="" placeholder="Buscar..." id="search">
                 <div class="fancy-bg"></div>
                 <div class="search">
-                    <svg viewBox="0 0 24 24" aria-hidden="true" class="r-14j79pv r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-4wgw6l r-f727ji r-bnwqim r-1plcrui r-lrvibr">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"
+                        class="r-14j79pv r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-4wgw6l r-f727ji r-bnwqim r-1plcrui r-lrvibr">
                         <g>
-                            <path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path>
+                            <path
+                                d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z">
+                            </path>
                         </g>
                     </svg>
                 </div>
                 <button class="close-btn" type="reset">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
                     </svg>
                 </button>
             </label>
@@ -167,22 +188,21 @@
         <div class="popular-posts-section"> {# Puedes envolverlo en un div para estilos generales #}
             <h3>Posts Populares</h3>
             {% if popular_posts %}
-                {% for post in popular_posts %}
-                    <div class="info-box">
-                        <h4 class="title">{{ post.author.username }}: {{ post.content|truncatechars:50 }}</h4> {# Muestra autor y un extracto del contenido #}
-                        <p class="description">
-                            Likes: {{ post.total_likes }} | Comentarios: {{ post.total_comments }}
-                            <br>
-                            <small>Publicado: {{ post.fecha_creacion|date:"M d, Y" }}</small>
-                        </p>
-                        {# Opcional: añadir un enlace al detalle del post si lo tienes #}
-                        {% comment %} <a href="{% url 'post_detail' post.id %}" class="view-post-link">Ver Post</a> {% endcomment %}
-                    </div>
-                {% endfor %}
+            {% for post in popular_posts %}
+            <div class="info-box">
+                <h4 class="title">{{ post.author.username }}: {{ post.content|truncatechars:50 }}</h4> {# Muestra autor
+                y un extracto del contenido #}
+                <p class="description">
+                    Likes: {{ post.total_likes }} | Comentarios: {{ post.total_comments }}
+                    <br>
+                    <small>Publicado: {{ post.fecha_creacion|date:"M d, Y" }}</small>
+                </p>
+            </div>
+            {% endfor %}
             {% else %}
-                <div class="info-box">
-                    <p class="description">No hay posts populares para mostrar aún.</p>
-                </div>
+            <div class="info-box">
+                <p class="description">No hay posts populares para mostrar aún.</p>
+            </div>
             {% endif %}
         </div>
     </aside>
@@ -190,14 +210,9 @@
     <!-- Botón flotante crear post -->
     <button id="modalPostBtn" class="floating-button">
         <span>
-            <svg
-            height="24"
-            width="24"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            >
-            <path d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" fill="currentColor"></path>
+            <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" fill="currentColor"></path>
             </svg>
              Escribe un post
         </span>
@@ -216,7 +231,7 @@
                 <span>
                     Publicar
                 </span>
-            </button> 
+            </button>
         </form>
     </div>
 </div>
@@ -230,410 +245,447 @@
         <!-- si no hay tiempo para hacer notificaciones pues se quita el boton de arriba-->
         <h2>Notificaciones</h2>
         <div id="notificationsList" class="notifications-list">
-            <p>No tienes notificaciones nuevas.</p> </div>
+            <p>No tienes notificaciones nuevas.</p>
+        </div>
         <button id="markAllAsReadBtn" class="action-button">Marcar todas como leídas</button>
     </div>
-    </div>
+</div>
 </div>
 
 <!-- Modal de vista de perfil -->
-<div id="profileModal" class="modal">  <div class="modal-content">
+<div id="profileModal" class="modal">
+    <div class="modal-content">
         <span class="close">&times;</span>
-        <h2 id="profileModalUsername"></h2>
-        <p>Posts: <span id="profileModalPostCount"></span></p>
-        <p>Seguidores: <span id="profileModalFollowersCount"></span></p>
-        <p>Seguidos: <span id="profileModalFollowingCount"></span></p>
+        <center>
+            <h2 id="profileModalUsername"></h2>
+        </center>
 
-        <button id="followToggleButton" class="action-button"></button>
+        <table style="width:100%; text-align:center;">
+            <tr>
+                <td>
+                    <p>Posts: <span id="profileModalPostCount"></span></p>
+                </td>
+                <td>
+                    <p>Seguidores: <span id="profileModalFollowersCount"></span></p>
+                </td>
+                <td>
+                    <p>Seguidos: <span id="profileModalFollowingCount"></span></p>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+        <center><button id="followToggleButton" class="action-button"></button></center>
+
+        <center>
+            <div id="whatsappButtonContainer">
+                <img src="{% static 'images/whatsapp.png' %}" alt="WhatsApp" style="width:40px;height:40px;" />
+        </center>
     </div>
 </div>
 
 
 <script>
-// SCRIPT PARA EL MODAL DEL POST
-document.getElementById('modalPostBtn').onclick = () => {
-    document.getElementById('postModal').style.display = 'block';
-};
+    // SCRIPT PARA EL MODAL DEL POST
+    document.getElementById('modalPostBtn').onclick = () => {
+        document.getElementById('postModal').style.display = 'block';
+    };
 
-document.querySelector('.close').onclick = () => {
-    document.getElementById('postModal').style.display = 'none';
-};
+    document.querySelector('.close').onclick = () => {
+        document.getElementById('postModal').style.display = 'none';
+    };
 
     // SCRIPT PARA LIKES 
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
+        return cookieValue;
     }
-    return cookieValue;
-}
-const csrftoken = getCookie('csrftoken');
+    const csrftoken = getCookie('csrftoken');
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.like-button').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.like-button').forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
 
-            const postSection = button.closest('.like-section');
-            const postId = postSection.getAttribute('data-post-id');
-            const likeCountSpan = document.getElementById('like-count-' + postId);
+                const postSection = button.closest('.like-section');
+                const postId = postSection.getAttribute('data-post-id');
+                const likeCountSpan = document.getElementById('like-count-' + postId);
 
-            fetch("{% url 'toggle_like_ajax' %}", {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrftoken,
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'post_id=' + postId
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.liked) {
-                    button.textContent = '❤️ Quitar Like';
-                } else {
-                    button.textContent = '🤍 Me gusta';
-                }
+                fetch("{% url 'toggle_like_ajax' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'post_id=' + postId
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.liked) {
+                            button.textContent = '❤️ Quitar Like';
+                        } else {
+                            button.textContent = '🤍 Me gusta';
+                        }
 
-                likeCountSpan.textContent = `${data.total_likes} likes`;
+                        likeCountSpan.textContent = `${data.total_likes} likes`;
+                    });
             });
         });
-    });
 
-// SCRIPT PARA EL MODAL DE NOTIFICACIONES
-var modalNotificaciones = document.getElementById("modal_notificaciones");
-var btnNotificaciones = document.getElementById("btn_modal");
-var spanCerrarNotificaciones = document.getElementById("closeNotificationsModal"); 
-// var span = btnNotificaciones.querySelector(".close");
-var notificationCountSpan = document.getElementById('notificationCount');
-var notificationsList = document.getElementById('notificationsList');
-var markAllAsReadBtn = document.getElementById('markAllAsReadBtn');
+        // SCRIPT PARA EL MODAL DE NOTIFICACIONES
+        var modalNotificaciones = document.getElementById("modal_notificaciones");
+        var btnNotificaciones = document.getElementById("btn_modal");
+        var spanCerrarNotificaciones = document.getElementById("closeNotificationsModal");
+        // var span = btnNotificaciones.querySelector(".close");
+        var notificationCountSpan = document.getElementById('notificationCount');
+        var notificationsList = document.getElementById('notificationsList');
+        var markAllAsReadBtn = document.getElementById('markAllAsReadBtn');
 
-if (btnNotificaciones) {
-        btnNotificaciones.onclick = function() {
-            if (modalNotificaciones) {
-                modalNotificaciones.style.display = "block";
-                loadUserNotifications(); // ¡Cargar notificaciones al abrir el modal!
-            }
-        };
-    }
-
-if (spanCerrarNotificaciones) { // Verifica si el elemento existe antes de intentar asignarle un onclick
-    spanCerrarNotificaciones.onclick = function() {
-        if (modalNotificaciones) { // Asegúrate de que modalNotificaciones sea la variable correcta para tu modal
-            modalNotificaciones.style.display = "none";
-        }
-    };
-} else {
-    console.error("Error: El botón de cierre del modal de notificaciones (spanCerrarNotificaciones) no se encontró. Revisa tu HTML.");
-}
-
-// GESTIÓN DE NOTIFICACIONES
-
-    // Función para obtener y mostrar las notificaciones
-    function loadUserNotifications() {
-        if (!notificationsList) return;
-
-        notificationsList.innerHTML = '<p>Cargando notificaciones...</p>'; // Mensaje de carga
-
-        if (markAllAsReadBtn) {
-            markAllAsReadBtn.style.display = 'none'; // Ocultar el botón al inicio de la carga
-        }
-
-        fetch('/get-notifications/')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+        if (btnNotificaciones) {
+            btnNotificaciones.onclick = function () {
+                if (modalNotificaciones) {
+                    modalNotificaciones.style.display = "block";
+                    loadUserNotifications(); // ¡Cargar notificaciones al abrir el modal!
                 }
-                return response.json();
-            })
-            .then(data => {
-                notificationsList.innerHTML = ''; // Limpiar el mensaje de carga
+            };
+        }
 
-                if (data.notifications && data.notifications.length > 0) {
-                    data.notifications.forEach(notif => {
-                        const notifElement = document.createElement('div');
-                        notifElement.classList.add('notification-item'); // Clase para estilos CSS
-                        if (!notif.is_read) {
-                            notifElement.classList.add('unread'); // Para destacar no leídas
-                        }
-                        notifElement.dataset.notificationId = notif.id; // Guarda el ID para acciones futuras
+        if (spanCerrarNotificaciones) { // Verifica si el elemento existe antes de intentar asignarle un onclick
+            spanCerrarNotificaciones.onclick = function () {
+                if (modalNotificaciones) { // Asegúrate de que modalNotificaciones sea la variable correcta para tu modal
+                    modalNotificaciones.style.display = "none";
+                }
+            };
+        } else {
+            console.error("Error: El botón de cierre del modal de notificaciones (spanCerrarNotificaciones) no se encontró. Revisa tu HTML.");
+        }
 
-                        let messageHtml = notif.message;
-                        if (notif.post_id) {
-                            // Si la notificación está ligada a un post, haz el mensaje clickeable
-                            messageHtml += ` <a href="/posts/${notif.post_id}/" target="_blank">(Ver post)</a>`;
-                        }
+        // GESTIÓN DE NOTIFICACIONES
 
-                        notifElement.innerHTML = `
+        // Función para obtener y mostrar las notificaciones
+        function loadUserNotifications() {
+            if (!notificationsList) return;
+
+            notificationsList.innerHTML = '<p>Cargando notificaciones...</p>'; // Mensaje de carga
+
+            if (markAllAsReadBtn) {
+                markAllAsReadBtn.style.display = 'none'; // Ocultar el botón al inicio de la carga
+            }
+
+            fetch('/get-notifications/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    notificationsList.innerHTML = ''; // Limpiar el mensaje de carga
+
+                    if (data.notifications && data.notifications.length > 0) {
+                        data.notifications.forEach(notif => {
+                            const notifElement = document.createElement('div');
+                            notifElement.classList.add('notification-item'); // Clase para estilos CSS
+                            if (!notif.is_read) {
+                                notifElement.classList.add('unread'); // Para destacar no leídas
+                            }
+                            notifElement.dataset.notificationId = notif.id; // Guarda el ID para acciones futuras
+
+                            let messageHtml = notif.message;
+                            if (notif.post_id) {
+                                // Si la notificación está ligada a un post, haz el mensaje clickeable
+                                messageHtml += ` <a href="/posts/${notif.post_id}/" target="_blank">(Ver post)</a>`;
+                            }
+
+                            notifElement.innerHTML = `
                             <p>${messageHtml}</p>
                             <small>${new Date(notif.created_at).toLocaleString()}</small>
                             ${!notif.is_read ? '<button class="mark-as-read-btn action-button">Marcar como leída</button>' : ''}
                         `;
-                        notificationsList.appendChild(notifElement);
-                    });
-
-                    // Asigna event listeners a los botones "Marcar como leída"
-                    document.querySelectorAll('.mark-as-read-btn').forEach(button => {
-                        button.addEventListener('click', function() {
-                            const notificationId = this.closest('.notification-item').dataset.notificationId;
-                            markNotificationAsRead(notificationId);
+                            notificationsList.appendChild(notifElement);
                         });
-                    });
 
-                // Mostrar el botón si hay notificaciones no leídas
-                if (markAllAsReadBtn && data.unread_count > 0) {
-                    markAllAsReadBtn.style.display = 'block';
-                }
+                        // Asigna event listeners a los botones "Marcar como leída"
+                        document.querySelectorAll('.mark-as-read-btn').forEach(button => {
+                            button.addEventListener('click', function () {
+                                const notificationId = this.closest('.notification-item').dataset.notificationId;
+                                markNotificationAsRead(notificationId);
+                            });
+                        });
 
-                } else {
-                    notificationsList.innerHTML = '<p>No tienes notificaciones.</p>';
-                    if (markAllAsReadBtn) {
-                    markAllAsReadBtn.style.display = 'none'; // Ocultar botón si no hay notificaciones
+                        // Mostrar el botón si hay notificaciones no leídas
+                        if (markAllAsReadBtn && data.unread_count > 0) {
+                            markAllAsReadBtn.style.display = 'block';
+                        }
+
+                    } else {
+                        notificationsList.innerHTML = '<p>No tienes notificaciones.</p>';
+                        if (markAllAsReadBtn) {
+                            markAllAsReadBtn.style.display = 'none'; // Ocultar botón si no hay notificaciones
+                        }
                     }
-                }
-                updateNotificationCount(data.unread_count); // Actualiza el badge de la campana
-            })
-            .catch(error => {
-                console.error('Error al cargar notificaciones:', error);
-                notificationsList.innerHTML = '<p>Error al cargar notificaciones.</p>';
-            });
-    }
+                    updateNotificationCount(data.unread_count); // Actualiza el badge de la campana
+                })
+                .catch(error => {
+                    console.error('Error al cargar notificaciones:', error);
+                    notificationsList.innerHTML = '<p>Error al cargar notificaciones.</p>';
+                });
+        }
 
-    // Función para actualizar el contador en el badge de la campana
-    function updateNotificationCount(count) {
-        if (notificationCountSpan) {
-            notificationCountSpan.textContent = count;
-            if (count > 0) {
-                notificationCountSpan.style.display = 'inline-block'; // Muestra el badge
-            } else {
-                notificationCountSpan.style.display = 'none'; // Oculta el badge si es 0
+        // Función para actualizar el contador en el badge de la campana
+        function updateNotificationCount(count) {
+            if (notificationCountSpan) {
+                notificationCountSpan.textContent = count;
+                if (count > 0) {
+                    notificationCountSpan.style.display = 'inline-block'; // Muestra el badge
+                } else {
+                    notificationCountSpan.style.display = 'none'; // Oculta el badge si es 0
+                }
+            }
+            if (markAllAsReadBtn) {
+                if (count > 0) {
+                    markAllAsReadBtn.style.display = 'block';
+                } else {
+                    markAllAsReadBtn.style.display = 'none';
+                }
             }
         }
-         if (markAllAsReadBtn) {
-        if (count > 0) {
-            markAllAsReadBtn.style.display = 'block';
-        } else {
-            markAllAsReadBtn.style.display = 'none';
-        }
-    }
-    }
 
-    // Función para marcar una notificación individual como leída
-    function markNotificationAsRead(notificationId) {
-        fetch(`/mark-notification-read/${notificationId}/`, { // Esta URL la crearás en Django
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrftoken,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({}) // Cuerpo vacío
-        })
-        .then(response => {
-            if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
-            return response.json();
-        })
-        .then(data => {
-            if (data.status === 'success') {
-                // Actualiza el UI sin recargar todo
-                const notificationItem = document.querySelector(`.notification-item[data-notification-id="${notificationId}"]`);
-                if (notificationItem) {
-                    notificationItem.classList.remove('unread'); // Quita el estilo de no leído
-                    const markBtn = notificationItem.querySelector('.mark-as-read-btn');
-                    if (markBtn) markBtn.remove(); // Elimina el botón "Marcar como leída"
-                }
-                updateNotificationCount(data.unread_count); // Actualiza el contador de la campana
-            } else {
-                console.error('Error al marcar notificación:', data.message);
-            }
-        })
-        .catch(error => console.error('Error de red al marcar notificación:', error));
-    }
-
-    // Lógica para marcar TODAS las notificaciones como leídas
-    if (markAllAsReadBtn) {
-        markAllAsReadBtn.addEventListener('click', function() {
-            fetch('/mark-all-notifications-read/', { // Esta URL la crearás en Django
+        // Función para marcar una notificación individual como leída
+        function markNotificationAsRead(notificationId) {
+            fetch(`/mark-notification-read/${notificationId}/`, { // Esta URL la crearás en Django
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': csrftoken,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({})
+                body: JSON.stringify({}) // Cuerpo vacío
             })
-            .then(response => {
-                if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    // Actualiza el UI para mostrar todas como leídas
-                    document.querySelectorAll('.notification-item').forEach(item => {
-                        item.classList.remove('unread');
-                        const markBtn = item.querySelector('.mark-as-read-btn');
-                        if (markBtn) markBtn.remove();
-                    });
-                    notificationsList.innerHTML = '<p>No tienes notificaciones sin leer.</p>'; // Mensaje actualizado
-                    updateNotificationCount(0); // Pone el contador a 0
-                    
-                    if (markAllAsReadBtn) {
-                        markAllAsReadBtn.style.display = 'none'; // Ocultar el botón después de marcar todas como leídas
+                .then(response => {
+                    if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Actualiza el UI sin recargar todo
+                        const notificationItem = document.querySelector(`.notification-item[data-notification-id="${notificationId}"]`);
+                        if (notificationItem) {
+                            notificationItem.classList.remove('unread'); // Quita el estilo de no leído
+                            const markBtn = notificationItem.querySelector('.mark-as-read-btn');
+                            if (markBtn) markBtn.remove(); // Elimina el botón "Marcar como leída"
+                        }
+                        updateNotificationCount(data.unread_count); // Actualiza el contador de la campana
+                    } else {
+                        console.error('Error al marcar notificación:', data.message);
                     }
-                } else {
-                    console.error('Error al marcar todas como leídas:', data.message);
-                }
-            })
-            .catch(error => console.error('Error de red al marcar todas:', error));
+                })
+                .catch(error => console.error('Error de red al marcar notificación:', error));
+        }
+
+        // Lógica para marcar TODAS las notificaciones como leídas
+        if (markAllAsReadBtn) {
+            markAllAsReadBtn.addEventListener('click', function () {
+                fetch('/mark-all-notifications-read/', { // Esta URL la crearás en Django
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                })
+                    .then(response => {
+                        if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Actualiza el UI para mostrar todas como leídas
+                            document.querySelectorAll('.notification-item').forEach(item => {
+                                item.classList.remove('unread');
+                                const markBtn = item.querySelector('.mark-as-read-btn');
+                                if (markBtn) markBtn.remove();
+                            });
+                            notificationsList.innerHTML = '<p>No tienes notificaciones sin leer.</p>'; // Mensaje actualizado
+                            updateNotificationCount(0); // Pone el contador a 0
+
+                            if (markAllAsReadBtn) {
+                                markAllAsReadBtn.style.display = 'none'; // Ocultar el botón después de marcar todas como leídas
+                            }
+                        } else {
+                            console.error('Error al marcar todas como leídas:', data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error de red al marcar todas:', error));
+            });
+        }
+
+        // --- Cargar el contador de notificaciones no leídas al cargar la página ---
+        // Esto asegura que el badge de la campana tenga el número correcto al inicio.
+        function getUnreadNotificationCount() {
+            fetch('/get-unread-notifications-count/') // Esta URL la crearás en Django
+                .then(response => {
+                    if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
+                    return response.json();
+                })
+                .then(data => {
+                    updateNotificationCount(data.unread_count);
+                })
+                .catch(error => console.error('Error al obtener el conteo de no leídas:', error));
+        }
+
+        // Llama a esta función al inicio para cargar el contador del badge
+        getUnreadNotificationCount();
+
+        //SCRIPT PARA MUESTRA DE PERFIL DE USUARIO
+        var profileModal = document.getElementById('profileModal');
+        var profileModalClose = profileModal.querySelector('.close');
+        var followToggleButton = document.getElementById('followToggleButton');
+        var currentProfileUserId = null; // Para guardar el ID del usuario del perfil que se está viendo
+
+        // Abrir el modal de perfil cuando se hace clic en un nombre de usuario
+        document.querySelectorAll('.profile-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault(); // Evita que el enlace recargue la página
+                currentProfileUserId = this.dataset.userId; // Obtiene el ID del usuario del data-attribute
+
+                // Llama a una función para cargar los datos del usuario
+                loadUserProfileData(currentProfileUserId);
+
+                profileModal.style.display = 'block';
+            });
         });
-    }
 
-     // --- Cargar el contador de notificaciones no leídas al cargar la página ---
-    // Esto asegura que el badge de la campana tenga el número correcto al inicio.
-    function getUnreadNotificationCount() {
-        fetch('/get-unread-notifications-count/') // Esta URL la crearás en Django
-            .then(response => {
-                if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
-                return response.json();
-            })
-            .then(data => {
-                updateNotificationCount(data.unread_count);
-            })
-            .catch(error => console.error('Error al obtener el conteo de no leídas:', error));
-    }
+        profileModalClose.onclick = function () {
+            profileModal.style.display = 'none';
+        };
 
-    // Llama a esta función al inicio para cargar el contador del badge
-    getUnreadNotificationCount();
+        function loadUserProfileData(userId) {
+            document.getElementById('profileModalUsername').textContent = 'Cargando...';
+            document.getElementById('profileModalPostCount').textContent = '...';
+            document.getElementById('profileModalFollowersCount').textContent = '...';
+            document.getElementById('profileModalFollowingCount').textContent = '...';
 
-//SCRIPT PARA MUESTRA DE PERFIL DE USUARIO
-var profileModal = document.getElementById('profileModal');
-var profileModalClose = profileModal.querySelector('.close');
-var followToggleButton = document.getElementById('followToggleButton');
-var currentProfileUserId = null; // Para guardar el ID del usuario del perfil que se está viendo
+            const whatsappContainer = document.getElementById('whatsappButtonContainer');
+            whatsappContainer.innerHTML = '';  // Limpia contenido previo
 
-    // Abrir el modal de perfil cuando se hace clic en un nombre de usuario
-document.querySelectorAll('.profile-link').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault(); // Evita que el enlace recargue la página
-        currentProfileUserId = this.dataset.userId; // Obtiene el ID del usuario del data-attribute
-
-        // Llama a una función para cargar los datos del usuario
-        loadUserProfileData(currentProfileUserId);
-
-        profileModal.style.display = 'block';
-    });
-});
-
-profileModalClose.onclick = function() {
-    profileModal.style.display = 'none';
-};
-
-// Función para Cargar Datos del Usuario en el Modal de Perfil
-function loadUserProfileData(userId) {
-    document.getElementById('profileModalUsername').textContent = 'Cargando...';
-    document.getElementById('profileModalPostCount').textContent = '...';
-    document.getElementById('profileModalFollowersCount').textContent = '...';
-    document.getElementById('profileModalFollowingCount').textContent = '...';
-    if (followToggleButton) {
-        followToggleButton.textContent = '...';
-        followToggleButton.style.display = 'block'; // Asegurarse de que esté visible para el estado de carga
-        followToggleButton.disabled = true; // Deshabilitar mientras carga para evitar clics dobles
-    }
-    fetch(`/profile-data/${userId}/`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            document.getElementById('profileModalUsername').textContent = data.username;
-            document.getElementById('profileModalPostCount').textContent = data.post_count;
-            document.getElementById('profileModalFollowersCount').textContent = data.followers_count;
-            document.getElementById('profileModalFollowingCount').textContent = data.following_count;
             if (followToggleButton) {
-                followToggleButton.disabled = false; // Habilitar el botón una vez cargado
-            if (data.is_following) {
-                followToggleButton.textContent = 'Dejar de Seguir';
-                followToggleButton.classList.remove('follow-button');
-                followToggleButton.classList.add('unfollow-button');
-            } else {
-                followToggleButton.textContent = 'Seguir';
-                followToggleButton.classList.remove('unfollow-button');
-                followToggleButton.classList.add('follow-button');
-            }
-
-            if (userId == "{{ user.id }}") {
-                followToggleButton.style.display = 'none';
-            } else {
+                followToggleButton.textContent = '...';
                 followToggleButton.style.display = 'block';
+                followToggleButton.disabled = true;
             }
+
+            fetch(`/profile-data/${userId}/`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('profileModalUsername').textContent = data.username;
+                    document.getElementById('profileModalPostCount').textContent = data.post_count;
+                    document.getElementById('profileModalFollowersCount').textContent = data.followers_count;
+                    document.getElementById('profileModalFollowingCount').textContent = data.following_count;
+
+                    // Mostrar botón de seguir/dejar de seguir
+                    if (followToggleButton) {
+                        followToggleButton.disabled = false;
+                        if (data.is_following) {
+                            followToggleButton.textContent = 'Dejar de Seguir';
+                            followToggleButton.classList.remove('follow-button');
+                            followToggleButton.classList.add('unfollow-button');
+                        } else {
+                            followToggleButton.textContent = 'Seguir';
+                            followToggleButton.classList.remove('unfollow-button');
+                            followToggleButton.classList.add('follow-button');
+                        }
+
+                        if (userId == "{{ user.id }}") {
+                            followToggleButton.style.display = 'none';
+                        } else {
+                            followToggleButton.style.display = 'block';
+                        }
+                    }
+
+                    // Mostrar botón de WhatsApp si pertenece a organización
+                    if (data.is_in_organization && data.whatsapp_number) {
+                        const whatsappLink = `https://wa.me/${data.whatsapp_number.replace(/[^0-9]/g, '')}`;
+                        whatsappContainer.innerHTML = `
+                    <a href="${whatsappLink}" target="_blank" title="Contactar por WhatsApp">
+                        <img src="/static/img/whatsapp-icon.png" alt="WhatsApp" style="width:40px; height:40px; margin-top:10px;">
+                    </a>
+                `;
+                    }
+                })
+                .catch(error => console.error('Error al cargar datos del perfil:', error));
         }
-        })
-        .catch(error => console.error('Error al cargar datos del perfil:', error));
-}
 
-    //CERRAR VENTANAS FLOTANTES PULSANDO FUERA
-window.onclick = function(event) {
-    if (event.target == document.getElementById('modal_notificaciones')) {
-        document.getElementById('modal_notificaciones').style.display = 'none';
-    }
-    if (event.target == document.getElementById('postModal')) {
-        document.getElementById('postModal').style.display = 'none';
-    }
-    if (event.target == profileModal) {
-        profileModal.style.display = 'none';
-    }
-    if (modalNotificaciones && event.target == modalNotificaciones) {
-            modalNotificaciones.style.display = 'none';
+        //CERRAR VENTANAS FLOTANTES PULSANDO FUERA
+        window.onclick = function (event) {
+            if (event.target == document.getElementById('modal_notificaciones')) {
+                document.getElementById('modal_notificaciones').style.display = 'none';
+            }
+            if (event.target == document.getElementById('postModal')) {
+                document.getElementById('postModal').style.display = 'none';
+            }
+            if (event.target == profileModal) {
+                profileModal.style.display = 'none';
+            }
+            if (modalNotificaciones && event.target == modalNotificaciones) {
+                modalNotificaciones.style.display = 'none';
+            }
+        };
+
+        // Lógica del Botón Seguir/Dejar de Seguir
+        if (followToggleButton) {
+            followToggleButton.addEventListener('click', function () {
+                if (!currentProfileUserId) return;
+
+                fetch(`/toggle-follow/${currentProfileUserId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'Content-Type': 'application/json'
+                    },
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.status === 'success') {
+                            if (data.is_following) {
+                                followToggleButton.textContent = 'Dejar de Seguir';
+                                followToggleButton.classList.remove('follow-button');
+                                followToggleButton.classList.add('unfollow-button');
+                            } else {
+                                followToggleButton.textContent = 'Seguir';
+                                followToggleButton.classList.remove('unfollow-button');
+                                followToggleButton.classList.add('follow-button');
+                            }
+                            document.getElementById('profileModalFollowersCount').textContent = data.followers_count;
+                        } else {
+                            console.error('Error en la operación de seguir/dejar de seguir:', data.message);
+                            alert('Hubo un error al procesar tu solicitud: ' + data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error de red al seguir/dejar de seguir:', error));
+            });
         }
-};
 
-// Lógica del Botón Seguir/Dejar de Seguir
-if (followToggleButton) {
-    followToggleButton.addEventListener('click', function() {
-        if (!currentProfileUserId) return;
-
-        fetch(`/toggle-follow/${currentProfileUserId}/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrftoken,
-                'Content-Type': 'application/json'
-            },
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.status === 'success') {
-                if (data.is_following) {
-                    followToggleButton.textContent = 'Dejar de Seguir';
-                    followToggleButton.classList.remove('follow-button');
-                    followToggleButton.classList.add('unfollow-button');
-                } else {
-                    followToggleButton.textContent = 'Seguir';
-                    followToggleButton.classList.remove('unfollow-button');
-                    followToggleButton.classList.add('follow-button');
-                }
-                document.getElementById('profileModalFollowersCount').textContent = data.followers_count;
-            } else {
-                console.error('Error en la operación de seguir/dejar de seguir:', data.message);
-                alert('Hubo un error al procesar tu solicitud: ' + data.message);
-            }
-        })
-        .catch(error => console.error('Error de red al seguir/dejar de seguir:', error));
     });
-}
-    
-});
 </script>
 
 

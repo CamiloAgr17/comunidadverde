@@ -15,6 +15,12 @@ from django.http import JsonResponse
 from django.db.models import Case, When, IntegerField, Value
 from .models import Post, Organizacion, Etiqueta
 from .forms import *
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from .models import Post, Seguimiento, Organizacion  # Asegúrate de importar Organizacion
+from django.contrib.auth.models import User
+
 
 
 def pagina_inicio(request):
@@ -246,12 +252,19 @@ def get_user_profile_data(request, user_id):
     following_count = Seguimiento.objects.filter(seguidor=user_to_view).count()
 
     # Verificar si el usuario logueado sigue al usuario que se está viendo
-    is_following = False
-    if request.user.is_authenticated:
-        is_following = Seguimiento.objects.filter(
-            seguidor=request.user,
-            seguido=user_to_view
-        ).exists()
+    is_following = Seguimiento.objects.filter(
+        seguidor=request.user,
+        seguido=user_to_view
+    ).exists()
+
+    # Verificar si pertenece a una organización
+    try:
+        organizacion = Organizacion.objects.get(user=user_to_view)
+        is_in_organization = True
+        whatsapp_number = organizacion.telefono
+    except Organizacion.DoesNotExist:
+        is_in_organization = False
+        whatsapp_number = None
 
     data = {
         'username': user_to_view.username,
@@ -259,8 +272,11 @@ def get_user_profile_data(request, user_id):
         'followers_count': followers_count,
         'following_count': following_count,
         'is_following': is_following,
+        'is_in_organization': is_in_organization,
+        'whatsapp_number': whatsapp_number,
     }
     return JsonResponse(data)
+
 
 ## Follow o Unfollow
 @login_required
@@ -375,3 +391,6 @@ def get_unread_notifications_count(request):
     """
     unread_count = Notification.objects.filter(user=request.user, is_read=False).count()
     return JsonResponse({'unread_count': unread_count})
+ 
+
+
