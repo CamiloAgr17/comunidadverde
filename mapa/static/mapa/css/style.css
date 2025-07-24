@@ -16,13 +16,12 @@
 }
 
 .header-content {
-    padding: 10px;
     width: 100%;
-    max-width: 400px;
+    max-width: 200px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    pointer-events: all;
+    pointer-events: none;
 }
 
 .header-content img {
@@ -32,14 +31,15 @@
   pointer-events:all;
 }
 
-.header-content .buscador {
+.buscador {
+  width: 100%;
+  max-width: 200px;
   display: flex;
   position: relative;
   align-items: center;
   text-align: center;
   pointer-events: all;
-  padding-left: 2em; /* mantén si quieres espacio al inicio */
-  width: 100%;
+  padding-left: 2em;
 }
 
 .buscador__input {
@@ -48,11 +48,11 @@
   background-color: white;
   border: none;
   color: #000000;
-  width: 25em;
   padding: 0.7rem 1rem;
   border-radius: 30px;
-  transition: all ease-in-out 0.5s;
-  margin-right: 0; /* eliminar margen negativo */
+  width: 24em;
+  transition: all ease-in-out .5s;
+  margin-right: -2rem;
 }
 
 .buscador__input:hover,
@@ -121,7 +121,7 @@
   left: 0;
   background: white;
   border: 1px solid #ccc;
-  width: 100%;
+  width: 24em;
   margin-top: 2px;
   padding: 0;
   list-style: none;
@@ -129,6 +129,7 @@
   border-radius: 4px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
   display: flex;
+  padding-right: 2rem;
 }
 
 .sugerencias-lista li {
