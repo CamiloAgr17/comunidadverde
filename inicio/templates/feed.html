@@ -203,7 +203,8 @@
             {% if popular_posts %}
             {% for post in popular_posts %}
             <div class="info-box">
-                <h4 class="title">{{ post.author.username }}: {{ post.content|truncatechars:50 }}</h4>
+                <h4 class="title">{{ post.author.username }}: </h4>
+                <h2 class="popular-content"> {{ post.content|truncatechars:90 }} </h2>
                 <p class="description">
                     Likes: {{ post.total_likes }} | Comentarios: {{ post.total_comments }}
                     <br>

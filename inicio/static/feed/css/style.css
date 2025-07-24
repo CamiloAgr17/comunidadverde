@@ -285,6 +285,7 @@ input:-webkit-autofill:active {
   -webkit-transition-delay: 9999s;
 }
 
+/* CSS POSTS POPULARES */
 .info-box {
     width: 91%;
     background: #d9eddf;
@@ -300,6 +301,12 @@ input:-webkit-autofill:active {
   font-size: 1rem;
   font-weight: 900;
   margin-top: 0;
+}
+
+.info-box .popular-content {
+  color: #216173;
+  font-size: 0.8rem;
+  font-weight: normal;
 }
 
 .info-box .description {
