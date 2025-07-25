@@ -329,6 +329,24 @@ input:-webkit-autofill:active {
     font-size: 16px;
 }
 
+.action-button {
+  bottom: 20px;
+  right: 20px;
+  cursor: pointer;
+  padding: 0.8em, 1.2em 0.8em 1em;
+  border: 2px solid #d9eddf;
+  background-color: #007b87;
+  color: #d9eddf;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all ease-in-out 0.2s;
+}
+
+.action-button:hover {
+  background-color: #57c785;
+}
+
 .floating-button span {
   display: flex;
   justify-content: center;
