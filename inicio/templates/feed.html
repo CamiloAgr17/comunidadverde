@@ -174,7 +174,7 @@
     <!-- y te muestra como 2 posts con varios likes y así -->
     <aside class="sidebar-right">
         {% comment %} BUSCADOR {% endcomment %}
-        <form class="form">
+        {% comment %} <form class="form">
             <label for="search">
                 <input class="input" type="text" required="" placeholder="Buscar..." id="search">
                 <div class="fancy-bg"></div>
@@ -196,7 +196,7 @@
                     </svg>
                 </button>
             </label>
-        </form>
+        </form> {% endcomment %}
         {% comment %} POSTS POPULARES {% endcomment %}
         <div class="popular-posts-section">
             <h3>Posts Populares</h3>
